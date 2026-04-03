@@ -1,244 +1,67 @@
-# 部品分類マスタ情報システム
+# Crispy Broccoli Project
 
-## 概要
-
-これは日本語の部品分類マスタデータを表示・管理するためのモダンなWeb情報システムです。ExcelからエクスポートされたHTMLシートデータを、インタラクティブで使いやすいWebアプリケーションに変換します。
-
-## 特徴
-
-### 🎨 モダンなUIデザイン
-- Tailwind CSSを使用したレスポンシブデザイン
-- 直感的なタブベースのナビゲーション
-- アニメーションとトランジション効果
-- モバイルフレンドリーなインターフェース
-
-### 📊 データ管理機能
-- **11のデータシート**を統合管理
-- **15,000+件**の部品データ対応
-- リアルタイムデータ検索
-- カテゴリ別フィルタリング
-- 詳細情報表示
-
-### 🔍 強力な検索機能
-- 部品名、コード、分類からの検索
-- リアルタイム検索結果表示
-- 詳細ページへの直接アクセス
-
-### 📈 レポート機能
-- 部品分類統計
-- 在庫状況レポート
-- 価格推移分析
-- PDF/Excel形式でのエクスポート
-
-## システム構成
-
-### データシート一覧
-
-| シート名 | 内容 | 説明 |
-|---------|------|------|
-| 記入方法 | sheet001 | データ入力方法の説明 |
-| NSSOLとの履歴 | sheet002 | NSSOL関連の履歴情報 |
-| 部品分類ツリーマスタ | sheet003 | 主要な部品分階層データ |
-| 品名フリガナ索引 | sheet004 | 部品名のふりがな索引 |
-| 品名文字列構成 | sheet005 | 部品名の文字列構成ルール |
-| 分類ツリーPIVOT | sheet006 | ピボットテーブル形式の分類データ |
-| DFK辞典 | sheet007 | 用語辞典データ |
-| 品目分類　現状 | sheet008 | 現在の品目分類状況 |
-| 選択肢 | sheet009 | 各種選択肢データ |
-| Sheet4 | sheet010 | 補助データ |
-| レポート出力結果 | sheet011 | 生成されたレポート一覧 |
-
-## ファイル構成
+## 📁 Cấu trúc thư mục
 
 ```
-部品分類マスタ (分類見直し版)_files/
-├── index.html              # メインアプリケーションページ
-├── data-processor.js       # データ処理スクリプト
-├── stylesheet.css          # スタイルシート
-├── sheet001.htm - sheet011.htm  # 元データシート
-├── image001.png - image1749.png # 関連画像
-├── filelist.xml            # ファイルリスト
-├── tabstrip.htm            # タブストリップ
-└── README.md               # このファイル
+crispy-broccoli/
+├── src/                    # Source code
+│   ├── js/                # JavaScript files
+│   ├── html/              # HTML templates và demos
+│   └── css/               # Stylesheets
+├── docs/                   # Documentation
+├── data/                   # Data files (JSON, templates)
+├── assets/                 # Static assets
+│   ├── images/            # Image files (PNG, JPG)
+│   └── sheets/            # Excel/HTML sheets
+├── configs/                # Configuration files
+└── .gitignore             # Git ignore rules
 ```
 
-## 技術仕様
+## 🚀 Các module chính
 
-### フロントエンド技術
-- **HTML5**: セマンティックマークアップ
-- **CSS3**: Tailwind CSSフレームワーク
-- **JavaScript (ES6+):** モダンなJavaScript機能
-- **Font Awesome**: アイコンライブラリ
+### Workflow Extensions
+- `workflow-extensions.js` - Core workflow engine
+- `workflow-definitions.js` - Workflow definitions
+- `system-workflow-engine.js` - System integration
 
-### データ処理
-- **DOMパーサー:** HTMLテーブルデータの解析
-- **非同期処理:** Promiseベースのデータ読み込み
-- **動的コンテンツ生成:** JavaScriptによるUI生成
+### Neural Network
+- `neural-network-layers.js` - Layer implementations
+- `neural-network-demo.js` - Demo và examples
+- `resource-adaptive-neural-network.js` - Adaptive networks
 
-### ブラウザ対応
-- Chrome 80+
-- Firefox 75+
-- Safari 13+
-- Edge 80+
+### Document Processing
+- `document-processor.js` - Document handling
+- `large-document-handler.js` - Large file processing
+- `content-data-analyzer.js` - Content analysis
 
-## インストールと使用方法
+### Media Integration
+- `media-data-manager.js` - Media management
+- `image-search-processor.js` - Image processing
 
-### 1. ファイルの配置
-すべてのファイルを同じディレクトリに配置してください。
+## 📖 Documentation
 
-### 2. Webサーバーの起動
-ローカルWebサーバーでファイルをホストする必要があります。
+Xem thư mục `docs/` để có tài liệu chi tiết về:
+- AI Agent Training
+- Multi-industry Integration
+- System Architecture
+- API Documentation
 
-#### Pythonを使用する場合:
-```bash
-# Python 3
-python -m http.server 8000
+## 🎯 Demo
 
-# Python 2
-python -m SimpleHTTPServer 8000
-```
+Các file demo có trong `src/html/`:
+- `index.html` - Main demo
+- `auto-article-demo.html` - Article generation demo
+- `enhanced-auto-article-demo.html` - Enhanced demo
 
-#### Node.jsを使用する場合:
-```bash
-npx http-server -p 8000
-```
+## ⚙️ Cấu hình
 
-#### PHPを使用する場合:
-```bash
-php -S localhost:8000
-```
+Các file cấu hình trong `configs/`:
+- `filelist.xml` - File inventory
+- `web-search-configuration.json` - Search settings
 
-### 3. アクセス
-ブラウザで `http://localhost:8000` にアクセスしてください。
+## 📊 Data
 
-## 機能詳細
-
-### メイン機能
-
-#### 🏠 概要ダッシュボード
-- システム統計の表示
-- クイックアクションボタン
-- データシート一覧
-
-#### 🌳 部品分類ツリー
-- 階層的な部品分類表示
-- カテゴリ別の部品数表示
-- 展開/折りたたみ機能
-
-#### 📋 部品一覧
-- テーブル形式での部品表示
-- ソートとフィルタ機能
-- ページネーション
-
-#### 📚 DFK辞典
-- 用語と定義の表示
-- カテゴリ別分類
-- 検索機能
-
-#### 📊 レポート
-- 各種統計レポート
-- エクスポート機能
-- レポート履歴
-
-### 検索機能
-
-#### 🔍 全文検索
-- 部品名、コード、分類からの検索
-- リアルタイム検索結果
-- 検索結果のハイライト
-
-#### 📱 モバイル対応
-- タッチフレンドリーなインターフェース
-- レスポンシブデザイン
-- モバイル最適化
-
-## カスタマイズ
-
-### テーマの変更
-`index.html` のCSSクラスを変更することでテーマをカスタマイズできます。
-
-```html
-<!-- カラーテーマの変更 -->
-<style>
-    .bg-blue-600 { background-color: #your-color; }
-    .text-blue-600 { color: #your-color; }
-</style>
-```
-
-### データソースの追加
-`data-processor.js` を変更して新しいデータソースを追加できます。
-
-```javascript
-// 新しいデータソースの追加
-async extractNewData() {
-    const data = await this.parseSheetData('new-sheet.htm');
-    // データ処理ロジック
-    return processedData;
-}
-```
-
-## トラブルシューティング
-
-### よくある問題
-
-#### Q: データが表示されない
-A: Webサーバー経由でアクセスしていることを確認してください。ファイルを直接開くとセキュリティ制限で動作しません。
-
-#### Q: 日本語が文字化けする
-A: ファイルのエンコーディングがUTF-8またはShift-JISであることを確認してください。
-
-#### Q: 検索が動作しない
-A: JavaScriptが有効になっていることを確認してください。
-
-### デバッグ方法
-
-1. ブラウザの開発者ツールを開く (F12)
-2. コンソールタブでエラーを確認
-3. ネットワークタブでファイル読み込みを確認
-
-## パフォーマンス最適化
-
-### データ読み込みの最適化
-- 大量のデータを分割して読み込み
-- 非同期処理の活用
-- キャッシュ機能の実装
-
-### UIの最適化
-- 仮想スクロールの実装
-- イメージの遅延読み込み
-- CSSアニメーションの最適化
-
-## セキュリティ考慮事項
-
-- XSS対策: 入力データのサニタイズ
-- CSRF対策: トークンの使用
-- データ検証: クライアント・サーバー側での二重検証
-
-## ライセンス
-
-このプロジェクトはMITライセンスの下で提供されています。
-
-## 貢献
-
-バグ報告や機能リクエストはGitHub Issuesを通じて受け付けています。
-
-## 更新履歴
-
-### v1.0.0 (2022-07-26)
-- 初版リリース
-- 基本的なデータ表示機能
-- 検索機能の実装
-- レスポンシブデザイン
-
----
-
-## お問い合わせ
-
-技術的な質問やサポートについては、以下の連絡先までお問い合わせください。
-
-- Email: support@example.com
-- GitHub: https://github.com/your-repo
-
----
-
-*このシステムは日本の製造業の部品管理ニーズに対応するために開発されました。*
+Templates và data trong `data/`:
+- Article templates
+- Product templates
+- E-commerce data

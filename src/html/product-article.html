@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài viết Chi tiết về Linh kiện - Hệ thống Phân loại</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .article-content {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .article-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .article-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            color: #4b5563;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #6b7280;
+        }
+        
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content th, .article-content td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .article-content th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        .toc {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .toc a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+        
+        .spec-highlight {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .application-card {
+            background-color: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-newspaper text-blue-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Bài viết Chi tiết Linh kiện</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Quay lại
+                    </button>
+                    <button onclick="printArticle()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-print mr-2"></i>In bài viết
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 flex flex-col items-center">
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-gray-700">Đang tải bài viết...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Article Header -->
+        <div id="articleHeader" class="bg-white rounded-lg p-6 shadow-lg mb-6">
+            <!-- Content will be dynamically loaded -->
+        </div>
+
+        <!-- Table of Contents -->
+        <div id="tableOfContents" class="toc">
+            <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                <i class="fas fa-list mr-2"></i>Mục lục
+            </h3>
+            <ul id="tocList">
+                <!-- TOC items will be dynamically generated -->
+            </ul>
+        </div>
+
+        <!-- Article Content -->
+        <div class="bg-white rounded-lg p-8 shadow-lg">
+            <div id="articleContent" class="article-content">
+                <!-- Article content will be dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Related Articles -->
+        <div class="bg-white rounded-lg p-6 shadow-lg mt-6">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">
+                <i class="fas fa-link mr-2"></i>Bài viết liên quan
+            </h3>
+            <div id="relatedArticles" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Related articles will be dynamically loaded -->
+            </div>
+        </div>
+    </main>
+
+    <script src="data-processor.js"></script>
+    <script>
+        // Global variables
+        let currentPartCode = '';
+        let currentPartData = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get part code from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            currentPartCode = urlParams.get('code') || '';
+            
+            if (currentPartCode) {
+                loadArticle(currentPartCode);
+            } else {
+                showError('Không tìm thấy mã linh kiện');
+            }
+        });
+
+        // Load article
+        async function loadArticle(partCode) {
+            showLoading();
+            
+            try {
+                // Ensure data is processed
+                if (!window.dataProcessor || !window.dataProcessor.processedData.partsTree.length) {
+                    await window.dataProcessor.processAllData();
+                }
+                
+                // Find part data
+                currentPartData = window.dataProcessor.processedData.partsTree.find(
+                    part => part.code === partCode
+                );
+                
+                if (currentPartData) {
+                    updateArticleHeader();
+                    generateArticleContent();
+                    generateTableOfContents();
+                    loadRelatedArticles();
+                } else {
+                    showError(`Không tìm thấy linh kiện với mã: ${partCode}`);
+                }
+            } catch (error) {
+                console.error('Error loading article:', error);
+                showError('Lỗi khi tải bài viết');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Update article header
+        function updateArticleHeader() {
+            const headerDiv = document.getElementById('articleHeader');
+            
+            headerDiv.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                            ${currentPartData.code || 'N/A'}
+                        </span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            ${currentPartData.category || 'Chưa phân loại'}
+                        </span>
+                        <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-clock mr-1"></i>5 phút đọc
+                        </span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        Cập nhật: ${currentPartData.lastUpdated || '26/07/2022'}
+                    </div>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                    ${getArticleTitle()}
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    ${getArticleSubtitle()}
+                </p>
+                <div class="flex items-center space-x-6 mt-4 text-sm text-gray-500">
+                    <span><i class="fas fa-user mr-1"></i>Chuyên gia kỹ thuật</span>
+                    <span><i class="fas fa-eye mr-1"></i>1,234 lượt xem</span>
+                    <span><i class="fas fa-share-alt mr-1"></i>Chia sẻ</span>
+                </div>
+            `;
+        }
+
+        // Get article title
+        function getArticleTitle() {
+            const name = currentPartData.name || 'Linh kiện';
+            const category = currentPartData.category || '';
+            
+            if (name.includes('ボルト') || name.includes('bu lông')) {
+                return `${name}: Hướng dẫn Chuyên sâu về Ứng dụng và Lựa chọn`;
+            } else if (name.includes('抵抗') || name.includes('điện trở')) {
+                return `${name}: Phân tích Kỹ thuật và Ứng dụng trong Mạch điện tử`;
+            } else if (name.includes('ベアリング') || name.includes('vòng bi')) {
+                return `${name}: Tổng quan về Kỹ thuật và Bảo trì`;
+            } else {
+                return `${name}: Tổng quan Thông tin và Hướng dẫn Sử dụng`;
+            }
+        }
+
+        // Get article subtitle
+        function getArticleSubtitle() {
+            const name = currentPartData.name || '';
+            const category = currentPartData.category || '';
+            
+            if (name.includes('ボルト') || name.includes('bu lông')) {
+                return 'Khám phá chi tiết về các loại bu lông, tiêu chuẩn kỹ thuật, vật liệu và ứng dụng thực tế trong công nghiệp.';
+            } else if (name.includes('抵抗') || name.includes('điện trở')) {
+                return 'Phân tích sâu về đặc tính điện, công suất, dung sai và ứng dụng của điện trở trong các mạch điện tử hiện đại.';
+            } else if (name.includes('ベアリング') || name.includes('vòng bi')) {
+                return 'Tìm hiểu về cấu trúc, vật liệu, phương pháp lắp đặt và bảo trì vòng bi trong các hệ thống cơ khí.';
+            } else {
+                return `Thông tin chi tiết về ${name}, thuộc danh mục ${category}, bao gồm thông số kỹ thuật và ứng dụng thực tế.`;
+            }
+        }
+
+        // Generate article content
+        function generateArticleContent() {
+            const contentDiv = document.getElementById('articleContent');
+            const articleType = determineArticleType();
+            
+            let content = '';
+            
+            switch(articleType) {
+                case 'bolt':
+                    content = generateBoltArticle();
+                    break;
+                case 'resistor':
+                    content = generateResistorArticle();
+                    break;
+                case 'bearing':
+                    content = generateBearingArticle();
+                    break;
+                default:
+                    content = generateGenericArticle();
+            }
+            
+            contentDiv.innerHTML = content;
+        }
+
+        // Determine article type
+        function determineArticleType() {
+            const name = (currentPartData.name || '').toLowerCase();
+            
+            if (name.includes('ボルト') || name.includes('bu lông') || name.includes('ネジ') || name.includes('ốc vít')) {
+                return 'bolt';
+            } else if (name.includes('抵抗') || name.includes('điện trở')) {
+                return 'resistor';
+            } else if (name.includes('ベアリング') || name.includes('vòng bi')) {
+                return 'bearing';
+            }
+            return 'generic';
+        }
+
+        // Generate bolt article
+        function generateBoltArticle() {
+            return `
+                <h2 id="gioi-thieu-chung">Giới thiệu chung</h2>
+                <p>
+                    ${currentPartData.name || 'Bu lông'} là một trong những linh kiện cơ khí phổ biến và quan trọng nhất trong ngành công nghiệp hiện đại. 
+                    Với vai trò kết nối các chi tiết cơ khí, bu lông đảm bảo sự ổn định và an toàn cho các cấu trúc, máy móc và thiết bị.
+                </p>
+                <p>
+                    Trong bài viết này, chúng ta sẽ tìm hiểu chi tiết về ${currentPartData.name || 'bu lông'}, từ cấu trúc cơ bản, 
+                    vật liệu sản xuất, tiêu chuẩn kỹ thuật cho đến các ứng dụng thực tế và hướng dẫn lựa chọn phù hợp.
+                </p>
+
+                <h2 id="cau-truc-va-phan-loai">Cấu trúc và Phân loại</h2>
+                <p>
+                    Bu lông lục giác ${currentPartData.specification || ''} có cấu trúc bao gồm các phần chính sau:
+                </p>
+                <ul>
+                    <li><strong>Đầu bu lông:</strong> Lục giác, cho phép sử dụng cờ lê hoặc máy siết bu lông</li>
+                    <li><strong>Thân bu lông:</strong> Trụ trụ có ren bên ngoài</li>
+                    <li><strong>Đuôi bu lông:</strong> Có thể có ren đầy đủ hoặc ren một phần</li>
+                </ul>
+                
+                <div class="spec-highlight">
+                    <h4>Thông số kỹ thuật cơ bản:</h4>
+                    <ul>
+                        <li>Đường kính nominal: 6mm</li>
+                        <li>Chiều dài: 20mm</li>
+                        <li>Step ren: M6</li>
+                        <li>Vật liệu: Thép carbon hoặc thép không gỉ</li>
+                        <li>Lớp phủ: Kẽm nóng hoặc mạ kẽm điện</li>
+                    </ul>
+                </div>
+
+                <h2 id="vat-lieu-san-xuat">Vật liệu sản xuất</h2>
+                <p>
+                    Việc lựa chọn vật liệu cho bu lông ảnh hưởng trực tiếp đến độ bền và khả năng chịu tải của kết nối. 
+                    Các vật liệu phổ biến bao gồm:
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vật liệu</th>
+                            <th>Đặc tính</th>
+                            <th>Ứng dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Thép carbon (S45C)</td>
+                            <td>Cứng, bền, giá thành hợp lý</td>
+                            <td>Kết cấu chung, máy móc công nghiệp</td>
+                        </tr>
+                        <tr>
+                            <td>Thếp không gỉ (SUS304)</td>
+                            <td>Chống ăn mòn, vệ sinh</td>
+                            <td>Thực phẩm, y tế, môi trường ăn mòn</td>
+                        </tr>
+                        <tr>
+                            <td>Thép hợp kim (SCM435)</td>
+                            <td>Cường độ cao, chịu tải tốt</td>
+                            <td>Cơ khí chính xác, ô tô</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="tieu-chuan-ky-thuat">Tiêu chuẩn kỹ thuật</h2>
+                <p>
+                    Bu lông ${currentPartData.name || ''} phải tuân theo các tiêu chuẩn kỹ thuật quốc tế và Nhật Bản:
+                </p>
+                <ul>
+                    <li><strong>JIS B1181:</strong> Tiêu chuẩn Nhật Bản cho bu lông lục giác</li>
+                    <li><strong>ISO 4017:</strong> Tiêu chuẩn quốc tế tương đương</li>
+                    <li><strong>ANSI/ASME B18.2.1:</strong> Tiêu chuẩn Mỹ</li>
+                </ul>
+
+                <h2 id="ung-dung-thuc-te">Ứng dụng thực tế</h2>
+                <div class="application-card">
+                    <h4>Ứng dụng trong ngành cơ khí:</h4>
+                    <ul>
+                        <li>Kết nối khung máy và cơ cấu</li>
+                        <li>Lắp ráp thiết bị công nghiệp</li>
+                        <li>Cố định các bộ phận động cơ</li>
+                        <li>Hệ thống dẫn đường và kết cấu</li>
+                    </ul>
+                </div>
+                
+                <div class="application-card">
+                    <h4>Ứng dụng trong ngành xây dựng:</h4>
+                    <ul>
+                        <li>Kết cấu thép nhà xưởng</li>
+                        <li>Cầu và công trình hạ tầng</li>
+                        <li>Hệ thống giàn giáo và chống sập</li>
+                    </ul>
+                </div>
+
+                <h2 id="huong-dan-lua-chon">Hướng dẫn lựa chọn</h2>
+                <p>
+                    Khi lựa chọn bu lông cho ứng dụng cụ thể, cần xem xét các yếu tố sau:
+                </p>
+                <ol>
+                    <li><strong>Tải trọng:</strong> Xác định lực kéo và lực cắt cần chịu</li>
+                    <li><strong>Môi trường:</strong> Nhiệt độ, độ ẩm, môi trường ăn mòn</li>
+                    <li><strong>Tần suất tháo lắp:</strong> Chọn vật liệu phù hợp với yêu cầu bảo trì</li>
+                    <li><strong>Tiêu chuẩn:</strong> Tuân theo tiêu chuẩn ngành hoặc yêu cầu dự án</li>
+                </ol>
+
+                <h2 id="bao-tri-va-kiem-tra">Bảo trì và Kiểm tra</h2>
+                <p>
+                    Để đảm bảo an toàn và độ bền của kết nối bu lông, cần thực hiện các công việc bảo trì định kỳ:
+                </p>
+                <ul>
+                    <li>Kiểm tra độ siết theo lịch định kỳ</li>
+                    <li>Vệ sinh bề mặt bu lông và đai ốc</li>
+                    <li>Thay thế bu lông bị ăn mòn hoặc biến dạng</li>
+                    <li>Sử dụng momen siết theo khuyến nghị của nhà sản xuất</li>
+                </ul>
+
+                <blockquote>
+                    Lưu ý quan trọng: Luôn tuân thủ momen siết đúng theo tiêu chuẩn để tránh hỏng hóc ren hoặc làm giảm độ bền của kết nối.
+                </blockquote>
+
+                <h2 id="ket-luan">Kết luận</h2>
+                <p>
+                    ${currentPartData.name || 'Bu lông'} là linh kiện không thể thiếu trong ngành cơ khí và công nghiệp. 
+                    Việc hiểu rõ về cấu trúc, vật liệu và tiêu chuẩn kỹ thuật sẽ giúp các kỹ sư và nhà thiết kế lựa chọn 
+                    và sử dụng bu lông một cách hiệu quả, an toàn và kinh tế.
+                </p>
+                <p>
+                    Với thông số kỹ thuật ${currentPartData.specification || ''}, bu lông này phù hợp cho các ứng dụng 
+                    kết nối trung bình, đòi hỏi độ tin cậy và tuổi thọ cao trong môi trường công nghiệp thông thường.
+                </p>
+            `;
+        }
+
+        // Generate resistor article
+        function generateResistorArticle() {
+            return `
+                <h2 id="gioi-thieu-chung">Giới thiệu chung</h2>
+                <p>
+                    ${currentPartData.name || 'Điện trở'} là một trong những linh kiện điện tử cơ bản và quan trọng nhất trong các mạch điện tử. 
+                    Với vai trò giới hạn dòng điện, phân chia điện áp và tạo ra nhiệt, điện trở là thành phần không thể thiếu trong 
+                    hầu hết các thiết bị điện tử hiện đại.
+                </p>
+                <p>
+                    Bài viết này sẽ phân tích sâu về ${currentPartData.name || 'điện trở'}, từ nguyên lý hoạt động, 
+                    các thông số kỹ thuật quan trọng cho đến ứng dụng thực tế trong thiết kế mạch điện tử.
+                </p>
+
+                <h2 id="nguyen-ly-hoat-dong">Nguyên lý hoạt động</h2>
+                <p>
+                    Điện trở hoạt động dựa trên định luật Ohm, mối quan hệ giữa điện áp (V), dòng điện (I) và điện trở (R):
+                </p>
+                <div style="text-align: center; margin: 2rem 0; padding: 1rem; background-color: #f3f4f6; border-radius: 0.5rem;">
+                    <strong style="font-size: 1.2rem;">V = I × R</strong>
+                </div>
+                <p>
+                    Trong đó:
+                </p>
+                <ul>
+                    <li>V là hiệu điện áp trên điện trở (Volts)</li>
+                    <li>I là dòng điện qua điện trở (Amperes)</li>
+                    <li>R là giá trị điện trở (Ohms)</li>
+                </ul>
+
+                <h2 id="thong-so-ky-thuat">Thông số kỹ thuật</h2>
+                <div class="spec-highlight">
+                    <h4>Thông số cơ bản của ${currentPartData.name || 'điện trở'}:</h4>
+                    <ul>
+                        <li>Điện trở danh định: ${currentPartData.specification || '10kΩ'}</li>
+                        <li>Công suất: 1/4W (0.25W)</li>
+                        <li>Dung sai: ±5%</li>
+                        <li>Hệ số nhiệt độ: ±100ppm/°C</li>
+                        <li>Kích thước: ${currentPartData.specification || '0603'}</li>
+                        <li>Vật liệu: Lớp phim carbon</li>
+                    </ul>
+                </div>
+
+                <h2 id="phan-loai-dien-tro">Phân loại điện trở</h2>
+                <p>
+                    Điện resist được phân loại dựa trên vật liệu và cấu trúc:
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <h3>Đặc tính</h3>
+                            <th>Ứng dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Điện trở carbon</td>
+                            <td>Giá rẻ, ổn định trung bình</td>
+                            <td>Mạch công suất thấp</td>
+                        </tr>
+                        <tr>
+                            <td>Điện trở phim kim loại</td>
+                            <td>Ổn định cao, nhiễu thấp</td>
+                            <td>Mạch chính xác, đo lường</td>
+                        </tr>
+                        <tr>
+                            <td>Điện trở dây</td>
+                            <td>Công suất cao, chính xác</td>
+                            <td>Mạch công suất, nguồn</td>
+                        </tr>
+                        <tr>
+                            <td>Điện trở SMD</td>
+                            <td>Kích thước nhỏ, tự động hóa</td>
+                            <td>Mạch tích hợp, SMT</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="mau-ma-dien-tro">Mã màu điện trở</h2>
+                <p>
+                    Điện trở through-hole sử dụng hệ thống mã màu để biểu diễn giá trị điện trở và dung sai:
+                </p>
+                <ol>
+                    <li>Vòng 1: Chữ số đầu tiên</li>
+                    <li>Vòng 2: Chữ số thứ hai</li>
+                    <li>Vòng 3: Số nhân (số không)</li>
+                    <li>Vòng 4: Dung sai</li>
+                </ol>
+
+                <h2 id="ung-dung-trong-thiet-ke-mach">Ứng dụng trong thiết kế mạch</h2>
+                <div class="application-card">
+                    <h4>Ứng dụng cơ bản:</h4>
+                    <ul>
+                        <li><strong>Giới hạn dòng điện:</strong> Bảo vệ LED, transistor</li>
+                        <li><strong>Phân chia điện áp:</strong> Tạo mức điện áp tham chiếu</li>
+                        <li><strong>Pull-up/Pull-down:</strong> Định trạng thái logic</li>
+                        <li><strong>Lọc:</strong> Kết hợp với tụ tạo RC filter</li>
+                    </ul>
+                </div>
+
+                <div class="application-card">
+                    <h4>Ứng dụng nâng cao:</h4>
+                    <ul>
+                        <li><strong>Cảm biến:</strong> LDR, thermistor</li>
+                        <li><strong>Timing:</strong> Mạch RC tạo thời gian</li>
+                        <li><strong>Nạp:</strong> Nạp tụ trong mạch nguồn</li>
+                        <li><strong>Khuếch đại:</strong> Đặt phản hồi Op-Amp</li>
+                    </ul>
+                </div>
+
+                <h2 id="thiet-ke-va-lua-chon">Thiết kế và Lựa chọn</h2>
+                <p>
+                    Khi lựa chọn điện trở cho thiết kế mạch, cần xem xét các yếu tố:
+                </p>
+                <ol>
+                    <li><strong>Giá trị điện trở:</strong> Theo yêu cầu mạch</li>
+                    <li><strong>Công suất:</strong> P = I²R, chọn công suất cao hơn thực tế 2-3 lần</li>
+                    <li><strong>Dung sai:</strong> Tùy thuộc vào độ chính xác yêu cầu</li>
+                    <li><strong>Kích thước:</strong> Tùy thuộc vào loại mạch (through-hole/SMD)</li>
+                    <li><strong>Nhiệt độ:</strong> Xem xét hệ số nhiệt độ cho mạch chính xác</li>
+                </ol>
+
+                <h2 id="loi-thuong-gap-va-khac-phuc">Lỗi thường gặp và Khắc phục</h2>
+                <p>
+                    Các vấn đề thường gặp khi sử dụng điện trở:
+                </p>
+                <ul>
+                    <li><strong>Nhiệt độ quá cao:</strong> Giảm công suất hoặc tăng kích thước</li>
+                    <li><strong>Nhiễu:</strong> Sử dụng điện trở phim kim loại</li>
+                    <li><strong>Ổn định kém:</strong> Chọn điện trở có dung sai thấp hơn</li>
+                    <li><strong>Hỏng do quá dòng:</strong> Kiểm tra công suất và thêm bảo vệ</li>
+                </ul>
+
+                <h2 id="ket-luan">Kết luận</h2>
+                <p>
+                    ${currentPartData.name || 'Điện trở'} là linh kiện nền tảng trong điện tử hiện đại. 
+                    Việc hiểu rõ các thông số kỹ thuật và ứng dụng sẽ giúp các kỹ sư thiết kế mạch điện tử 
+                    một cách hiệu quả và đáng tin cậy.
+                </p>
+                <p>
+                    Với giá trị ${currentPartData.specification || '10kΩ'} và kích thước ${currentPartData.specification || '0603'}, 
+                    điện trở này phù hợp cho các mạch tích hợp hiện đại, nơi không gian và độ chính xác là yếu tố quan trọng.
+                </p>
+            `;
+        }
+
+        // Generate bearing article
+        function generateBearingArticle() {
+            return `
+                <h2 id="gioi-thieu-chung">Giới thiệu chung</h2>
+                <p>
+                    ${currentPartData.name || 'Vòng bi'} là một trong những linh kiện cơ khí quan trọng nhất trong các hệ thống chuyển động. 
+                    Với vai trò giảm ma sát giữa các bộ phận chuyển động quay và trượt, vòng bi giúp tăng hiệu suất, 
+                    giảm hao mòn và kéo dài tuổi thọ của máy móc.
+                </p>
+                <p>
+                    Bài viết này sẽ phân tích chi tiết về ${currentPartData.name || 'vòng bi'}, từ cấu trúc, 
+                    nguyên lý hoạt động, vật liệu sản xuất cho đến các ứng dụng thực tế và hướng dẫn bảo trì.
+                </p>
+
+                <h2 id="cau-truc-va-nguyen-ly">Cấu trúc và Nguyên lý hoạt động</h2>
+                <p>
+                    Vòng bi cơ bản bao gồm các thành phần chính:
+                </p>
+                <ul>
+                    <li><strong>Vòng ngoài:</strong> Vỏ bên ngoài của vòng bi</li>
+                    <li><strong>Vòng trong:</strong> Vỏ bên trong, gắn với trục</li>
+                    <li><strong>Bi lăn:</strong> Các quả bi hoặc con lăn</li>
+                    <li><strong>Khay giữ bi:</strong> Giữ khoảng cách đều giữa các bi</li>
+                </ul>
+                
+                <p>
+                    Nguyên lý hoạt động của vòng bi dựa trên sự chuyển động lăn của các bi lăn giữa hai vòng, 
+                    chuyển đổi ma sát trượt thành ma sát lăn, giảm đáng kể lực cản.
+                </p>
+
+                <h2 id="phan-loai-vong-bi">Phân loại vòng bi</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loại vòng bi</th>
+                            <th>Đặc tính</th>
+                            <th>Ứng dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Vòng bi bi sâu</td>
+                            <td>Chịu tải hướng tâm và hướng trục</td>
+                            <td>Động cơ, quạt, bơm</td>
+                        </tr>
+                        <tr>
+                            <td>Vòng bi con lăn</td>
+                            <td>Chịu tải hướng tâm lớn</td>
+                            <td>Bánh răng, hộp số</td>
+                        </tr>
+                        <tr>
+                            <td>Vòng bi tiếp xúc góc</td>
+                            <td>Chịu tải hướng trục tốt</td>
+                            <td>Spindle, máy công cụ</td>
+                        </tr>
+                        <tr>
+                            <td>Vòng bi trượt</td>
+                            <td>Chiều cao nhỏ, tải nhẹ</td>
+                            <td>Ổ trục nhỏ, đồng hồ</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="vat-lieu-san-xuat">Vật liệu sản xuất</h2>
+                <div class="spec-highlight">
+                    <h4>Vật liệu phổ biến trong vòng bi:</h4>
+                    <ul>
+                        <li><strong>Thép vòng bi cao carbon (SAE 52100):</strong> Cứng, bền, chịu mài mòn</li>
+                        <li><strong>Thép không gỉ (AISI 440C):</strong> Chống ăn mòn, vệ sinh</li>
+                        <li><strong>Gốm kỹ thuật (Si₃N₄):</strong> Nhẹ, chịu nhiệt độ cao</li>
+                        <li><strong>Polymer:</strong> Tiếng ồn thấp, không cần bôi trơn</li>
+                    </ul>
+                </div>
+
+                <h2 id="thong-so-ky-thuat">Thông số kỹ thuật</h2>
+                <p>
+                    Các thông số quan trọng khi lựa chọn vòng bi:
+                </p>
+                <ol>
+                    <li><strong>Kích thước:</strong> Đường kính trong, ngoài, chiều rộng</li>
+                    <li><strong>Tải động tĩnh:</strong> Khả năng chịu tải</li>
+                    <li><strong>Tốc độ giới hạn:</strong> Vòng/phút tối đa</li>
+                    <li><strong>Độ chính xác:</strong> Lớp chính xác ABEC</li>
+                    <li><strong>Dựng khe:</strong> Loại dựng khe (C3, C4)</li>
+                </ol>
+
+                <h2 id="boi-tron-va-bao-tri">Bôi trơn và Bảo trì</h2>
+                <p>
+                    Bôi trơn là yếu tố quan trọng ảnh hưởng đến tuổi thọ và hiệu suất của vòng bi:
+                </p>
+                <ul>
+                    <li><strong>Dầu bôi trơn:</strong> Tốc độ cao, nhiệt độ cao</li>
+                    <li><strong>Mỡ bôi trơn:</strong> Tốc độ thấp, bảo trì dễ dàng</li>
+                    <li><strong>Bôi trơn khô:</strong> Môi trường sạch, nhiệt độ thấp</li>
+                </ul>
+
+                <h2 id="ung-dung-thuc-te">Ứng dụng thực tế</h2>
+                <div class="application-card">
+                    <h4>Ngành công nghiệp ô tô:</h4>
+                    <ul>
+                        <li>Bánh xe, hộp số</li>
+                        <li>Động cơ, hệ thống lái</li>
+                        <li>Quạt làm mát, máy phát điện</li>
+                    </ul>
+                </div>
+                
+                <div class="application-card">
+                    <h4>Ngành công nghiệp nặng:</h4>
+                    <ul>
+                        <li>Turbine, máy nén</li>
+                        <li>Hệ thống truyền dẫn</li>
+                        <li>Máy công cụ, robot</li>
+                    </ul>
+                </div>
+
+                <h2 id="loi-thuong-gap">Lỗi thường gặp và Khắc phục</h2>
+                <p>
+                    Các vấn đề thường gặp với vòng bi:
+                </p>
+                <ul>
+                    <li><strong>Nhiệt độ quá cao:</strong> Kiểm tra bôi trơn, tải trọng</li>
+                    <li><strong>Tiếng ồn lạ:</strong> Kiểm tra hỏng, lắp đặt</li>
+                    <li><strong>Rung động:</strong> Cân bằng lại, kiểm tra lắp đặt</li>
+                    <li><strong>Mòn nhanh:</strong> Kiểm tra vật liệu, môi trường</li>
+                </ul>
+
+                <h2 id="huong-dan-lap-dat">Hướng dẫn lắp đặt</h2>
+                <ol>
+                    <li>Kiểm tra sạch sẽ bề mặt lắp đặt</li>
+                    <li>Sử dụng công cụ phù hợp, không va đập trực tiếp</li>
+                    <li>Lắp đặt đúng chiều, áp lực đồng đều</li>
+                    <li>Kiểm tra khe hở sau khi lắp đặt</li>
+                    <li>Bôi trơn đúng loại và lượng</li>
+                </ol>
+
+                <h2 id="ket-luan">Kết luận</h2>
+                <p>
+                    ${currentPartData.name || 'Vòng bi'} là linh kiện không thể thiếu trong các hệ thống cơ khí hiện đại. 
+                    Việc lựa chọn, lắp đặt và bảo trì đúng cách sẽ đảm bảo hiệu suất hoạt động và tuổi thọ của máy móc.
+                </p>
+                <p>
+                    Với các thông số kỹ thuật ${currentPartData.specification || ''}, vòng bi này phù hợp cho các ứng dụng 
+                    công nghiệp đòi hỏi độ tin cậy cao và hiệu suất ổn định.
+                </p>
+            `;
+        }
+
+        // Generate generic article
+        function generateGenericArticle() {
+            return `
+                <h2 id="gioi-thieu-chung">Giới thiệu chung</h2>
+                <p>
+                    ${currentPartData.name || 'Linh kiện'} là một phần quan trọng trong hệ thống phân loại linh kiện của chúng ta. 
+                    Thuộc danh mục ${currentPartData.category || 'Chưa phân loại'}, linh kiện này đóng vai trò 
+                    ${getComponentRole()} trong các ứng dụng công nghiệp.
+                </p>
+                <p>
+                    Bài viết này sẽ cung cấp thông tin chi tiết về ${currentPartData.name || 'linh kiện'}, 
+                    bao gồm đặc tính kỹ thuật, ứng dụng và hướng dẫn sử dụng.
+                </p>
+
+                <h2 id="dac-tinh-ky-thuat">Đặc tính kỹ thuật</h2>
+                <div class="spec-highlight">
+                    <h4>Thông số cơ bản:</h4>
+                    <ul>
+                        <li>Mã linh kiện: ${currentPartData.code || 'N/A'}</li>
+                        <li>Tên linh kiện: ${currentPartData.name || 'N/A'}</li>
+                        <li>Phân loại: ${currentPartData.category || 'N/A'}</li>
+                        <li>Phân loại con: ${currentPartData.subcategory || 'N/A'}</li>
+                        <li>Thông số kỹ thuật: ${currentPartData.specification || 'N/A'}</li>
+                        <li>Cập nhật lần cuối: ${currentPartData.lastUpdated || 'N/A'}</li>
+                    </ul>
+                </div>
+
+                <h2 id="ung-dung">Ứng dụng</h2>
+                <p>
+                    ${currentPartData.name || 'Linh kiện'} được ứng dụng rộng rãi trong các lĩnh vực:
+                </p>
+                <ul>
+                    <li>Ngành công nghiệp sản xuất</li>
+                    <li>Hệ thống cơ khí chính xác</li>
+                    <li>Thiết bị điện tử</li>
+                    <li>Cơ sở hạ tầng công nghiệp</li>
+                </ul>
+
+                <h2 id="huong-dan-su-dung">Hướng dẫn sử dụng</h2>
+                <p>
+                    Để đảm bảo hiệu suất và an toàn khi sử dụng ${currentPartData.name || 'linh kiện'}, cần tuân thủ:
+                </p>
+                <ol>
+                    <li>Kiểm tra thông số kỹ thuật trước khi lắp đặt</li>
+                    <li>Sử dụng đúng theo tiêu chuẩn nhà sản xuất</li>
+                    <li>Thực hiện bảo trì định kỳ</li>
+                    <li>Thay thế khi có dấu hiệu hao mòn</li>
+                </ol>
+
+                <h2 id="bao-tri">Bảo trì</h2>
+                <p>
+                    Các hoạt động bảo trì định kỳ giúp kéo dài tuổi thọ của linh kiện:
+                </p>
+                <ul>
+                    <li>Kiểm tra visual hàng tháng</li>
+                    <li>Vệ sinh bề mặt định kỳ</li>
+                    <li>Kiểm tra các thông số hoạt động</li>
+                    <li>Ghi chép lịch sử bảo trì</li>
+                </ul>
+
+                <h2 id="ket-luan">Kết luận</h2>
+                <p>
+                    ${currentPartData.name || 'Linh kiện'} là một thành phần quan trọng trong hệ thống phân loại của chúng ta. 
+                    Việc hiểu rõ và sử dụng đúng cách sẽ giúp tối ưu hóa hiệu suất và độ tin cậy của hệ thống.
+                </p>
+            `;
+        }
+
+        // Get component role
+        function getComponentRole() {
+            const name = (currentPartData.name || '').toLowerCase();
+            const category = (currentPartData.category || '').toLowerCase();
+            
+            if (name.includes('ボルト') || name.includes('bu lông')) {
+                return 'kết nối và cố định các chi tiết cơ khí';
+            } else if (name.includes('抵抗') || name.includes('điện trở')) {
+                return 'giới hạn dòng điện và điều khiển tín hiệu trong mạch điện tử';
+            } else if (name.includes('ベアリング') || name.includes('vòng bi')) {
+                return 'hỗ trợ chuyển động quay và giảm ma sát';
+            } else if (category.includes('電子') || category.includes('điện tử')) {
+                return 'xử lý tín hiệu và điều khiển trong mạch điện tử';
+            } else if (category.includes('機械') || category.includes('cơ khí')) {
+                return 'truyền động và kết cấu trong hệ thống cơ khí';
+            }
+            return 'hỗ trợ hoạt động của hệ thống';
+        }
+
+        // Generate table of contents
+        function generateTableOfContents() {
+            const tocList = document.getElementById('tocList');
+            const headings = document.querySelectorAll('#articleContent h2, #articleContent h3');
+            
+            let tocHTML = '';
+            headings.forEach((heading, index) => {
+                const id = heading.id || `heading-${index}`;
+                heading.id = id;
+                
+                const level = heading.tagName.toLowerCase() === 'h2' ? 'ml-0' : 'ml-4';
+                tocHTML += `
+                    <li class="${level}">
+                        <a href="#${id}">${heading.textContent}</a>
+                    </li>
+                `;
+            });
+            
+            tocList.innerHTML = tocHTML;
+        }
+
+        // Load related articles
+        function loadRelatedArticles() {
+            const relatedDiv = document.getElementById('relatedArticles');
+            const relatedParts = getRelatedParts();
+            
+            const articlesHTML = relatedParts.map(part => `
+                <div class="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer" onclick="openArticle('${part.code}')">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                            ${part.code}
+                        </span>
+                        <span class="text-xs text-gray-500">${part.category}</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-1 line-clamp-2">
+                        ${part.name}: Hướng dẫn Chi tiết
+                    </h4>
+                    <p class="text-sm text-gray-600 line-clamp-2">
+                        Tìm hiểu về đặc tính kỹ thuật và ứng dụng của ${part.name}
+                    </p>
+                </div>
+            `).join('');
+            
+            relatedDiv.innerHTML = articlesHTML;
+        }
+
+        function getRelatedParts() {
+            if (!window.dataProcessor || !window.dataProcessor.processedData.partsTree) {
+                return [];
+            }
+            
+            return window.dataProcessor.processedData.partsTree
+                .filter(part => part.category === currentPartData.category && part.code !== currentPartCode)
+                .slice(0, 3);
+        }
+
+        function openArticle(partCode) {
+            window.open(`product-article.html?code=${partCode}`, '_blank');
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function printArticle() {
+            window.print();
+        }
+
+        function showError(message) {
+            const contentDiv = document.getElementById('articleContent');
+            contentDiv.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Lỗi</h3>
+                    <p class="text-gray-600">${message}</p>
+                    <button onclick="goBack()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Quay lại
+                    </button>
+                </div>
+            `;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

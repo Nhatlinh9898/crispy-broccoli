@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin Nhà sản xuất - Hệ thống Phân loại</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .manufacturer-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .manufacturer-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+        
+        .certification-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        
+        .contact-method {
+            transition: all 0.2s ease;
+        }
+        
+        .contact-method:hover {
+            background-color: #f3f4f6;
+            transform: translateX(4px);
+        }
+        
+        .product-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .location-map {
+            height: 300px;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background-color: #3b82f6;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 0.375rem;
+            top: 1.25rem;
+            width: 0.0625rem;
+            height: calc(100% - 0.5rem);
+            background-color: #e5e7eb;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-industry text-blue-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Thông tin Nhà sản xuất</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-arrow-left mr-2"></i>Quay lại
+                    </button>
+                    <button onclick="exportManufacturerInfo()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                        <i class="fas fa-download mr-2"></i>Xuất thông tin
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 flex flex-col items-center">
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-gray-700">Đang tải thông tin nhà sản xuất...</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Part Info Header -->
+        <div id="partInfoHeader" class="bg-white rounded-lg p-6 shadow-lg mb-6">
+            <!-- Content will be dynamically loaded -->
+        </div>
+
+        <!-- Manufacturers Grid -->
+        <div class="bg-white rounded-lg p-6 shadow-lg mb-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-factory text-blue-500 mr-2"></i>Nhà sản xuất uy tín
+                </h2>
+                <div class="flex space-x-2">
+                    <select onchange="filterManufacturers(this.value)" class="border rounded px-3 py-2 text-sm">
+                        <option value="all">Tất cả quốc gia</option>
+                        <option value="japan">Nhật Bản</option>
+                        <option value="china">Trung Quốc</option>
+                        <option value="germany">Đức</option>
+                        <option value="usa">Mỹ</option>
+                        <option value="korea">Hàn Quốc</option>
+                    </select>
+                    <select onchange="sortManufacturers(this.value)" class="border rounded px-3 py-2 text-sm">
+                        <option value="reputation">Uy tín</option>
+                        <option value="experience">Kinh nghiệm</option>
+                        <option value="certification">Chứng nhận</option>
+                        <option value="name">Tên A-Z</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="manufacturersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Manufacturer cards will be dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Detailed Manufacturer Info -->
+        <div id="manufacturerDetail" class="hidden bg-white rounded-lg p-6 shadow-lg mb-6">
+            <!-- Detailed manufacturer info will be loaded here -->
+        </div>
+
+        <!-- Related Products -->
+        <div class="bg-white rounded-lg p-6 shadow-lg">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">
+                <i class="fas fa-link mr-2"></i>Sản phẩm liên quan từ các nhà sản xuất
+            </h3>
+            <div id="relatedProducts" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Related products will be dynamically loaded -->
+            </div>
+        </div>
+    </main>
+
+    <script src="data-processor.js"></script>
+    <script>
+        // Global variables
+        let currentPartCode = '';
+        let currentPartData = null;
+        let manufacturers = [];
+        let filteredManufacturers = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get part code from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            currentPartCode = urlParams.get('code') || '';
+            
+            if (currentPartCode) {
+                loadManufacturerInfo(currentPartCode);
+            } else {
+                showError('Không tìm thấy mã linh kiện');
+            }
+        });
+
+        // Load manufacturer information
+        async function loadManufacturerInfo(partCode) {
+            showLoading();
+            
+            try {
+                // Ensure data is processed
+                if (!window.dataProcessor || !window.dataProcessor.processedData.partsTree.length) {
+                    await window.dataProcessor.processAllData();
+                }
+                
+                // Find part data
+                currentPartData = window.dataProcessor.processedData.partsTree.find(
+                    part => part.code === partCode
+                );
+                
+                if (currentPartData) {
+                    updatePartInfoHeader();
+                    loadManufacturers();
+                    loadRelatedProducts();
+                } else {
+                    showError(`Không tìm thấy linh kiện với mã: ${partCode}`);
+                }
+            } catch (error) {
+                console.error('Error loading manufacturer info:', error);
+                showError('Lỗi khi tải thông tin nhà sản xuất');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Update part info header
+        function updatePartInfoHeader() {
+            const headerDiv = document.getElementById('partInfoHeader');
+            
+            headerDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center space-x-4 mb-2">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                ${currentPartData.code || 'N/A'}
+                            </span>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                ${currentPartData.category || 'Chưa phân loại'}
+                            </span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                            ${currentPartData.name || 'Tên không xác định'}
+                        </h2>
+                        <p class="text-gray-600">
+                            Tìm nhà sản xuất uy tín cho linh kiện này với thông số kỹ thuật: ${currentPartData.specification || 'N/A'}
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-500 mb-1">Cập nhật lần cuối</div>
+                        <div class="text-lg font-semibold text-gray-700">
+                            ${currentPartData.lastUpdated || '26/07/2022'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load manufacturers data
+        function loadManufacturers() {
+            manufacturers = getManufacturersForPart(currentPartData);
+            filteredManufacturers = [...manufacturers];
+            displayManufacturers();
+        }
+
+        // Get manufacturers for specific part
+        function getManufacturersForPart(partData) {
+            const partType = determinePartType(partData);
+            
+            const allManufacturers = {
+                bolt: [
+                    {
+                        id: 'm1',
+                        name: 'Nitto Seiko Co., Ltd.',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.8,
+                        experience: 80,
+                        description: 'Chuyên sản xuất bu lông, ốc vít và fastener chất lượng cao cho ngành công nghiệp ô tô và cơ khí.',
+                        specialties: ['Bu lông lục giác', 'Ốc vít', 'Fastener chuyên dụng'],
+                        certifications: ['ISO 9001', 'IATF 16949', 'JIS B1181'],
+                        contact: {
+                            website: 'https://www.nitto-seiko.co.jp',
+                            email: 'info@nitto-seiko.co.jp',
+                            phone: '+81-3-3255-5401',
+                            address: '2-14-1, Nihonbashi, Chuo-ku, Tokyo 103-0023, Japan'
+                        },
+                        products: ['Bu lông M6-M24', 'Ốc vít chuyên dụng', 'Fastener thép không gỉ'],
+                        established: 1942,
+                        employees: 850,
+                        revenue: '$120M'
+                    },
+                    {
+                        id: 'm2',
+                        name: 'Boltun Corporation',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.6,
+                        experience: 75,
+                        description: 'Nhà sản xuất fastener hàng đầu Nhật Bản với công nghệ tiên tiến và chất lượng vượt trội.',
+                        specialties: ['Bu lông cường độ cao', 'Ốc vít tiểu hóa', 'Fastener đặc biệt'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'JIS'],
+                        contact: {
+                            website: 'https://www.boltun.co.jp',
+                            email: 'sales@boltun.co.jp',
+                            phone: '+81-3-3663-7111',
+                            address: '3-8-2, Nihonbashi, Chuo-ku, Tokyo 103-0023, Japan'
+                        },
+                        products: ['Bu lông cường độ cao', 'Ốc vít tự khoan', 'Fastener hợp kim'],
+                        established: 1947,
+                        employees: 620,
+                        revenue: '$85M'
+                    },
+                    {
+                        id: 'm3',
+                        name: 'Shandong High-Tech Fastener Co., Ltd.',
+                        country: 'china',
+                        countryName: 'Trung Quốc',
+                        logo: '🇨🇳',
+                        reputation: 4.3,
+                        experience: 25,
+                        description: 'Nhà sản xuất fastener lớn tại Trung Quốc với giá cạnh tranh và chất lượng ổn định.',
+                        specialties: ['Bu lông tiêu chuẩn', 'Ốc vít xây dựng', 'Fastener công nghiệp'],
+                        certifications: ['ISO 9001', 'GB/T 5782', 'CE'],
+                        contact: {
+                            website: 'https://www.hightechfastener.com',
+                            email: 'export@hightechfastener.com',
+                            phone: '+86-531-8586-8888',
+                            address: 'High-tech Zone, Jinan, Shandong Province, China'
+                        },
+                        products: ['Bu lông carbon', 'Ốc vít mạ kẽm', 'Fastener thép'],
+                        established: 1998,
+                        employees: 450,
+                        revenue: '$65M'
+                    }
+                ],
+                resistor: [
+                    {
+                        id: 'r1',
+                        name: 'Rohm Semiconductor',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.9,
+                        experience: 65,
+                        description: 'Nhà sản xuất linh kiện điện tử hàng đầu thế giới, chuyên về điện trở và bán dẫn.',
+                        specialties: ['Điện resist chip', 'Điện trở SMD', 'Linh kiện điện tử'],
+                        certifications: ['ISO 9001', 'IATF 16949', 'AEC-Q200'],
+                        contact: {
+                            website: 'https://www.rohm.com',
+                            email: 'support@rohm.com',
+                            phone: '+81-75-322-6111',
+                            address: '21, Sango Mizozaki, Ukyo-ku, Kyoto 615-8515, Japan'
+                        },
+                        products: ['Điện resist chip', 'Điện trở SMD', 'Linh kiện automotive'],
+                        established: 1958,
+                        employees: 12000,
+                        revenue: '$3.8B'
+                    },
+                    {
+                        id: 'r2',
+                        name: 'Vishay Intertechnology',
+                        country: 'usa',
+                        countryName: 'Mỹ',
+                        logo: '🇺🇸',
+                        reputation: 4.7,
+                        experience: 60,
+                        description: 'Nhà sản xuất linh kiện điện tử đa dạng với chất lượng cao và độ tin cậy vượt trội.',
+                        specialties: ['Điện resist film', 'Điện resist power', 'Linh kiện công suất'],
+                        certifications: ['ISO 9001', 'IATF 16949', 'MIL-PRF'],
+                        contact: {
+                            website: 'https://www.vishay.com',
+                            email: 'customerservice@vishay.com',
+                            phone: '+1-610-644-1300',
+                            address: '63 Lancaster Avenue, Malvern, PA 19355, USA'
+                        },
+                        products: ['Điện resist film', 'Điện resist wirewound', 'Linh kiện military'],
+                        established: 1962,
+                        employees: 24500,
+                        revenue: '$3.1B'
+                    },
+                    {
+                        id: 'r3',
+                        name: 'Yageo Corporation',
+                        country: 'taiwan',
+                        countryName: 'Đài Loan',
+                        logo: '🇹🇼',
+                        reputation: 4.5,
+                        experience: 45,
+                        description: 'Nhà sản xuất linh kiện thụ động lớn nhất thế giới với giá cả cạnh tranh.',
+                        specialties: ['Điện resist chip', 'Tụ điện', 'Linh kiện thụ động'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'AEC-Q200'],
+                        contact: {
+                            website: 'https://www.yageo.com',
+                            email: 'sales@yageo.com',
+                            phone: '+886-2-2268-8222',
+                            address: 'No. 3, Li-Hsin Rd. 6, Hsin-Chu, Taiwan'
+                        },
+                        products: ['Điện resist 0402-2512', 'Tụ điện MLCC', 'Linh kiện RF'],
+                        established: 1977,
+                        employees: 8500,
+                        revenue: '$2.2B'
+                    }
+                ],
+                bearing: [
+                    {
+                        id: 'b1',
+                        name: 'NSK Ltd.',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.9,
+                        experience: 100,
+                        description: 'Nhà sản xuất vòng bi hàng đầu thế giới với công nghệ tiên tiến và chất lượng vượt trội.',
+                        specialties: ['Vòng bi bi sâu', 'Vòng bi con lăn', 'Vòng bi công nghiệp'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'IATF 16949'],
+                        contact: {
+                            website: 'https://www.nsk.com',
+                            email: 'info@nsk.com',
+                            phone: '+81-3-5842-5111',
+                            address: '6-3, Oshiage, Sumida-ku, Tokyo 131-8530, Japan'
+                        },
+                        products: ['Vòng bi precision', 'Vòng bi automotive', 'Vòng bi công nghiệp'],
+                        established: 1916,
+                        employees: 32400,
+                        revenue: '$9.8B'
+                    },
+                    {
+                        id: 'b2',
+                        name: 'NTN Corporation',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.8,
+                        experience: 100,
+                        description: 'Chuyên sản xuất vòng bi và các sản phẩm cơ khí chính xác cho ngành công nghiệp.',
+                        specialties: ['Vòng bi bi sâu', 'Vòng bi tiếp xúc góc', 'Hộp số'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'IATF 16949'],
+                        contact: {
+                            website: 'https://www.ntn.co.jp',
+                            email: 'info@ntn.co.jp',
+                            phone: '+81-52-561-9111',
+                            address: '3-17, Echizen-cho, Nishi-ku, Nagoya 451-8510, Japan'
+                        },
+                        products: ['Vòng bi precision', 'Hộp số công nghiệp', 'Cơ cấu chính xác'],
+                        established: 1918,
+                        employees: 18500,
+                        revenue: '$6.2B'
+                    },
+                    {
+                        id: 'b3',
+                        name: 'Schaeffler AG',
+                        country: 'germany',
+                        countryName: 'Đức',
+                        logo: '🇩🇪',
+                        reputation: 4.8,
+                        experience: 75,
+                        description: 'Nhà sản xuất vòng bi và cơ cấu chính xác hàng đầu châu Âu.',
+                        specialties: ['Vòng bi INA', 'Vòng bi FAG', 'Cơ cấu LuK'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'IATF 16949'],
+                        contact: {
+                            website: 'https://www.schaeffler.com',
+                            email: 'info@schaeffler.com',
+                            phone: '+49-911-95-0',
+                            address: 'Industriestraße 1-3, 91074 Herzogenaurach, Germany'
+                        },
+                        products: ['Vòng bi INA', 'Vòng bi FAG', 'Hệ thống truyền động'],
+                        established: 1946,
+                        employees: 84000,
+                        revenue: '$15.4B'
+                    }
+                ],
+                generic: [
+                    {
+                        id: 'g1',
+                        name: 'Mitsubishi Materials Corporation',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.7,
+                        experience: 70,
+                        description: 'Nhà sản xuất vật liệu và linh kiện công nghiệp đa dạng.',
+                        specialties: ['Linh kiện cơ khí', 'Vật liệu hợp kim', 'Công cụ cắt'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'JIS'],
+                        contact: {
+                            website: 'https://www.mmc.co.jp',
+                            email: 'info@mmc.co.jp',
+                            phone: '+81-3-3255-5401',
+                            address: '1-6-1, Marunouchi, Chiyoda-ku, Tokyo 100-8117, Japan'
+                        },
+                        products: ['Linh kiện cơ khí', 'Vật liệu hợp kim', 'Công cụ cắt gọt'],
+                        established: 1950,
+                        employees: 7500,
+                        revenue: '$8.5B'
+                    },
+                    {
+                        id: 'g2',
+                        name: 'Sumitomo Electric Industries, Ltd.',
+                        country: 'japan',
+                        countryName: 'Nhật Bản',
+                        logo: '🇯🇵',
+                        reputation: 4.6,
+                        experience: 120,
+                        description: 'Nhà sản xuất điện và linh kiện công nghiệp lớn Nhật Bản.',
+                        specialties: ['Linh kiện điện', 'Dây cáp', 'Vật liệu composite'],
+                        certifications: ['ISO 9001', 'ISO 14001', 'IATF 16949'],
+                        contact: {
+                            website: 'https://www.sei.co.jp',
+                            email: 'info@sei.co.jp',
+                            phone: '+81-6-6466-4011',
+                            address: '4-5-33, Kitahama, Chuo-ku, Osaka 541-0041, Japan'
+                        },
+                        products: ['Linh kiện điện', 'Dây cáp', 'Vật liệu composite'],
+                        established: 1897,
+                        employees: 280000,
+                        revenue: '$28.6B'
+                    }
+                ]
+            };
+            
+            return allManufacturers[partType] || allManufacturers.generic;
+        }
+
+        // Determine part type
+        function determinePartType(partData) {
+            const name = (partData.name || '').toLowerCase();
+            
+            if (name.includes('ボルト') || name.includes('bu lông') || name.includes('ネジ') || name.includes('ốc vít')) {
+                return 'bolt';
+            } else if (name.includes('抵抗') || name.includes('điện trở')) {
+                return 'resistor';
+            } else if (name.includes('ベアリング') || name.includes('vòng bi')) {
+                return 'bearing';
+            }
+            return 'generic';
+        }
+
+        // Display manufacturers
+        function displayManufacturers() {
+            const gridDiv = document.getElementById('manufacturersGrid');
+            
+            const manufacturersHTML = filteredManufacturers.map(manufacturer => `
+                <div class="manufacturer-card bg-white rounded-lg p-6 cursor-pointer" onclick="showManufacturerDetail('${manufacturer.id}')">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl">${manufacturer.logo}</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">${manufacturer.name}</h3>
+                                <p class="text-sm text-gray-500">${manufacturer.countryName}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 text-sm mr-1"></i>
+                                <span class="font-semibold">${manufacturer.reputation}</span>
+                            </div>
+                            <p class="text-xs text-gray-500">${manufacturer.experience} năm kinh nghiệm</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        ${manufacturer.description}
+                    </p>
+                    
+                    <div class="mb-4">
+                        <div class="text-xs text-gray-500 mb-2">Chuyên môn:</div>
+                        <div class="flex flex-wrap gap-1">
+                            ${manufacturer.specialties.map(specialty => `
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                                    ${specialty}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="text-xs text-gray-500 mb-2">Chứng nhận:</div>
+                        <div class="flex flex-wrap gap-1">
+                            ${manufacturer.certifications.map(cert => `
+                                <span class="certification-badge bg-green-100 text-green-800">
+                                    ${cert}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-500">
+                            <i class="fas fa-users mr-1"></i>${manufacturer.employees.toLocaleString()} nhân viên
+                        </span>
+                        <span class="text-gray-500">
+                            <i class="fas fa-chart-line mr-1"></i>${manufacturer.revenue}
+                        </span>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t">
+                        <button class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                            <i class="fas fa-info-circle mr-2"></i>Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            gridDiv.innerHTML = manufacturersHTML;
+        }
+
+        // Show manufacturer detail
+        function showManufacturerDetail(manufacturerId) {
+            const manufacturer = manufacturers.find(m => m.id === manufacturerId);
+            if (!manufacturer) return;
+            
+            const detailDiv = document.getElementById('manufacturerDetail');
+            detailDiv.innerHTML = `
+                <div class="mb-6">
+                    <button onclick="hideManufacturerDetail()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition mb-4">
+                        <i class="fas fa-arrow-left mr-2"></i>Quay lại danh sách
+                    </button>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <span class="text-4xl">${manufacturer.logo}</span>
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800">${manufacturer.name}</h2>
+                                    <p class="text-gray-600">${manufacturer.countryName} • Thành lập ${manufacturer.established}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-2">Giới thiệu công ty</h3>
+                                <p class="text-gray-600 leading-relaxed">${manufacturer.description}</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-2">Sản phẩm chính</h3>
+                                    <ul class="space-y-2">
+                                        ${manufacturer.products.map(product => `
+                                            <li class="flex items-center text-gray-600">
+                                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                                ${product}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-2">Chứng nhận chất lượng</h3>
+                                    <div class="space-y-2">
+                                        ${manufacturer.certifications.map(cert => `
+                                            <div class="flex items-center">
+                                                <i class="fas fa-certificate text-blue-500 mr-2"></i>
+                                                <span class="text-gray-600">${cert}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold mb-2">Lịch sử phát triển</h3>
+                                <div class="space-y-4">
+                                    <div class="timeline-item">
+                                        <div class="font-semibold">${manufacturer.established}</div>
+                                        <div class="text-sm text-gray-600">Thành lập công ty</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="font-semibold">${manufacturer.established + 20}</div>
+                                        <div class="text-sm text-gray-600">Mở rộng sản xuất quốc tế</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="font-semibold">${manufacturer.established + 40}</div>
+                                        <div class="text-sm text-gray-600">Đạt chứng nhận ISO 9001</div>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <div class="font-semibold">${manufacturer.established + 60}</div>
+                                        <div class="text-sm text-gray-600">Trở thành nhà sản xuất hàng đầu</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Thông tin liên hệ</h3>
+                                <div class="space-y-3">
+                                    <div class="contact-method flex items-center p-3 bg-white rounded">
+                                        <i class="fas fa-globe text-blue-500 mr-3"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-500">Website</div>
+                                            <a href="${manufacturer.contact.website}" target="_blank" class="text-blue-600 hover:underline">
+                                                ${manufacturer.contact.website}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-method flex items-center p-3 bg-white rounded">
+                                        <i class="fas fa-envelope text-green-500 mr-3"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-500">Email</div>
+                                            <div class="text-gray-700">${manufacturer.contact.email}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-method flex items-center p-3 bg-white rounded">
+                                        <i class="fas fa-phone text-purple-500 mr-3"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-500">Điện thoại</div>
+                                            <div class="text-gray-700">${manufacturer.contact.phone}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="contact-method flex items-center p-3 bg-white rounded">
+                                        <i class="fas fa-map-marker-alt text-red-500 mr-3"></i>
+                                        <div>
+                                            <div class="text-sm text-gray-500">Địa chỉ</div>
+                                            <div class="text-gray-700">${manufacturer.contact.address}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50 rounded-lg p-6 mb-6">
+                                <h3 class="text-lg font-semibold mb-4">Số liệu kinh doanh</h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Nhân viên:</span>
+                                        <span class="font-semibold">${manufacturer.employees.toLocaleString()}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Doanh thu:</span>
+                                        <span class="font-semibold">${manufacturer.revenue}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Kinh nghiệm:</span>
+                                        <span class="font-semibold">${manufacturer.experience} năm</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Đánh giá:</span>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                            <span class="font-semibold">${manufacturer.reputation}/5.0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <button onclick="contactManufacturer('${manufacturer.id}')" class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                                    <i class="fas fa-envelope mr-2"></i>Gửi yêu cầu báo giá
+                                </button>
+                                <button onclick="visitWebsite('${manufacturer.contact.website}')" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                                    <i class="fas fa-external-link-alt mr-2"></i>Truy cập website
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            detailDiv.classList.remove('hidden');
+            detailDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Hide manufacturer detail
+        function hideManufacturerDetail() {
+            const detailDiv = document.getElementById('manufacturerDetail');
+            detailDiv.classList.add('hidden');
+        }
+
+        // Filter manufacturers
+        function filterManufacturers(country) {
+            if (country === 'all') {
+                filteredManufacturers = [...manufacturers];
+            } else {
+                filteredManufacturers = manufacturers.filter(m => m.country === country);
+            }
+            displayManufacturers();
+        }
+
+        // Sort manufacturers
+        function sortManufacturers(sortBy) {
+            switch(sortBy) {
+                case 'reputation':
+                    filteredManufacturers.sort((a, b) => b.reputation - a.reputation);
+                    break;
+                case 'experience':
+                    filteredManufacturers.sort((a, b) => b.experience - a.experience);
+                    break;
+                case 'certification':
+                    filteredManufacturers.sort((a, b) => b.certifications.length - a.certifications.length);
+                    break;
+                case 'name':
+                    filteredManufacturers.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+            }
+            displayManufacturers();
+        }
+
+        // Load related products
+        function loadRelatedProducts() {
+            const relatedDiv = document.getElementById('relatedProducts');
+            const relatedParts = getRelatedParts();
+            
+            const productsHTML = relatedParts.map(part => `
+                <div class="border rounded-lg p-4 hover:shadow-lg transition cursor-pointer" onclick="viewPartDetail('${part.code}')">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                            ${part.code}
+                        </span>
+                        <span class="text-xs text-gray-500">${part.category}</span>
+                    </div>
+                    <h4 class="font-semibold text-gray-800 mb-1 line-clamp-2">
+                        ${part.name}
+                    </h4>
+                    <p class="text-sm text-gray-600 line-clamp-2">
+                        ${part.specification || 'Không có thông số'}
+                    </p>
+                    <div class="mt-2">
+                        <button onclick="findManufacturers('${part.code}')" class="text-blue-600 hover:text-blue-900 text-sm">
+                            <i class="fas fa-industry mr-1"></i>Tìm nhà sản xuất
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            relatedDiv.innerHTML = productsHTML;
+        }
+
+        function getRelatedParts() {
+            if (!window.dataProcessor || !window.dataProcessor.processedData.partsTree) {
+                return [];
+            }
+            
+            return window.dataProcessor.processedData.partsTree
+                .filter(part => part.category === currentPartData.category && part.code !== currentPartCode)
+                .slice(0, 8);
+        }
+
+        function viewPartDetail(partCode) {
+            window.open(`product-detail.html?code=${partCode}`, '_blank');
+        }
+
+        function findManufacturers(partCode) {
+            window.open(`manufacturer-info.html?code=${partCode}`, '_blank');
+        }
+
+        function contactManufacturer(manufacturerId) {
+            const manufacturer = manufacturers.find(m => m.id === manufacturerId);
+            if (manufacturer) {
+                alert(`Đang mở form liên hệ với ${manufacturer.name}...`);
+            }
+        }
+
+        function visitWebsite(url) {
+            window.open(url, '_blank');
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function exportManufacturerInfo() {
+            const dataStr = JSON.stringify(filteredManufacturers, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `manufacturers-${currentPartCode}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function showError(message) {
+            const gridDiv = document.getElementById('manufacturersGrid');
+            gridDiv.innerHTML = `
+                <div class="col-span-full text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Lỗi</h3>
+                    <p class="text-gray-600">${message}</p>
+                    <button onclick="goBack()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Quay lại
+                    </button>
+                </div>
+            `;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

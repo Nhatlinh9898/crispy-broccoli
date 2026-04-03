@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Tạo Bài viết Tự động Nâng cao - Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .article-content {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .article-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .article-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .article-content p {
+            margin-bottom: 1.25rem;
+            color: #4b5563;
+        }
+        
+        .article-content ul, .article-content ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #6b7280;
+        }
+        
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .article-content th, .article-content td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .article-content th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        
+        .spec-highlight {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .application-card {
+            background-color: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .warning-box {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .material-card {
+            background-color: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .toc {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: #3b82f6;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .toc a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+        
+        .template-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .spec-expandable {
+            margin: 1rem 0;
+        }
+        
+        .expand-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .expand-btn:hover {
+            background: #2563eb;
+        }
+        
+        .expand-content {
+            margin-top: 1rem;
+        }
+        
+        .tooltip {
+            position: relative;
+            cursor: help;
+            color: #3b82f6;
+            border-bottom: 1px dotted #3b82f6;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            white-space: nowrap;
+            z-index: 1000;
+            font-size: 0.875rem;
+        }
+        
+        .interactive-diagram {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #374151;
+        }
+        
+        .input-group input {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+        }
+        
+        .result {
+            grid-column: 1 / -1;
+            background: #e0f2fe;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .power-calculator {
+            background: #f0fdf4;
+            border: 1px solid #22c55e;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .calc-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .calc-results {
+            background: #dcfce7;
+            padding: 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .enhanced-features {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.25rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-robot text-purple-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Hệ thống Tạo Bài viết Tự động Nâng cao</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleFeatures()" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        <i class="fas fa-star mr-2"></i>Tính năng Nâng cao
+                    </button>
+                    <button onclick="clearCache()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                        <i class="fas fa-trash mr-2"></i>Xóa Cache
+                    </button>
+                    <button onclick="generateAllArticles()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                        <i class="fas fa-magic mr-2"></i>Tạo Tất cả
+                    </button>
+                    <button onclick="exportArticles()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-download mr-2"></i>Xuất
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Enhanced Features Panel -->
+    <div id="featuresPanel" class="hidden bg-white shadow-lg mx-4 mt-4 p-6 rounded-lg">
+        <h3 class="text-xl font-bold mb-4 text-gray-800">
+            <i class="fas fa-star text-purple-600 mr-2"></i>Tính năng Nâng cao
+        </h3>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <i class="fas fa-language text-2xl mb-2"></i>
+                <h4 class="font-semibold">Đa ngôn ngữ</h4>
+                <p class="text-sm">Hỗ trợ nhiều ngôn ngữ</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-calculator text-2xl mb-2"></i>
+                <h4 class="font-semibold">Công cụ tính toán</h4>
+                <p class="text-sm">Công thức Ohm, Power</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-expand text-2xl mb-2"></i>
+                <h4 class="font-semibold">Nội dung mở rộng</h4>
+                <p class="text-sm">Các section có thể mở rộng</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-info-circle text-2xl mb-2"></i>
+                <h4 class="font-semibold">Tooltips</h4>
+                <p class="text-sm">Giải thích thuật ngữ</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-search text-2xl mb-2"></i>
+                <h4 class="font-semibold">SEO tối ưu</h4>
+                <p class="text-sm">Metadata và structured data</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-mobile-alt text-2xl mb-2"></i>
+                <h4 class="font-semibold">Responsive</h4>
+                <p class="text-sm">Tương thích mọi thiết bị</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 flex flex-col items-center">
+            <div class="loading-spinner mb-4"></div>
+            <p class="text-gray-700">Đang tạo bài viết nâng cao...</p>
+            <p id="loadingProgress" class="text-sm text-gray-500 mt-2"></p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- System Statistics -->
+        <div class="bg-white rounded-lg p-6 shadow-lg mb-6">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">
+                <i class="fas fa-chart-bar text-purple-500 mr-2"></i>Thống kê Hệ thống
+            </h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="templateCount">11</div>
+                    <div class="stat-label">Templates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="productCount">5</div>
+                    <div class="stat-label">Sản phẩm</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="generatedCount">0</div>
+                    <div class="stat-label">Đã tạo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="cacheSize">0</div>
+                    <div class="stat-label">Cache</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="interactiveCount">0</div>
+                    <div class="stat-label">Interactive</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="exportCount">0</div>
+                    <div class="stat-label">Đã xuất</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Overview -->
+        <div class="bg-white rounded-lg p-6 shadow-lg mb-6">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">
+                <i class="fas fa-layer-group text-green-500 mr-2"></i>Templates Available
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-bolt text-blue-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Bolt</h4>
+                            <p class="text-sm text-gray-600">Bu lông, ốc vít</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-microchip text-green-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Resistor</h4>
+                            <p class="text-sm text-gray-600">Điện trở</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">9 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-sync text-purple-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Bearing</h4>
+                            <p class="text-sm text-gray-600">Vòng bi</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">10 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-battery-full text-yellow-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Capacitor</h4>
+                            <p class="text-sm text-gray-600">Tụ điện</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-magnet text-red-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Inductor</h4>
+                            <p class="text-sm text-gray-600">Cuộn cảm</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-arrow-right text-indigo-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Diode</h4>
+                            <p class="text-sm text-gray-600">Diode</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-microchip text-pink-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Transistor</h4>
+                            <p class="text-sm text-gray-600">Transistor</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-pink-100 text-pink-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-cube text-teal-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">IC</h4>
+                            <p class="text-sm text-gray-600">Integrated Circuit</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-teal-100 text-teal-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-eye text-orange-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Sensor</h4>
+                            <p class="text-sm text-gray-600">Cảm biến</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-plug text-cyan-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Connector</h4>
+                            <p class="text-sm text-gray-600">Đầu nối</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-cyan-100 text-cyan-800 px-2 py-1 rounded">8 sections</span>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-4 hover:shadow-lg transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-cube text-gray-500 text-xl"></i>
+                        <div>
+                            <h4 class="font-semibold">Generic</h4>
+                            <p class="text-sm text-gray-600">Chung</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">6 sections</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Selection -->
+        <div class="bg-white rounded-lg p-6 shadow-lg mb-6">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">
+                <i class="fas fa-box text-green-500 mr-2"></i>Chọn Sản phẩm
+            </h2>
+            <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Generated Article Display -->
+        <div id="articleDisplay" class="hidden">
+            <div class="bg-white rounded-lg shadow-lg">
+                <div class="p-6 border-b">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800" id="articleTitle">
+                            <!-- Article title will be displayed here -->
+                        </h2>
+                        <div class="flex space-x-2">
+                            <span id="articleType" class="template-badge bg-purple-100 text-purple-800">
+                                <!-- Article type will be displayed here -->
+                            </span>
+                            <button onclick="exportSingleArticle()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                                <i class="fas fa-download mr-2"></i>Xuất
+                            </button>
+                            <button onclick="printArticle()" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+                                <i class="fas fa-print mr-2"></i>In
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mt-2" id="articleSubtitle">
+                        <!-- Article subtitle will be displayed here -->
+                    </p>
+                    
+                    <!-- SEO Metadata Display -->
+                    <div id="seoMetadata" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-search mr-2"></i>SEO Metadata
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <strong>Keywords:</strong>
+                                <span id="seoKeywords" class="text-gray-600"></span>
+                            </div>
+                            <div>
+                                <strong>Description:</strong>
+                                <span id="seoDescription" class="text-gray-600"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Table of Contents -->
+                    <div id="tableOfContents" class="toc">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800">
+                            <i class="fas fa-list mr-2"></i>Mục lục
+                        </h3>
+                        <ul id="tocList">
+                            <!-- TOC items will be generated here -->
+                        </ul>
+                    </div>
+                    
+                    <!-- Article Content -->
+                    <div id="articleContent" class="article-content">
+                        <!-- Article content will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="enhanced-article-generator.js"></script>
+    <script>
+        // Global variables
+        let enhancedArticleGenerator = null;
+        let productData = null;
+        let currentArticle = null;
+        let generatedArticles = [];
+        let exportedArticles = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initializeSystem();
+        });
+
+        // Initialize the enhanced system
+        async function initializeSystem() {
+            try {
+                // Initialize enhanced article generator
+                enhancedArticleGenerator = new EnhancedArticleGenerator();
+                const initialized = await enhancedArticleGenerator.initializeEnhanced();
+                
+                if (!initialized) {
+                    throw new Error('Failed to initialize enhanced article generator');
+                }
+                
+                // Load product data
+                const response = await fetch('ecommerce-products.json');
+                productData = await response.json();
+                
+                // Update system info
+                updateSystemInfo();
+                
+                // Load product grid
+                loadProductGrid();
+                
+                console.log('Enhanced System initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize enhanced system:', error);
+                showError('Không thể khởi tạo hệ thống nâng cao. Vui lòng kiểm tra lại các file dữ liệu.');
+            }
+        }
+
+        // Update system information
+        function updateSystemInfo() {
+            if (enhancedArticleGenerator) {
+                const templateTypes = enhancedArticleGenerator.getAvailableTemplateTypes();
+                document.getElementById('templateCount').textContent = templateTypes.length;
+            }
+            
+            if (productData) {
+                document.getElementById('productCount').textContent = productData.products.length;
+            }
+            
+            updateCacheInfo();
+            updateInteractiveCount();
+        }
+
+        // Update cache information
+        function updateCacheInfo() {
+            if (enhancedArticleGenerator) {
+                const cacheStats = enhancedArticleGenerator.getCacheStats();
+                document.getElementById('cacheSize').textContent = cacheStats.size;
+                document.getElementById('generatedCount').textContent = generatedArticles.length;
+            }
+        }
+
+        // Update interactive elements count
+        function updateInteractiveCount() {
+            let totalInteractive = 0;
+            if (currentArticle && currentArticle.interactive_elements) {
+                totalInteractive = currentArticle.interactive_elements.length;
+            }
+            document.getElementById('interactiveCount').textContent = totalInteractive;
+        }
+
+        // Load product grid
+        function loadProductGrid() {
+            const gridDiv = document.getElementById('productGrid');
+            
+            const productsHTML = productData.products.map(product => {
+                const productType = enhancedArticleGenerator.determineProductType(product);
+                const typeColors = {
+                    'bolt': 'bg-blue-100 text-blue-800',
+                    'resistor': 'bg-green-100 text-green-800',
+                    'bearing': 'bg-purple-100 text-purple-800',
+                    'capacitor': 'bg-yellow-100 text-yellow-800',
+                    'inductor': 'bg-red-100 text-red-800',
+                    'diode': 'bg-indigo-100 text-indigo-800',
+                    'transistor': 'bg-pink-100 text-pink-800',
+                    'ic': 'bg-teal-100 text-teal-800',
+                    'sensor': 'bg-orange-100 text-orange-800',
+                    'connector': 'bg-cyan-100 text-cyan-800',
+                    'electronic': 'bg-gray-100 text-gray-800',
+                    'mechanical': 'bg-gray-100 text-gray-800',
+                    'generic': 'bg-gray-100 text-gray-800'
+                };
+                
+                const colorClass = typeColors[productType] || typeColors.generic;
+                const isGenerated = generatedArticles.includes(product.id || product.sku);
+                
+                return `
+                    <div class="product-card bg-white rounded-lg p-4 cursor-pointer ${isGenerated ? 'border-green-500' : ''}" 
+                         onclick="generateEnhancedArticleForProduct('${product.id || product.sku}')">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">${product.name}</h3>
+                                <p class="text-sm text-gray-500">${product.sku}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="template-badge ${colorClass} text-xs">
+                                    ${productType}
+                                </span>
+                                ${isGenerated ? '<i class="fas fa-check-circle text-green-500"></i>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="text-sm text-gray-600 mb-3">
+                            <p><strong>Danh mục:</strong> ${product.category}</p>
+                            <p><strong>Nhà SX:</strong> ${product.brand || 'N/A'}</p>
+                            <p><strong>Giá:</strong> ${product.pricing?.retail_price || 'N/A'} VND</p>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">
+                                ${product.inventory?.in_stock || 0} trong kho
+                            </div>
+                            <button class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700 transition">
+                                <i class="fas fa-file-alt mr-1"></i>Tạo bài viết
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            gridDiv.innerHTML = productsHTML;
+        }
+
+        // Generate enhanced article for specific product
+        async function generateEnhancedArticleForProduct(productId) {
+            try {
+                showLoading(`Đang tạo bài viết nâng cao cho ${productId}...`);
+                
+                // Generate enhanced article
+                const article = await enhancedArticleGenerator.generateEnhancedArticle(productId);
+                currentArticle = article;
+                
+                // Add to generated articles list
+                if (!generatedArticles.includes(productId)) {
+                    generatedArticles.push(productId);
+                }
+                
+                // Display article
+                displayEnhancedArticle(article);
+                
+                // Update UI
+                updateSystemInfo();
+                loadProductGrid();
+                
+                hideLoading();
+                
+                // Scroll to article
+                document.getElementById('articleDisplay').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error generating enhanced article:', error);
+                hideLoading();
+                showError(`Không thể tạo bài viết nâng cao: ${error.message}`);
+            }
+        }
+
+        // Display enhanced article
+        function displayEnhancedArticle(article) {
+            const displayDiv = document.getElementById('articleDisplay');
+            
+            // Update article header
+            document.getElementById('articleTitle').textContent = article.title;
+            document.getElementById('articleSubtitle').textContent = article.subtitle;
+            document.getElementById('articleType').textContent = article.product_type.toUpperCase();
+            document.getElementById('articleType').className = `template-badge bg-purple-100 text-purple-800`;
+            
+            // Update SEO metadata
+            if (article.seo_metadata) {
+                document.getElementById('seoKeywords').textContent = article.seo_metadata.keywords;
+                document.getElementById('seoDescription').textContent = article.seo_metadata.description;
+            }
+            
+            // Generate table of contents
+            const tocList = document.getElementById('tocList');
+            const tocHTML = article.table_of_contents.map(item => `
+                <li>
+                    <a href="#${item.id}">${item.title}</a>
+                </li>
+            `).join('');
+            tocList.innerHTML = tocHTML;
+            
+            // Display article content
+            document.getElementById('articleContent').innerHTML = article.content;
+            
+            // Show article display
+            displayDiv.classList.remove('hidden');
+        }
+
+        // Generate all enhanced articles
+        async function generateAllArticles() {
+            try {
+                showLoading('Đang tạo tất cả bài viết nâng cao...');
+                
+                const totalProducts = productData.products.length;
+                let generatedCount = 0;
+                
+                for (const product of productData.products) {
+                    try {
+                        const productId = product.id || product.sku;
+                        await enhancedArticleGenerator.generateEnhancedArticle(productId);
+                        
+                        if (!generatedArticles.includes(productId)) {
+                            generatedArticles.push(productId);
+                        }
+                        
+                        generatedCount++;
+                        updateLoadingProgress(`Đã tạo ${generatedCount}/${totalProducts} bài viết nâng cao...`);
+                        
+                    } catch (error) {
+                        console.error(`Error generating enhanced article for ${product.id || product.sku}:`, error);
+                    }
+                }
+                
+                hideLoading();
+                updateSystemInfo();
+                loadProductGrid();
+                
+                showSuccess(`Đã tạo thành công ${generatedCount}/${totalProducts} bài viết nâng cao!`);
+                
+            } catch (error) {
+                console.error('Error generating all enhanced articles:', error);
+                hideLoading();
+                showError(`Không thể tạo tất cả bài viết nâng cao: ${error.message}`);
+            }
+        }
+
+        // Toggle features panel
+        function toggleFeatures() {
+            const panel = document.getElementById('featuresPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Clear cache
+        function clearCache() {
+            if (enhancedArticleGenerator) {
+                enhancedArticleGenerator.clearCache();
+                generatedArticles = [];
+                currentArticle = null;
+                exportedArticles = 0;
+                
+                updateSystemInfo();
+                loadProductGrid();
+                
+                document.getElementById('articleDisplay').classList.add('hidden');
+                
+                showSuccess('Đã xóa cache và đặt lại hệ thống nâng cao!');
+            }
+        }
+
+        // Export articles
+        function exportArticles() {
+            if (generatedArticles.length === 0) {
+                showError('Chưa có bài viết nào để xuất');
+                return;
+            }
+            
+            // Show export options
+            const format = prompt('Chọn định dạng xuất (json, html, markdown, csv):', 'json');
+            
+            if (!format || !['json', 'html', 'markdown', 'csv'].includes(format)) {
+                showError('Định dạng không hợp lệ');
+                return;
+            }
+            
+            try {
+                const articles = [];
+                for (const productId of generatedArticles) {
+                    const article = enhancedArticleGenerator.cache.get(`${productId}_enhanced_article`);
+                    if (article) {
+                        articles.push(article);
+                    }
+                }
+                
+                const exportedData = enhancedArticleGenerator.exportArticles(articles, format);
+                
+                // Create download link
+                const dataUri = 'data:text/plain;charset=utf-8,'+ encodeURIComponent(exportedData);
+                const exportFileDefaultName = `enhanced-articles.${format}`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                exportedArticles = articles.length;
+                document.getElementById('exportCount').textContent = exportedArticles;
+                
+                showSuccess(`Đã xuất ${articles.length} bài viết theo định dạng ${format.toUpperCase()}`);
+                
+            } catch (error) {
+                console.error('Error exporting articles:', error);
+                showError(`Không thể xuất bài viết: ${error.message}`);
+            }
+        }
+
+        // Export single article
+        function exportSingleArticle() {
+            if (!currentArticle) {
+                showError('Không có bài viết để xuất');
+                return;
+            }
+            
+            try {
+                const exportedData = enhancedArticleGenerator.exportArticles([currentArticle], 'json');
+                
+                // Create download link
+                const dataUri = 'data:text/plain;charset=utf-8,'+ encodeURIComponent(exportedData);
+                const exportFileDefaultName = `enhanced-article-${currentArticle.product_id}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                showSuccess('Đã xuất bài viết thành công!');
+                
+            } catch (error) {
+                console.error('Error exporting single article:', error);
+                showError(`Không thể xuất bài viết: ${error.message}`);
+            }
+        }
+
+        // Print article
+        function printArticle() {
+            if (!currentArticle) {
+                showError('Không có bài viết để in');
+                return;
+            }
+            
+            window.print();
+        }
+
+        // Show loading
+        function showLoading(message = 'Đang xử lý...') {
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            updateLoadingProgress(message);
+        }
+
+        // Update loading progress
+        function updateLoadingProgress(message) {
+            document.getElementById('loadingProgress').textContent = message;
+        }
+
+        // Hide loading
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            // Create success notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Show error message
+        function showError(message) {
+            // Create error notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Interactive functions for calculator
+        window.calculateOhmsLaw = function() {
+            const voltage = parseFloat(document.getElementById('voltage').value) || 0;
+            const resistance = parseFloat(document.getElementById('resistance').value) || 0;
+            const current = parseFloat(document.getElementById('current').value) || 0;
+            
+            let result = '';
+            
+            if (voltage && resistance && current === 0) {
+                result = `Dòng điện = ${(voltage / resistance).toFixed(3)} A`;
+            } else if (voltage && current && resistance === 0) {
+                result = `Điện trở = ${(voltage / current).toFixed(2)} Ω`;
+            } else if (resistance && current && voltage === 0) {
+                result = `Điện áp = ${(resistance * current).toFixed(2)} V`;
+            } else if (voltage && resistance && current) {
+                if (Math.abs(voltage - (resistance * current)) < 0.01) {
+                    result = '✓ Các giá trị phù hợp với Định luật Ohm';
+                } else {
+                    result = '⚠ Các giá trị không phù hợp. V = I × R';
+                }
+            } else {
+                result = 'Nhập 2 giá trị để tính';
+            }
+            
+            document.getElementById('ohm-result').textContent = result;
+        };
+
+        window.calculatePower = function() {
+            const resistance = parseFloat(document.getElementById('calc-resistance').value) || 0;
+            const current = parseFloat(document.getElementById('calc-current').value) || 0;
+            
+            if (resistance && current) {
+                const power = (current * current * resistance).toFixed(3);
+                const recommended = (power * 2).toFixed(3);
+                
+                document.getElementById('power-result').textContent = `${power} W`;
+                document.getElementById('recommended-power').textContent = `${recommended} W`;
+            } else {
+                document.getElementById('power-result').textContent = '-';
+                document.getElementById('recommended-power').textContent = '-';
+            }
+        };
+
+        // Toggle expandable sections
+        window.toggleExpand = function(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.className = 'fas fa-chevron-up mr-2';
+                button.innerHTML = '<i class="fas fa-chevron-up mr-2"></i>Thu gọn';
+            } else {
+                content.style.display = 'none';
+                icon.className = 'fas fa-chevron-down mr-2';
+                button.innerHTML = '<i class="fas fa-chevron-down mr-2"></i>Xem chi tiết';
+            }
+        };
+    </script>
+</body>
+</html>
