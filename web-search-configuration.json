@@ -1,0 +1,61 @@
+{
+  "webSearch": {
+    "defaultEngine": "google",
+    "maxRetries": 3,
+    "timeout": 10000,
+    "google": {
+      "apiKey": "YOUR_GOOGLE_API_KEY",
+      "searchEngineId": "YOUR_SEARCH_ENGINE_ID",
+      "baseUrl": "https://www.googleapis.com/customsearch/v1",
+      "rateLimit": {
+        "requestsPerDay": 100,
+        "requestsPerSecond": 10
+      }
+    },
+    "bing": {
+      "apiKey": "YOUR_BING_API_KEY",
+      "baseUrl": "https://api.bing.microsoft.com/v7.0/search",
+      "rateLimit": {
+        "requestsPerSecond": 3
+      }
+    },
+    "duckduckgo": {
+      "baseUrl": "https://api.duckduckgo.com/",
+      "rateLimit": {
+        "requestsPerSecond": 10
+      }
+    },
+    "searchOptions": {
+      "defaultLanguage": "vi",
+      "defaultRegion": "VN",
+      "safeSearch": "medium",
+      "maxResults": 10,
+      "includeAnalysis": true,
+      "enableCaching": true,
+      "cacheExpiry": 3600000
+    },
+    "qualityThresholds": {
+      "minRelevance": 0.3,
+      "minCredibility": 0.4,
+      "maxResultsPerEngine": 20,
+      "duplicateThreshold": 0.8
+    },
+    "filters": {
+      "blockedDomains": [
+        "spam-site.com",
+        "malicious-site.net"
+      ],
+      "preferredDomains": [
+        "wikipedia.org",
+        "edu.vn",
+        "gov.vn",
+        "researchgate.net"
+      ],
+      "contentFilters": [
+        "adult",
+        "violence",
+        "hate"
+      ]
+    }
+  }
+}
