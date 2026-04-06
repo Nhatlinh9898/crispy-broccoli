@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA-Configured Server Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes dna-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .dna-pulse {
+            animation: dna-pulse 4s infinite;
+        }
+        .server-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dna-helix {
+            background: linear-gradient(45deg, #4ade80 25%, #3b82f6 25%, #3b82f6 50%, #4ade80 50%, #4ade80 75%, #3b82f6 75%);
+            background-size: 20px 20px;
+            animation: helix-rotate 2s linear infinite;
+        }
+        @keyframes helix-rotate {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 20px; }
+        }
+        .state-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .state-init { background-color: #fbbf24; }
+        .state-ready { background-color: #10b981; }
+        .state-processing { background-color: #3b82f6; }
+        .state-evaluating { background-color: #8b5cf6; }
+        .state-reporting { background-color: #06b6d4; }
+        .state-idle { background-color: #6b7280; }
+        .state-error { background-color: #ef4444; }
+    </style>
+</head>
+<body class="server-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-effect p-6 mb-8">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 dna-helix rounded-full flex items-center justify-center">
+                        🧬
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">DNA-Configured Server</h1>
+                        <p class="text-purple-200">Self-configuring server from Logic DNA specification</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="server-id" class="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                        Server: ---
+                    </div>
+                    <div id="server-state" class="px-4 py-2 bg-green-500 rounded-full text-sm">
+                        State: ---
+                    </div>
+                    <div id="dna-version" class="px-4 py-2 bg-purple-500 rounded-full text-sm">
+                        DNA: ---
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6">
+        <!-- DNA Configuration -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧬 DNA Configuration</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">DNA ID</h3>
+                    <div id="dna-id" class="text-2xl font-bold">---</div>
+                    <div class="text-sm text-purple-200">Logic DNA identifier</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Version</h3>
+                    <div id="dna-version-display" class="text-2xl font-bold">---</div>
+                    <div class="text-sm text-purple-200">Current version</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Agents</h3>
+                    <div id="agents-count" class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Configured agents</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- State Machine Visualization -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🔄 State Machine</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-blue-300">Current State Flow</h3>
+                    <div id="current-state-indicator" class="flex items-center">
+                        <span class="state-indicator state-init"></span>
+                        <span id="current-state-name">INIT</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-7 gap-2">
+                    <div id="state-init" class="text-center p-3 bg-yellow-600 bg-opacity-50 rounded border-2 border-yellow-400">
+                        <div class="font-semibold">INIT</div>
+                        <div class="text-xs">Initialize</div>
+                    </div>
+                    <div id="state-ready" class="text-center p-3 bg-green-600 bg-opacity-30 rounded border-2 border-green-600">
+                        <div class="font-semibold">READY</div>
+                        <div class="text-xs">Ready</div>
+                    </div>
+                    <div id="state-processing" class="text-center p-3 bg-blue-600 bg-opacity-30 rounded border-2 border-blue-600">
+                        <div class="font-semibold">PROCESSING</div>
+                        <div class="text-xs">Processing</div>
+                    </div>
+                    <div id="state-evaluating" class="text-center p-3 bg-purple-600 bg-opacity-30 rounded border-2 border-purple-600">
+                        <div class="font-semibold">EVALUATING</div>
+                        <div class="text-xs">Evaluating</div>
+                    </div>
+                    <div id="state-reporting" class="text-center p-3 bg-cyan-600 bg-opacity-30 rounded border-2 border-cyan-600">
+                        <div class="font-semibold">REPORTING</div>
+                        <div class="text-xs">Reporting</div>
+                    </div>
+                    <div id="state-idle" class="text-center p-3 bg-gray-600 bg-opacity-30 rounded border-2 border-gray-600">
+                        <div class="font-semibold">IDLE</div>
+                        <div class="text-xs">Idle</div>
+                    </div>
+                    <div id="state-error" class="text-center p-3 bg-red-600 bg-opacity-30 rounded border-2 border-red-600">
+                        <div class="font-semibold">ERROR</div>
+                        <div class="text-xs">Error</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agents Configuration -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🤖 Configured Agents</h2>
+            <div id="agents-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Agent cards will be populated here -->
+            </div>
+        </section>
+
+        <!-- Task Processing -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🚀 Task Processing</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Task Type</label>
+                        <select id="task-type" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="inference">Product Search (Inference)</option>
+                            <option value="evolution">Model Evolution</option>
+                            <option value="analysis">System Analysis</option>
+                            <option value="training">Model Training</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Priority</label>
+                        <select id="task-priority" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="100">High (100)</option>
+                            <option value="50">Medium (50)</option>
+                            <option value="25">Low (25)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-2">Task Payload</label>
+                    <textarea id="task-payload" rows="3" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600" 
+                        placeholder="Enter task parameters...">bu lông thép M8 cao cấp</textarea>
+                </div>
+                <div class="mt-4 flex space-x-4">
+                    <button id="submit-task" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors">
+                        Submit Task
+                    </button>
+                    <button id="trigger-evolution" class="px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors">
+                        Trigger Evolution
+                    </button>
+                    <button id="reload-dna" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors">
+                        Reload DNA
+                    </button>
+                </div>
+                <div id="task-result" class="mt-4 p-4 bg-green-600 bg-opacity-30 rounded-lg hidden">
+                    <h4 class="font-semibold mb-2">Task Result:</h4>
+                    <pre id="task-result-content" class="text-sm whitespace-pre-wrap"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Server Metrics -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📊 Server Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Health Status</h3>
+                    <canvas id="health-chart"></canvas>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Task Performance</h3>
+                    <canvas id="performance-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Server Log -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📋 Server Log</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div id="server-log" class="h-64 overflow-y-auto space-y-2 text-sm font-mono">
+                    <!-- Server events will appear here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect p-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p>DNA-Configured Server - Self-configuring from Logic DNA © 2026 | AmazeBid Evolution</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { DNAConfiguredServer } from '../js/brain-os/distributed/dna-configured-server.js';
+
+        // Global variables
+        let dnaServer;
+        let healthChart;
+        let performanceChart;
+        let metricsInterval;
+
+        // Initialize demo
+        async function initializeDemo() {
+            try {
+                // Generate unique server ID
+                const serverId = `server_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+                const dnaFilePath = window.location.search.includes('dna=external') ? 
+                    '/logic-dna-specification.yaml' : null;
+                
+                dnaServer = new DNAConfiguredServer(serverId, dnaFilePath);
+                await dnaServer.initialize();
+                
+                console.log('DNA-Configured Server initialized successfully');
+                
+                // Setup UI
+                setupEventListeners();
+                initializeCharts();
+                startMetricsUpdates();
+                updateServerInfo();
+                
+                // Subscribe to server events
+                if (dnaServer.distributedBrainOS) {
+                    dnaServer.distributedBrainOS.baseBrainOS.messageBus.subscribe('demo', 'server_event', handleServerEvent);
+                }
+                
+                addServerLog('🚀 DNA-Configured Server initialized', 'success');
+                
+            } catch (error) {
+                console.error('Failed to initialize DNA-Configured Server:', error);
+                addServerLog('❌ Failed to initialize: ' + error.message, 'error');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('submit-task').addEventListener('click', submitTask);
+            document.getElementById('trigger-evolution').addEventListener('click', triggerEvolution);
+            document.getElementById('reload-dna').addEventListener('click', reloadDNA);
+        }
+
+        // Update server information
+        function updateServerInfo() {
+            const status = dnaServer.getServerStatus();
+            
+            document.getElementById('server-id').textContent = `Server: ${status.node_id}`;
+            document.getElementById('server-state').textContent = `State: ${status.server_state}`;
+            document.getElementById('dna-version').textContent = `DNA: ${status.dna_version || '---'}`;
+            document.getElementById('dna-id').textContent = status.dna_id || '---';
+            document.getElementById('dna-version-display').textContent = status.dna_version || '---';
+            document.getElementById('agents-count').textContent = status.agents_configured;
+            
+            // Update current state indicator
+            updateCurrentState(status.server_state);
+            
+            // Update agents grid
+            updateAgentsGrid();
+        }
+
+        // Update current state indicator
+        function updateCurrentState(state) {
+            const stateIndicator = document.getElementById('current-state-indicator');
+            const stateName = document.getElementById('current-state-name');
+            
+            // Remove all state classes
+            stateIndicator.querySelector('.state-indicator').className = 'state-indicator';
+            
+            // Add current state class
+            stateIndicator.querySelector('.state-indicator').classList.add(`state-${state.toLowerCase()}`);
+            stateName.textContent = state;
+            
+            // Highlight current state in flow
+            document.querySelectorAll('[id^="state-"]').forEach(el => {
+                el.classList.remove('ring-2', 'ring-white', 'dna-pulse');
+            });
+            
+            const currentStateEl = document.getElementById(`state-${state.toLowerCase()}`);
+            if (currentStateEl) {
+                currentStateEl.classList.add('ring-2', 'ring-white', 'dna-pulse');
+            }
+        }
+
+        // Update agents grid
+        function updateAgentsGrid() {
+            const grid = document.getElementById('agents-grid');
+            grid.innerHTML = '';
+            
+            if (!dnaServer.currentDNA || !dnaServer.currentDNA.agents) {
+                return;
+            }
+            
+            for (const [agentId, agentConfig] of dnaServer.currentDNA.agents) {
+                const card = document.createElement('div');
+                card.className = 'bg-purple-800 bg-opacity-50 p-4 rounded-lg border border-purple-600';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold">${agentId}</h4>
+                        <span class="px-2 py-1 ${agentConfig.cpu_affinity === 'cpu0' ? 'bg-blue-600' : 'bg-green-600'} rounded text-xs">
+                            ${agentConfig.cpu_affinity}
+                        </span>
+                    </div>
+                    <p class="text-sm text-purple-200">${agentConfig.role}</p>
+                    <p class="text-xs text-purple-300">${agentConfig.brain_region || ''}</p>
+                    <div class="mt-2 flex flex-wrap gap-1">
+                        ${agentConfig.capabilities.slice(0, 2).map(cap => 
+                            `<span class="px-1 py-0.5 bg-purple-700 rounded text-xs">${cap}</span>`
+                        ).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        // Submit task
+        async function submitTask() {
+            const taskType = document.getElementById('task-type').value;
+            const priority = parseInt(document.getElementById('task-priority').value);
+            const payload = document.getElementById('task-payload').value;
+
+            if (!payload.trim()) {
+                addServerLog('⚠️ Please enter a task payload', 'warning');
+                return;
+            }
+
+            try {
+                const taskId = await dnaServer.processTask({
+                    type: taskType,
+                    origin: 'dna_server_demo',
+                    payload: payload,
+                    constraints: {
+                        priority: priority
+                    }
+                });
+
+                addServerLog(`📤 Task submitted: ${taskId} (${taskType})`, 'info');
+                
+                // Show result
+                const resultDiv = document.getElementById('task-result');
+                resultDiv.classList.remove('hidden');
+                document.getElementById('task-result-content').textContent = `Task ID: ${taskId}\nStatus: Processing...\nType: ${taskType}\nPriority: ${priority}`;
+
+            } catch (error) {
+                addServerLog('❌ Failed to submit task: ' + error.message, 'error');
+            }
+        }
+
+        // Trigger evolution
+        async function triggerEvolution() {
+            try {
+                addServerLog('🧬 Triggering manual evolution...', 'info');
+                
+                // Simulate evolution trigger
+                await dnaServer.triggerEvolution({
+                    name: 'manual_request',
+                    condition: 'manual_evolution_flag == true',
+                    severity: 'low'
+                });
+                
+                addServerLog('✅ Evolution triggered successfully', 'success');
+                
+            } catch (error) {
+                addServerLog('❌ Failed to trigger evolution: ' + error.message, 'error');
+            }
+        }
+
+        // Reload DNA
+        async function reloadDNA() {
+            try {
+                addServerLog('🔄 Reloading DNA specification...', 'info');
+                
+                // Reload DNA
+                await dnaServer.loadDNASpecification();
+                await dnaServer.configureFromDNA();
+                
+                addServerLog('✅ DNA reloaded successfully', 'success');
+                updateServerInfo();
+                
+            } catch (error) {
+                addServerLog('❌ Failed to reload DNA: ' + error.message, 'error');
+            }
+        }
+
+        // Handle server events
+        function handleServerEvent(message) {
+            const { event_type, event_data } = message.payload;
+            addServerLog(`🔔 Server event: ${event_type}`, 'info');
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Health chart
+            const healthCtx = document.getElementById('health-chart').getContext('2d');
+            healthChart = new Chart(healthCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Overall Health', 'Node Health', 'Network Health'],
+                    datasets: [{
+                        data: [85, 90, 80],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Performance chart
+            const performanceCtx = document.getElementById('performance-chart').getContext('2d');
+            performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Task Throughput',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.1
+                    }, {
+                        label: 'Response Time',
+                        data: [],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Start metrics updates
+        function startMetricsUpdates() {
+            metricsInterval = setInterval(() => {
+                updateMetrics();
+            }, 3000);
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            if (!dnaServer || !dnaServer.initialized) return;
+
+            const status = dnaServer.getServerStatus();
+            
+            // Update health chart
+            if (healthChart && status.health_status) {
+                const health = status.health_status;
+                healthChart.data.datasets[0].data = [
+                    health.overall_health,
+                    health.node_health,
+                    health.network_health
+                ];
+                healthChart.update('none');
+            }
+
+            // Update performance chart
+            if (performanceChart) {
+                const chart = performanceChart;
+                chart.data.labels.push(new Date().toLocaleTimeString());
+                
+                // Simulate metrics
+                const throughput = Math.floor(Math.random() * 50) + 50;
+                const responseTime = Math.floor(Math.random() * 100) + 100;
+                
+                chart.data.datasets[0].data.push(throughput);
+                chart.data.datasets[1].data.push(responseTime);
+                
+                // Keep only last 20 points
+                if (chart.data.labels.length > 20) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                    chart.data.datasets[1].data.shift();
+                }
+                
+                chart.update('none');
+            }
+        }
+
+        // Add server log entry
+        function addServerLog(message, type = 'info') {
+            const log = document.getElementById('server-log');
+            const logDiv = document.createElement('div');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const typeColors = {
+                'info': 'text-blue-300',
+                'success': 'text-green-300',
+                'warning': 'text-yellow-300',
+                'error': 'text-red-300'
+            };
+
+            logDiv.className = typeColors[type] || 'text-gray-300';
+            logDiv.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(logDiv);
+            log.scrollTop = log.scrollHeight;
+
+            // Keep only last 50 messages
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeDemo);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
+            if (dnaServer) {
+                await dnaServer.shutdown();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,553 @@
+dna_id: "amaze-brain-dna"
+version: "1.2.0"
+description: "Logic DNA cho Brain OS phân tán của AmazeBid"
+
+metadata:
+  created_at: "2026-04-06T16:30:00"
+  owner: "AmazeBid Core Brain Team"
+  compatible_min_version: "1.0.0"
+  last_updated: "2026-04-06T16:30:00"
+  update_frequency: "weekly"
+  stability_level: "production"
+
+state_machine:
+  states:
+    - name: "INIT"
+      description: "Khởi tạo hệ thống, tải cấu hình"
+      entry_actions: ["load_dna", "initialize_agents", "setup_comms"]
+      exit_actions: []
+      timeout_ms: 30000
+      
+    - name: "READY"
+      description: "Sẵn sàng nhận tác vụ"
+      entry_actions: ["start_health_monitoring", "open_task_queue"]
+      exit_actions: ["pause_health_monitoring"]
+      timeout_ms: null
+      
+    - name: "PROCESSING"
+      description: "Đang xử lý tác vụ"
+      entry_actions: ["allocate_resources", "execute_task"]
+      exit_actions: ["release_resources"]
+      timeout_ms: 60000
+      
+    - name: "EVALUATING"
+      description: "Đánh giá kết quả"
+      entry_actions: ["collect_metrics", "validate_results"]
+      exit_actions: []
+      timeout_ms: 10000
+      
+    - name: "REPORTING"
+      description: "Báo cáo kết quả"
+      entry_actions: ["send_results", "update_metrics", "sync_state"]
+      exit_actions: []
+      timeout_ms: 5000
+      
+    - name: "IDLE"
+      description: "Chờ tác vụ mới"
+      entry_actions: ["cleanup_temp_resources"]
+      exit_actions: []
+      timeout_ms: null
+      
+    - name: "ERROR"
+      description: "Xử lý lỗi"
+      entry_actions: ["log_error", "trigger_recovery", "notify_monitor"]
+      exit_actions: []
+      timeout_ms: 30000
+      
+  transitions:
+    - from: "INIT"
+      to: "READY"
+      condition: "config_loaded && health_ok"
+      action: "announce_ready"
+      
+    - from: "READY"
+      to: "PROCESSING"
+      condition: "task_queue_not_empty && resources_available"
+      action: "start_task_processing"
+      
+    - from: "PROCESSING"
+      to: "EVALUATING"
+      condition: "task_complete"
+      action: "finalize_task"
+      
+    - from: "PROCESSING"
+      to: "ERROR"
+      condition: "task_failed || timeout_exceeded"
+      action: "handle_task_error"
+      
+    - from: "EVALUATING"
+      to: "REPORTING"
+      condition: "results_valid"
+      action: "prepare_report"
+      
+    - from: "EVALUATING"
+      to: "PROCESSING"
+      condition: "retry_allowed && retry_count < max_retries"
+      action: "retry_task"
+      
+    - from: "EVALUATING"
+      to: "ERROR"
+      condition: "max_retries_exceeded || validation_failed"
+      action: "mark_task_failed"
+      
+    - from: "REPORTING"
+      to: "IDLE"
+      condition: "report_sent"
+      action: "cleanup_task"
+      
+    - from: "IDLE"
+      to: "READY"
+      condition: "new_task_detected"
+      action: "prepare_for_next_task"
+      
+    - from: "ANY"
+      to: "ERROR"
+      condition: "fatal_error || system_health_critical"
+      action: "emergency_shutdown"
+
+routing_rules:
+  inference:
+    priority: 100
+    cpu_affinity: "cpu1"
+    max_latency_ms: 200
+    max_cost_per_request: 0.01
+    fallback_strategy:
+      - "use_cached_result"
+      - "use_previous_model"
+      - "degrade_to_simple_model"
+    load_balancing: "round_robin"
+    
+  evolution:
+    priority: 50
+    cpu_affinity: "any"
+    schedule: "offpeak"
+    max_concurrent_experiments: 3
+    resource_limits:
+      max_memory_mb: 2048
+      max_cpu_percent: 80
+    rollback_enabled: true
+    
+  analysis:
+    priority: 75
+    cpu_affinity: "cpu0"
+    max_latency_ms: 5000
+    batch_size: 100
+    cache_enabled: true
+    
+  training:
+    priority: 25
+    cpu_affinity: "cpu1"
+    schedule: "maintenance_window"
+    max_duration_hours: 4
+    checkpoint_interval_minutes: 30
+
+agents:
+  - id: "canonicalizer"
+    role: "input_normalization"
+    brain_region: "broca_area"
+    cpu_affinity: "cpu0"
+    input_types: ["user_request", "system_event", "api_call"]
+    output_types: ["canonical_task", "structured_request"]
+    capabilities:
+      - "text_normalization"
+      - "structure_parsing"
+      - "language_understanding"
+      - "format_validation"
+    config:
+      max_input_length: 10000
+      supported_languages: ["vi", "en", "ja"]
+      timeout_ms: 1000
+      
+  - id: "planner"
+    role: "task_planning"
+    brain_region: "prefrontal_cortex"
+    cpu_affinity: "cpu0"
+    input_types: ["canonical_task", "goal_specification"]
+    output_types: ["execution_plan", "task_graph"]
+    capabilities:
+      - "task_decomposition"
+      - "workflow_planning"
+      - "resource_allocation"
+      - "dependency_resolution"
+    config:
+      max_parallel_tasks: 10
+      planning_depth: 5
+      optimization_target: "latency"
+      
+  - id: "data_processor"
+    role: "feature_preparation"
+    brain_region: "parietal_lobe"
+    cpu_affinity: "cpu1"
+    input_types: ["execution_plan", "raw_data", "batch_requests"]
+    output_types: ["feature_batch", "processed_data"]
+    capabilities:
+      - "batch_processing"
+      - "data_transformation"
+      - "feature_extraction"
+      - "data_validation"
+    config:
+      batch_size: 32
+      parallel_workers: 4
+      memory_optimization: true
+      
+  - id: "embedding_engine"
+    role: "feature_embedding"
+    brain_region: "visual_cortex"
+    cpu_affinity: "cpu1"
+    input_types: ["processed_data", "text", "images"]
+    output_types: ["embeddings", "vectors"]
+    capabilities:
+      - "text_embedding"
+      - "image_embedding"
+      - "vector_generation"
+      - "similarity_computation"
+    config:
+      embedding_dim: 256
+      model_type: "transformer"
+      cache_size: 10000
+      
+  - id: "model_runner"
+    role: "inference"
+    brain_region: "cerebellum"
+    cpu_affinity: "cpu1"
+    input_types: ["embeddings", "features", "model_inputs"]
+    output_types: ["raw_prediction", "model_outputs"]
+    capabilities:
+      - "neural_inference"
+      - "model_execution"
+      - "batch_prediction"
+      - "ensemble_voting"
+    config:
+      model_ensemble: ["basic", "transformer", "gnn"]
+      ensemble_weights: {"basic": 0.3, "transformer": 0.4, "gnn": 0.3}
+      confidence_threshold: 0.8
+      
+  - id: "evaluator"
+    role: "metrics_evaluation"
+    brain_region: "anterior_cingulate_cortex"
+    cpu_affinity: "cpu1"
+    input_types: ["raw_prediction", "model_outputs", "test_data"]
+    output_types: ["evaluation_metrics", "performance_reports"]
+    capabilities:
+      - "metrics_calculation"
+      - "benchmarking"
+      - "performance_analysis"
+      - "anomaly_detection"
+    config:
+      metrics: ["accuracy", "precision", "recall", "f1", "latency", "cost"]
+      benchmark_dataset: "validation_set"
+      
+  - id: "selector"
+    role: "decision_making"
+    brain_region: "basal_ganglia"
+    cpu_affinity: "cpu0"
+    input_types: ["metrics", "raw_prediction", "candidate_results"]
+    output_types: ["final_decision", "selected_result"]
+    capabilities:
+      - "result_selection"
+      - "confidence_scoring"
+      - "policy_enforcement"
+      - "risk_assessment"
+    config:
+      selection_criteria: "confidence + performance"
+      risk_tolerance: 0.1
+      
+  - id: "memory_router"
+    role: "memory_management"
+    brain_region: "hippocampus"
+    cpu_affinity: "cpu0"
+    input_types: ["query_request", "store_request"]
+    output_types: ["retrieved_data", "storage_confirmation"]
+    capabilities:
+      - "vector_search"
+      - "metadata_management"
+      - "cache_operations"
+      - "persistence"
+    config:
+      vector_db: "chroma"
+      cache_ttl: 3600
+      max_storage_gb: 100
+
+evolution_policies:
+  trigger_conditions:
+    - name: "kpi_drop"
+      description: "KPI giảm quá ngưỡng"
+      condition: "ctr_7d < ctr_30d * 0.9"
+      severity: "high"
+      auto_trigger: true
+      
+    - name: "cost_spike"
+      description: "Chi phí infer tăng bất thường"
+      condition: "cost_per_1k_req > cost_baseline * 1.3"
+      severity: "medium"
+      auto_trigger: true
+      
+    - name: "accuracy_degradation"
+      description: "Độ chính xác giảm"
+      condition: "accuracy_24h < accuracy_7d * 0.95"
+      severity: "high"
+      auto_trigger: true
+      
+    - name: "latency_increase"
+      description: "Độ trễ tăng"
+      condition: "p95_latency > latency_baseline * 1.5"
+      severity: "medium"
+      auto_trigger: false
+      
+    - name: "manual_request"
+      description: "Yêu cầu tiến hóa thủ công"
+      condition: "manual_evolution_flag == true"
+      severity: "low"
+      auto_trigger: false
+      
+  actions:
+    - name: "launch_experiment_small_model"
+      description: "Thử model nhỏ hơn để giảm cost"
+      trigger_conditions: ["cost_spike"]
+      plan_ref: "plan_small_model_experiment"
+      success_criteria: "cost_reduction > 15% && accuracy_drop < 5%"
+      
+    - name: "enable_cache_layer"
+      description: "Bật cache cho các truy vấn lặp lại"
+      trigger_conditions: ["latency_increase", "cost_spike"]
+      plan_ref: "plan_enable_cache"
+      success_criteria: "p95_latency_reduction > 20%"
+      
+    - name: "model_ensemble_optimization"
+      description: "Tối ưu trọng số ensemble"
+      trigger_conditions: ["accuracy_degradation"]
+      plan_ref: "plan_ensemble_optimization"
+      success_criteria: "accuracy_improvement > 3%"
+      
+    - name: "feature_engineering_evolution"
+      description: "Tiến hóa kỹ thuật feature"
+      trigger_conditions: ["kpi_drop"]
+      plan_ref: "plan_feature_evolution"
+      success_criteria: "overall_kpi_improvement > 5%"
+
+plans:
+  - id: "plan_small_model_experiment"
+    description: "Thử nghiệm với model nhỏ hơn"
+    estimated_duration_hours: 2
+    resource_requirements:
+      cpu_cores: 4
+      memory_mb: 8192
+      storage_gb: 10
+    steps:
+      - step: "prepare_data_sample"
+        agent: "data_processor"
+        timeout_ms: 300000
+        dependencies: []
+        
+      - step: "train_small_model"
+        agent: "model_runner"
+        timeout_ms: 3600000
+        dependencies: ["prepare_data_sample"]
+        
+      - step: "evaluate_small_model"
+        agent: "evaluator"
+        timeout_ms: 600000
+        dependencies: ["train_small_model"]
+        
+      - step: "compare_with_baseline"
+        agent: "selector"
+        timeout_ms: 300000
+        dependencies: ["evaluate_small_model"]
+        
+    rollback_plan:
+      - "restore_original_model"
+      - "clear_cache"
+      - "notify_monitoring"
+      
+  - id: "plan_enable_cache"
+    description: "Kích hoạt lớp cache"
+    estimated_duration_hours: 1
+    resource_requirements:
+      cpu_cores: 2
+      memory_mb: 4096
+      storage_gb: 50
+    steps:
+      - step: "analyze_cache_patterns"
+        agent: "planner"
+        timeout_ms: 300000
+        dependencies: []
+        
+      - step: "update_routing_rules"
+        agent: "planner"
+        timeout_ms: 60000
+        dependencies: ["analyze_cache_patterns"]
+        
+      - step: "deploy_cache_layer"
+        agent: "memory_router"
+        timeout_ms: 600000
+        dependencies: ["update_routing_rules"]
+        
+      - step: "warm_up_cache"
+        agent: "data_processor"
+        timeout_ms: 300000
+        dependencies: ["deploy_cache_layer"]
+        
+    rollback_plan:
+      - "disable_cache_routing"
+      - "clear_cache_data"
+      - "restore_original_routing"
+      
+  - id: "plan_ensemble_optimization"
+    description: "Tối ưu hóa ensemble weights"
+    estimated_duration_hours: 3
+    resource_requirements:
+      cpu_cores: 8
+      memory_mb: 16384
+      storage_gb: 20
+    steps:
+      - step: "collect_performance_data"
+        agent: "evaluator"
+        timeout_ms: 600000
+        dependencies: []
+        
+      - step: "analyze_model_contributions"
+        agent: "evaluator"
+        timeout_ms: 900000
+        dependencies: ["collect_performance_data"]
+        
+      - step: "optimize_ensemble_weights"
+        agent: "model_runner"
+        timeout_ms: 1800000
+        dependencies: ["analyze_model_contributions"]
+        
+      - step: "validate_optimized_ensemble"
+        agent: "evaluator"
+        timeout_ms: 600000
+        dependencies: ["optimize_ensemble_weights"]
+        
+  - id: "plan_feature_evolution"
+    description: "Tiến hóa kỹ thuật feature"
+    estimated_duration_hours: 6
+    resource_requirements:
+      cpu_cores: 16
+      memory_mb: 32768
+      storage_gb: 100
+    steps:
+      - step: "analyze_current_features"
+        agent: "data_processor"
+        timeout_ms: 600000
+        dependencies: []
+        
+      - step: "generate_feature_candidates"
+        agent: "data_processor"
+        timeout_ms: 1800000
+        dependencies: ["analyze_current_features"]
+        
+      - step: "test_feature_combinations"
+        agent: "model_runner"
+        timeout_ms: 7200000
+        dependencies: ["generate_feature_candidates"]
+        
+      - step: "select_optimal_features"
+        agent: "selector"
+        timeout_ms: 900000
+        dependencies: ["test_feature_combinations"]
+
+inheritance:
+  strategy: "versioned_lineage"
+  rules:
+    - rule: "version_compatibility"
+      description: "Server con phải có dna_version >= parent.dna_version"
+      enforcement: "strict"
+      
+    - rule: "downgrade_control"
+      description: "Chỉ cho downgrade khi có approval thủ công"
+      enforcement: "manual_approval"
+      
+    - rule: "sync_before_ready"
+      description: "Server mới phải sync DNA trước READY state"
+      enforcement: "automatic"
+      
+    - rule: "mutation_limits"
+      description: "Giới hạn mutation mỗi thế hệ"
+      enforcement: "automatic"
+      max_mutations_per_generation: 5
+      
+    - rule: "lineage_depth"
+      description: "Giới hạn độ sâu lineage tree"
+      enforcement: "automatic"
+      max_depth: 10
+      
+  mutation_policy:
+    allowed_mutations:
+      - "routing_rules.priority"
+      - "routing_rules.max_latency_ms"
+      - "agents.config.timeout_ms"
+      - "agents.config.batch_size"
+      - "model_runner.config.ensemble_weights"
+      - "evolution_policies.trigger_conditions.condition"
+      
+    protected_fields:
+      - "state_machine.states"
+      - "agents.id"
+      - "agents.role"
+      - "dna_id"
+      
+    mutation_probability: 0.15
+    mutation_strength: 0.1
+
+monitoring:
+  health_checks:
+    - name: "agent_health"
+      interval_seconds: 30
+      timeout_seconds: 10
+      failure_threshold: 3
+      
+    - name: "system_resources"
+      interval_seconds: 60
+      thresholds:
+        cpu_usage_percent: 80
+        memory_usage_percent: 85
+        disk_usage_percent: 90
+        
+  metrics_collection:
+    interval_seconds: 10
+    retention_days: 30
+    key_metrics:
+      - "task_throughput"
+      - "average_latency"
+      - "error_rate"
+      - "system_health"
+      - "dna_version"
+      
+  alerts:
+    - name: "high_error_rate"
+      condition: "error_rate > 0.05"
+      severity: "critical"
+      
+    - name: "system_health_degraded"
+      condition: "system_health < 70"
+      severity: "warning"
+      
+    - name: "dna_sync_failure"
+      condition: "dna_sync_status == failed"
+      severity: "error"
+
+security:
+  authentication:
+    method: "jwt"
+    token_expiry_hours: 24
+    
+  authorization:
+    roles:
+      - name: "admin"
+        permissions: ["*"]
+      - name: "operator"
+        permissions: ["read", "execute_task", "monitor"]
+      - name: "viewer"
+        permissions: ["read", "monitor"]
+        
+  encryption:
+    in_transit: true
+    at_rest: false
+    algorithm: "AES-256-GCM"
+    
+  audit:
+    log_all_actions: true
+    retention_days: 90
+    sensitive_fields: ["passwords", "tokens", "keys"]

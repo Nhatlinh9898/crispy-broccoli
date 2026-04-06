@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain OS - Neural Operating System Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes pulse-brain {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .brain-pulse {
+            animation: pulse-brain 2s infinite;
+        }
+        .neural-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="neural-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-effect p-6 mb-8">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center brain-pulse">
+                        🧠
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Brain OS</h1>
+                        <p class="text-purple-200">Neural Operating System for AmazeBid</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="system-status" class="px-4 py-2 bg-green-500 rounded-full text-sm">
+                        Initializing...
+                    </div>
+                    <div id="system-health" class="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                        Health: --
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6">
+        <!-- System Overview -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🏗️ System Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Agents</h3>
+                    <div id="agents-count" class="text-3xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Registered</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Tasks</h3>
+                    <div id="tasks-count" class="text-3xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Processed</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Messages</h3>
+                    <div id="messages-count" class="text-3xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Exchanged</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Uptime</h3>
+                    <div id="uptime" class="text-3xl font-bold">0s</div>
+                    <div class="text-sm text-purple-200">Running</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brain Architecture Visualization -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧠 Brain Architecture</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- CPU 0 - Logic Brain -->
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold mb-4 text-blue-300">CPU 0 - Logic Brain</h3>
+                        <div class="space-y-2" id="cpu0-agents">
+                            <div class="bg-blue-600 bg-opacity-50 p-2 rounded">Canonicalizer</div>
+                            <div class="bg-blue-600 bg-opacity-50 p-2 rounded">Planner</div>
+                            <div class="bg-blue-600 bg-opacity-50 p-2 rounded">Selector</div>
+                            <div class="bg-purple-600 bg-opacity-50 p-2 rounded">Meta-Observer</div>
+                            <div class="bg-purple-600 bg-opacity-50 p-2 rounded">Meta-Analyzer</div>
+                            <div class="bg-purple-600 bg-opacity-50 p-2 rounded">Meta-Planner</div>
+                        </div>
+                    </div>
+
+                    <!-- Message Bus -->
+                    <div class="text-center flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-yellow-500 rounded-full flex items-center justify-center mb-4 brain-pulse">
+                                🔄
+                            </div>
+                            <h3 class="text-lg font-bold">Message Bus</h3>
+                            <p class="text-sm text-purple-200">Neural Communication</p>
+                        </div>
+                    </div>
+
+                    <!-- CPU 1 - Compute Brain -->
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold mb-4 text-green-300">CPU 1 - Compute Brain</h3>
+                        <div class="space-y-2" id="cpu1-agents">
+                            <div class="bg-green-600 bg-opacity-50 p-2 rounded">Data Processor</div>
+                            <div class="bg-green-600 bg-opacity-50 p-2 rounded">Embedding Engine</div>
+                            <div class="bg-green-600 bg-opacity-50 p-2 rounded">Model Runner</div>
+                            <div class="bg-green-600 bg-opacity-50 p-2 rounded">Evaluator</div>
+                            <div class="bg-green-600 bg-opacity-50 p-2 rounded">Experiment Runner</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task Submission -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🚀 Task Submission</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Task Type</label>
+                        <select id="task-type" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="inference">Product Search (Inference)</option>
+                            <option value="meta_analysis">Performance Analysis</option>
+                            <option value="meta_planning">Evolution Planning</option>
+                            <option value="experiment">Model Experiment</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Priority</label>
+                        <select id="task-priority" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="1">High (1)</option>
+                            <option value="2">Medium (2)</option>
+                            <option value="3">Low (3)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-2">Query / Payload</label>
+                    <textarea id="task-payload" rows="3" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600" 
+                        placeholder="Enter search query, analysis request, or experiment parameters...">bu lông thép M8 cao cấp</textarea>
+                </div>
+                <button id="submit-task" class="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors">
+                    Submit Task
+                </button>
+                <div id="task-result" class="mt-4 p-4 bg-green-600 bg-opacity-30 rounded-lg hidden">
+                    <h4 class="font-semibold mb-2">Task Result:</h4>
+                    <pre id="task-result-content" class="text-sm whitespace-pre-wrap"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-time Metrics -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📊 Real-time Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">System Performance</h3>
+                    <canvas id="performance-chart"></canvas>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Task Distribution</h3>
+                    <canvas id="task-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agent Status -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🤖 Agent Status</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div id="agent-status-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Agent cards will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Message Log -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">💬 Message Log</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div id="message-log" class="h-64 overflow-y-auto space-y-2 text-sm font-mono">
+                    <!-- Messages will appear here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect p-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p>Brain OS - Neural Operating System © 2026 | AmazeBid Self-Evolving AI</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { getBrainOS } from '../js/brain-os/brain-os-main.js';
+
+        // Global variables
+        let brainOS;
+        let performanceChart;
+        let taskChart;
+        let metricsInterval;
+        let uptimeInterval;
+
+        // Initialize demo
+        async function initializeDemo() {
+            try {
+                brainOS = getBrainOS();
+                await brainOS.initialize();
+                
+                console.log('Brain OS initialized successfully');
+                
+                // Setup UI
+                setupEventListeners();
+                initializeCharts();
+                startMetricsUpdates();
+                updateSystemStatus();
+                
+                // Subscribe to message events
+                brainOS.messageBus.subscribe('demo', 'system_events', handleSystemEvent);
+                brainOS.messageBus.subscribe('demo', 'result', handleTaskResult);
+                
+                addMessage('🚀 Brain OS initialized successfully', 'success');
+                
+            } catch (error) {
+                console.error('Failed to initialize Brain OS:', error);
+                addMessage('❌ Failed to initialize Brain OS: ' + error.message, 'error');
+                updateSystemStatus('error');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('submit-task').addEventListener('click', submitTask);
+        }
+
+        // Submit task
+        async function submitTask() {
+            const taskType = document.getElementById('task-type').value;
+            const priority = parseInt(document.getElementById('task-priority').value);
+            const payload = document.getElementById('task-payload').value;
+
+            if (!payload.trim()) {
+                addMessage('⚠️ Please enter a task payload', 'warning');
+                return;
+            }
+
+            try {
+                const taskId = await brainOS.submitTask({
+                    type: taskType,
+                    origin: 'demo',
+                    payload: payload,
+                    constraints: {
+                        priority: priority,
+                        cpu: taskType.startsWith('meta') ? 'cpu0' : 'any'
+                    }
+                });
+
+                addMessage(`📤 Task submitted: ${taskId} (${taskType})`, 'info');
+                
+                // Show loading state
+                const resultDiv = document.getElementById('task-result');
+                resultDiv.classList.remove('hidden');
+                document.getElementById('task-result-content').textContent = 'Processing...';
+
+            } catch (error) {
+                addMessage('❌ Failed to submit task: ' + error.message, 'error');
+            }
+        }
+
+        // Handle task results
+        function handleTaskResult(message) {
+            const { task_id, result, error } = message.payload;
+            
+            const resultDiv = document.getElementById('task-result');
+            const contentDiv = document.getElementById('task-result-content');
+            
+            if (error) {
+                contentDiv.textContent = `Error: ${error}`;
+                addMessage(`❌ Task ${task_id} failed: ${error}`, 'error');
+            } else {
+                contentDiv.textContent = JSON.stringify(result, null, 2);
+                addMessage(`✅ Task ${task_id} completed successfully`, 'success');
+            }
+        }
+
+        // Handle system events
+        function handleSystemEvent(message) {
+            const { event_type, event_data } = message.payload;
+            addMessage(`🔔 System Event: ${event_type}`, 'info');
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Performance chart
+            const perfCtx = document.getElementById('performance-chart').getContext('2d');
+            performanceChart = new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'System Health',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Task distribution chart
+            const taskCtx = document.getElementById('task-chart').getContext('2d');
+            taskChart = new Chart(taskCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Running', 'Queued', 'Failed'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(255, 99, 132, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }
+
+        // Start metrics updates
+        function startMetricsUpdates() {
+            metricsInterval = setInterval(updateMetrics, 2000);
+            uptimeInterval = setInterval(updateUptime, 1000);
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            if (!brainOS || !brainOS.initialized) return;
+
+            const status = brainOS.getSystemStatus();
+            
+            // Update counters
+            document.getElementById('agents-count').textContent = status.agents.total_agents;
+            document.getElementById('tasks-count').textContent = status.metrics.tasks_processed;
+            document.getElementById('messages-count').textContent = status.message_bus.messages_sent;
+            
+            // Update system health
+            const health = status.system_health;
+            document.getElementById('system-health').textContent = `Health: ${health}%`;
+            
+            // Update health color
+            const healthElement = document.getElementById('system-health');
+            healthElement.className = `px-4 py-2 rounded-full text-sm ${
+                health >= 80 ? 'bg-green-500' : 
+                health >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+            }`;
+
+            // Update performance chart
+            if (performanceChart) {
+                const chart = performanceChart;
+                chart.data.labels.push(new Date().toLocaleTimeString());
+                chart.data.datasets[0].data.push(health);
+                
+                // Keep only last 20 points
+                if (chart.data.labels.length > 20) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+                
+                chart.update('none');
+            }
+
+            // Update task chart
+            if (taskChart) {
+                const scheduler = status.scheduler;
+                taskChart.data.datasets[0].data = [
+                    scheduler.tasks_completed,
+                    scheduler.running_tasks,
+                    scheduler.queue_length,
+                    scheduler.tasks_failed
+                ];
+                taskChart.update('none');
+            }
+
+            // Update agent status
+            updateAgentStatus(status.agents);
+        }
+
+        // Update agent status grid
+        function updateAgentStatus(agents) {
+            const grid = document.getElementById('agent-status-grid');
+            grid.innerHTML = '';
+
+            agents.active_agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'bg-green-600 bg-opacity-30 p-3 rounded-lg';
+                card.innerHTML = `
+                    <h4 class="font-semibold">${agent.agent_id}</h4>
+                    <p class="text-sm text-green-200">${agent.role}</p>
+                    <p class="text-xs">CPU: ${agent.cpu_affinity}</p>
+                    <p class="text-xs">Priority: ${agent.priority}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Update uptime
+        function updateUptime() {
+            if (!brainOS || !brainOS.initialized) return;
+
+            const uptime = Date.now() - brainOS.startTime;
+            const seconds = Math.floor(uptime / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
+            let uptimeText = '';
+            if (hours > 0) {
+                uptimeText = `${hours}h ${minutes % 60}m`;
+            } else if (minutes > 0) {
+                uptimeText = `${minutes}m ${seconds % 60}s`;
+            } else {
+                uptimeText = `${seconds}s`;
+            }
+
+            document.getElementById('uptime').textContent = uptimeText;
+        }
+
+        // Update system status
+        function updateSystemStatus(status = 'ready') {
+            const statusElement = document.getElementById('system-status');
+            
+            const statusConfig = {
+                'ready': { text: 'Ready', class: 'bg-green-500' },
+                'initializing': { text: 'Initializing...', class: 'bg-yellow-500' },
+                'error': { text: 'Error', class: 'bg-red-500' },
+                'running': { text: 'Running', class: 'bg-blue-500' }
+            };
+
+            const config = statusConfig[status] || statusConfig['ready'];
+            statusElement.textContent = config.text;
+            statusElement.className = `px-4 py-2 rounded-full text-sm ${config.class}`;
+        }
+
+        // Add message to log
+        function addMessage(message, type = 'info') {
+            const log = document.getElementById('message-log');
+            const messageDiv = document.createElement('div');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const typeColors = {
+                'info': 'text-blue-300',
+                'success': 'text-green-300',
+                'warning': 'text-yellow-300',
+                'error': 'text-red-300'
+            };
+
+            messageDiv.className = typeColors[type] || 'text-gray-300';
+            messageDiv.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(messageDiv);
+            log.scrollTop = log.scrollHeight;
+
+            // Keep only last 50 messages
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeDemo);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
+            if (brainOS) {
+                await brainOS.shutdown();
+            }
+        });
+    </script>
+</body>
+</html>

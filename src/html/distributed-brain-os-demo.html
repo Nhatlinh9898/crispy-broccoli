@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Brain OS - Multi-Server Neural Network Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes pulse-neural {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        .neural-pulse {
+            animation: pulse-neural 3s infinite;
+        }
+        .distributed-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .node-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .lineage-line {
+            stroke: rgba(255, 255, 255, 0.5);
+            stroke-width: 2;
+            fill: none;
+        }
+        .sync-animation {
+            animation: sync-pulse 2s infinite;
+        }
+        @keyframes sync-pulse {
+            0%, 100% { stroke-dashoffset: 0; }
+            50% { stroke-dashoffset: 10; }
+        }
+    </style>
+</head>
+<body class="distributed-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-effect p-6 mb-8">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center neural-pulse">
+                        🌐
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Distributed Brain OS</h1>
+                        <p class="text-purple-200">Multi-Server Neural Lineage System</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="node-id" class="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                        Node: ---
+                    </div>
+                    <div id="generation" class="px-4 py-2 bg-green-500 rounded-full text-sm">
+                        Gen: ---
+                    </div>
+                    <div id="network-status" class="px-4 py-2 bg-purple-500 rounded-full text-sm">
+                        Network: ---
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6">
+        <!-- Network Overview -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🌐 Network Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Active Nodes</h3>
+                    <div id="active-nodes" class="text-3xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Connected</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Generations</h3>
+                    <div id="generations-count" class="text-3xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Evolved</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Sync Health</h3>
+                    <div id="sync-health" class="text-3xl font-bold">0%</div>
+                    <div class="text-sm text-purple-200">Synchronized</div>
+                </div>
+                <div class="glass-effect p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Lineage Size</h3>
+                    <div id="lineage-size" class="text-3xl font-bold">0</div>
+                    <div class="text-sm text-purple-200">Nodes</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Distributed Architecture Visualization -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧠 Distributed Neural Architecture</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Network Topology -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-blue-300">Network Topology</h3>
+                        <div id="network-topology" class="relative h-96 bg-purple-900 bg-opacity-30 rounded-lg p-4">
+                            <svg id="topology-svg" class="w-full h-full">
+                                <!-- Network visualization will be drawn here -->
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Lineage Tree -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-green-300">Neural Lineage Tree</h3>
+                        <div id="lineage-tree" class="relative h-96 bg-purple-900 bg-opacity-30 rounded-lg p-4 overflow-auto">
+                            <svg id="lineage-svg" class="w-full h-full">
+                                <!-- Lineage visualization will be drawn here -->
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Node Grid -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🤖 Active Nodes</h2>
+            <div id="node-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Node cards will be populated here -->
+            </div>
+        </section>
+
+        <!-- DNA Management -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧬 DNA Evolution</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- DNA Information -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-purple-300">Current DNA</h3>
+                        <div class="space-y-3">
+                            <div class="bg-purple-800 bg-opacity-50 p-3 rounded">
+                                <div class="font-semibold">DNA ID:</div>
+                                <div id="current-dna-id" class="text-sm">---</div>
+                            </div>
+                            <div class="bg-purple-800 bg-opacity-50 p-3 rounded">
+                                <div class="font-semibold">Version:</div>
+                                <div id="dna-version" class="text-sm">---</div>
+                            </div>
+                            <div class="bg-purple-800 bg-opacity-50 p-3 rounded">
+                                <div class="font-semibold">Mutations:</div>
+                                <div id="dna-mutations" class="text-sm">None</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evolution Controls -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4 text-green-300">Evolution Controls</h3>
+                        <div class="space-y-3">
+                            <button id="mutate-dna" class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors">
+                                🧬 Mutate DNA
+                            </button>
+                            <button id="trigger-evolution" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors">
+                                🔄 Trigger Evolution
+                            </button>
+                            <button id="spawn-node" class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors">
+                                🌱 Spawn New Node
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Distributed Task Submission -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🚀 Distributed Task Execution</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Task Type</label>
+                        <select id="distributed-task-type" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="inference">Product Search</option>
+                            <option value="evolution">Model Evolution</option>
+                            <option value="sync">Network Sync</option>
+                            <option value="analysis">System Analysis</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Execution Node</label>
+                        <select id="execution-node" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="any">Any Node</option>
+                            <option value="master">Master Node</option>
+                            <option value="workers">Worker Nodes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Coordination</label>
+                        <select id="coordination-type" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="independent">Independent</option>
+                            <option value="distributed">Distributed</option>
+                            <option value="coordinated">Coordinated</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-2">Task Payload</label>
+                    <textarea id="distributed-task-payload" rows="3" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600" 
+                        placeholder="Enter distributed task parameters...">distributed product search across all nodes</textarea>
+                </div>
+                <button id="submit-distributed-task" class="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors">
+                    Submit Distributed Task
+                </button>
+                <div id="distributed-task-result" class="mt-4 p-4 bg-green-600 bg-opacity-30 rounded-lg hidden">
+                    <h4 class="font-semibold mb-2">Task Result:</h4>
+                    <pre id="distributed-task-result-content" class="text-sm whitespace-pre-wrap"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-time Metrics -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📊 Distributed Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Network Performance</h3>
+                    <canvas id="network-chart"></canvas>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Evolution Progress</h3>
+                    <canvas id="evolution-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sync Log -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">💬 Network Activity Log</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div id="network-log" class="h-64 overflow-y-auto space-y-2 text-sm font-mono">
+                    <!-- Network events will appear here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect p-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p>Distributed Brain OS - Multi-Server Neural Lineage System © 2026 | AmazeBid Evolution</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { getDistributedBrainOS } from '../js/brain-os/distributed/distributed-brain-os.js';
+
+        // Global variables
+        let distributedBrainOS;
+        let networkChart;
+        let evolutionChart;
+        let metricsInterval;
+        let topologyInterval;
+
+        // Initialize demo
+        async function initializeDemo() {
+            try {
+                // Generate unique node ID
+                const nodeId = `node_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+                const isMaster = window.location.search.includes('master=true');
+                
+                distributedBrainOS = getDistributedBrainOS(nodeId, isMaster);
+                await distributedBrainOS.initialize();
+                
+                console.log('Distributed Brain OS initialized successfully');
+                
+                // Setup UI
+                setupEventListeners();
+                initializeCharts();
+                startMetricsUpdates();
+                updateNodeInfo();
+                
+                // Subscribe to distributed events
+                distributedBrainOS.baseBrainOS.messageBus.subscribe('demo', 'distributed_event', handleDistributedEvent);
+                
+                addNetworkEvent('🚀 Distributed Brain OS initialized', 'success');
+                
+            } catch (error) {
+                console.error('Failed to initialize Distributed Brain OS:', error);
+                addNetworkEvent('❌ Failed to initialize: ' + error.message, 'error');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('mutate-dna').addEventListener('click', mutateDNA);
+            document.getElementById('trigger-evolution').addEventListener('click', triggerEvolution);
+            document.getElementById('spawn-node').addEventListener('click', spawnNewNode);
+            document.getElementById('submit-distributed-task').addEventListener('click', submitDistributedTask);
+        }
+
+        // Update node information
+        function updateNodeInfo() {
+            const status = distributedBrainOS.getDistributedSystemStatus();
+            
+            document.getElementById('node-id').textContent = `Node: ${status.distributed.node_id}`;
+            document.getElementById('generation').textContent = `Gen: ${status.distributed.generation}`;
+            document.getElementById('current-dna-id').textContent = status.distributed.dna_id || '---';
+            document.getElementById('dna-version').textContent = status.distributed.dna_id ? '1.0.0' : '---';
+            
+            // Update network status
+            const networkStatusEl = document.getElementById('network-status');
+            const activeNodes = status.distributed.network_overview.active_nodes;
+            
+            if (activeNodes > 1) {
+                networkStatusEl.textContent = `Network: ${activeNodes} nodes`;
+                networkStatusEl.className = 'px-4 py-2 bg-green-500 rounded-full text-sm';
+            } else {
+                networkStatusEl.textContent = 'Network: Solo';
+                networkStatusEl.className = 'px-4 py-2 bg-yellow-500 rounded-full text-sm';
+            }
+        }
+
+        // Submit distributed task
+        async function submitDistributedTask() {
+            const taskType = document.getElementById('distributed-task-type').value;
+            const executionNode = document.getElementById('execution-node').value;
+            const coordinationType = document.getElementById('coordination-type').value;
+            const payload = document.getElementById('distributed-task-payload').value;
+
+            if (!payload.trim()) {
+                addNetworkEvent('⚠️ Please enter a task payload', 'warning');
+                return;
+            }
+
+            try {
+                const taskId = await distributedBrainOS.submitDistributedTask({
+                    type: taskType,
+                    origin: 'demo',
+                    payload: payload,
+                    constraints: {
+                        priority: 1,
+                        coordination_type: coordinationType
+                    }
+                }, executionNode, coordinationType);
+
+                addNetworkEvent(`📤 Distributed task submitted: ${taskId} to ${executionNode}`, 'info');
+                
+                // Show loading state
+                const resultDiv = document.getElementById('distributed-task-result');
+                resultDiv.classList.remove('hidden');
+                document.getElementById('distributed-task-result-content').textContent = 'Processing across network...';
+
+            } catch (error) {
+                addNetworkEvent('❌ Failed to submit distributed task: ' + error.message, 'error');
+            }
+        }
+
+        // Mutate DNA
+        async function mutateDNA() {
+            try {
+                await distributedBrainOS.executeEvolution('dna_mutation', {
+                    mutation_strength: 0.1,
+                    target_genes: ['ensemble_weights', 'thresholds']
+                });
+
+                addNetworkEvent('🧬 DNA mutation initiated', 'success');
+                updateNodeInfo();
+                
+            } catch (error) {
+                addNetworkEvent('❌ DNA mutation failed: ' + error.message, 'error');
+            }
+        }
+
+        // Trigger evolution
+        async function triggerEvolution() {
+            try {
+                await distributedBrainOS.executeEvolution('model_evolution', {
+                    evolution_type: 'incremental',
+                    target_models: ['transformer', 'gnn']
+                });
+
+                addNetworkEvent('🔄 Evolution triggered', 'success');
+                
+            } catch (error) {
+                addNetworkEvent('❌ Evolution failed: ' + error.message, 'error');
+            }
+        }
+
+        // Spawn new node
+        function spawnNewNode() {
+            const newNodeId = `node_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+            
+            addNetworkEvent(`🌱 Spawning new node: ${newNodeId}`, 'info');
+            
+            // Simulate node spawning (in real system, this would deploy new instance)
+            setTimeout(() => {
+                addNetworkEvent(`✅ Node ${newNodeId} spawned successfully`, 'success');
+                updateNodeGrid();
+            }, 2000);
+        }
+
+        // Handle distributed events
+        function handleDistributedEvent(message) {
+            const { event_type, data } = message.payload;
+            addNetworkEvent(`🔔 ${event_type}: ${JSON.stringify(data)}`, 'info');
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Network performance chart
+            const networkCtx = document.getElementById('network-chart').getContext('2d');
+            networkChart = new Chart(networkCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Network Health',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.1
+                    }, {
+                        label: 'Sync Health',
+                        data: [],
+                        borderColor: 'rgb(255, 206, 86)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Evolution chart
+            const evolutionCtx = document.getElementById('evolution-chart').getContext('2d');
+            evolutionChart = new Chart(evolutionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Gen 0', 'Gen 1', 'Gen 2', 'Gen 3'],
+                    datasets: [{
+                        label: 'Nodes per Generation',
+                        data: [1, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(75, 192, 192, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Start metrics updates
+        function startMetricsUpdates() {
+            metricsInterval = setInterval(() => {
+                updateMetrics();
+                updateNodeGrid();
+                updateNetworkTopology();
+            }, 3000);
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            if (!distributedBrainOS || !distributedBrainOS.initialized) return;
+
+            const status = distributedBrainOS.getDistributedSystemStatus();
+            
+            // Update counters
+            document.getElementById('active-nodes').textContent = status.distributed.network_overview.active_nodes;
+            document.getElementById('generations-count').textContent = Object.keys(status.distributed.network_overview.generations).length;
+            document.getElementById('sync-health').textContent = `${status.distributed.sync_stats.sync_health || 0}%`;
+            document.getElementById('lineage-size').textContent = status.distributed.lineage_tree_size;
+
+            // Update network chart
+            if (networkChart) {
+                const chart = networkChart;
+                chart.data.labels.push(new Date().toLocaleTimeString());
+                chart.data.datasets[0].data.push(status.system_health);
+                chart.data.datasets[1].data.push(status.distributed.sync_stats.sync_health || 0);
+                
+                // Keep only last 20 points
+                if (chart.data.labels.length > 20) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                    chart.data.datasets[1].data.shift();
+                }
+                
+                chart.update('none');
+            }
+
+            // Update evolution chart
+            if (evolutionChart) {
+                const generations = status.distributed.network_overview.generations;
+                const data = [0, 0, 0, 0];
+                
+                Object.keys(generations).forEach(gen => {
+                    const genIndex = Math.min(parseInt(gen), 3);
+                    data[genIndex] = generations[gen];
+                });
+                
+                evolutionChart.data.datasets[0].data = data;
+                evolutionChart.update('none');
+            }
+        }
+
+        // Update node grid
+        function updateNodeGrid() {
+            const grid = document.getElementById('node-grid');
+            grid.innerHTML = '';
+
+            // Simulate some nodes for demo
+            const nodes = [
+                { id: distributedBrainOS.nodeId, generation: distributedBrainOS.distributedState.generation, status: 'active', master: distributedBrainOS.isMasterNode },
+                { id: 'node_demo_1', generation: 1, status: 'active', master: false },
+                { id: 'node_demo_2', generation: 2, status: 'active', master: false }
+            ];
+
+            nodes.forEach(node => {
+                const card = document.createElement('div');
+                card.className = 'node-card p-4 rounded-lg';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold">${node.id}</h4>
+                        <span class="px-2 py-1 ${node.master ? 'bg-purple-600' : 'bg-blue-600'} rounded text-xs">
+                            ${node.master ? 'Master' : 'Worker'}
+                        </span>
+                    </div>
+                    <p class="text-sm text-purple-200">Generation: ${node.generation}</p>
+                    <p class="text-sm text-purple-200">Status: ${node.status}</p>
+                    <div class="mt-2 flex space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-xs">Active</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Update network topology visualization
+        function updateNetworkTopology() {
+            const svg = document.getElementById('topology-svg');
+            svg.innerHTML = '';
+
+            // Simple network visualization
+            const nodes = [
+                { id: distributedBrainOS.nodeId, x: 150, y: 100, master: distributedBrainOS.isMasterNode },
+                { id: 'node_demo_1', x: 50, y: 200, master: false },
+                { id: 'node_demo_2', x: 250, y: 200, master: false }
+            ];
+
+            // Draw connections
+            nodes.forEach((node, i) => {
+                if (i > 0) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', nodes[0].x);
+                    line.setAttribute('y1', nodes[0].y);
+                    line.setAttribute('x2', node.x);
+                    line.setAttribute('y2', node.y);
+                    line.setAttribute('class', 'lineage-line sync-animation');
+                    line.setAttribute('stroke-dasharray', '5,5');
+                    svg.appendChild(line);
+                }
+            });
+
+            // Draw nodes
+            nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '20');
+                circle.setAttribute('fill', node.master ? '#9333ea' : '#3b82f6');
+                circle.setAttribute('class', 'neural-pulse');
+                svg.appendChild(circle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 35);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-size', '12');
+                text.textContent = node.id.substring(0, 12);
+                svg.appendChild(text);
+            });
+        }
+
+        // Add network event to log
+        function addNetworkEvent(message, type = 'info') {
+            const log = document.getElementById('network-log');
+            const eventDiv = document.createElement('div');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const typeColors = {
+                'info': 'text-blue-300',
+                'success': 'text-green-300',
+                'warning': 'text-yellow-300',
+                'error': 'text-red-300'
+            };
+
+            eventDiv.className = typeColors[type] || 'text-gray-300';
+            eventDiv.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(eventDiv);
+            log.scrollTop = log.scrollHeight;
+
+            // Keep only last 50 messages
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeDemo);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
+            if (distributedBrainOS) {
+                await distributedBrainOS.shutdown();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Integration Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes neural-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        .neural-pulse {
+            animation: neural-pulse 3s infinite;
+        }
+        .neural-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .neural-network {
+            background: linear-gradient(45deg, #4ade80 25%, #3b82f6 25%, #3b82f6 50%, #4ade80 50%, #4ade80 75%, #3b82f6 75%);
+            background-size: 30px 30px;
+            animation: network-flow 4s linear infinite;
+        }
+        @keyframes network-flow {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 30px; }
+        }
+        .brain-region {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .brain-region:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .confidence-bar {
+            height: 8px;
+            background: linear-gradient(90deg, #ef4444 0%, #fbbf24 50%, #10b981 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+        .confidence-indicator {
+            position: absolute;
+            top: -2px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #3b82f6;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body class="neural-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-effect p-6 mb-8">
+        <div class="container mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 neural-network rounded-full flex items-center justify-center neural-pulse">
+                        🧠
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Neural Integration</h1>
+                        <p class="text-purple-200">Real neural networks integrated with Brain OS</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="integration-status" class="px-4 py-2 bg-green-500 rounded-full text-sm">
+                        Active
+                    </div>
+                    <div id="neural-confidence" class="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                        Confidence: ---
+                    </div>
+                    <div id="processing-mode" class="px-4 py-2 bg-purple-500 rounded-full text-sm">
+                        Mode: ---
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6">
+        <!-- Brain Regions Overview -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧠 Neural Brain Regions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="brain-region glass-effect p-4 rounded-lg border border-blue-400" data-region="broca_area">
+                    <h3 class="text-lg font-semibold mb-2 text-blue-300">Broca's Area</h3>
+                    <p class="text-sm text-purple-200">Language Processing</p>
+                    <div class="mt-2">
+                        <div class="text-xs">Model: Transformer</div>
+                        <div class="text-xs">Status: <span class="text-green-400">Active</span></div>
+                    </div>
+                </div>
+                <div class="brain-region glass-effect p-4 rounded-lg border border-green-400" data-region="visual_cortex">
+                    <h3 class="text-lg font-semibold mb-2 text-green-300">Visual Cortex</h3>
+                    <p class="text-sm text-purple-200">Feature Extraction</p>
+                    <div class="mt-2">
+                        <div class="text-xs">Model: CNN</div>
+                        <div class="text-xs">Status: <span class="text-green-400">Active</span></div>
+                    </div>
+                </div>
+                <div class="brain-region glass-effect p-4 rounded-lg border border-purple-400" data-region="cerebellum">
+                    <h3 class="text-lg font-semibold mb-2 text-purple-300">Cerebellum</h3>
+                    <p class="text-sm text-purple-200">Motor Control</p>
+                    <div class="mt-2">
+                        <div class="text-xs">Model: Feedforward</div>
+                        <div class="text-xs">Status: <span class="text-green-400">Active</span></div>
+                    </div>
+                </div>
+                <div class="brain-region glass-effect p-4 rounded-lg border border-yellow-400" data-region="hippocampus">
+                    <h3 class="text-lg font-semibold mb-2 text-yellow-300">Hippocampus</h3>
+                    <p class="text-sm text-purple-200">Memory Network</p>
+                    <div class="mt-2">
+                        <div class="text-xs">Model: Memory Net</div>
+                        <div class="text-xs">Status: <span class="text-green-400">Active</span></div>
+                    </div>
+                </div>
+                <div class="brain-region glass-effect p-4 rounded-lg border border-red-400" data-region="prefrontal_cortex">
+                    <h3 class="text-lg font-semibold mb-2 text-red-300">Prefrontal Cortex</h3>
+                    <p class="text-sm text-purple-200">Decision Making</p>
+                    <div class="mt-2">
+                        <div class="text-xs">Model: Decision Net</div>
+                        <div class="text-xs">Status: <span class="text-green-400">Active</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Neural Pipeline -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🔄 Neural Processing Pipeline</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-2">
+                    <div id="pipeline-canonicalizer" class="text-center p-3 bg-blue-600 bg-opacity-30 rounded border border-blue-600">
+                        <div class="font-semibold text-sm">Canonicalizer</div>
+                        <div class="text-xs mt-1">Language</div>
+                    </div>
+                    <div id="pipeline-planner" class="text-center p-3 bg-purple-600 bg-opacity-30 rounded border border-purple-600">
+                        <div class="font-semibold text-sm">Planner</div>
+                        <div class="text-xs mt-1">Decision</div>
+                    </div>
+                    <div id="pipeline-data-processor" class="text-center p-3 bg-green-600 bg-opacity-30 rounded border border-green-600">
+                        <div class="font-semibold text-sm">Data Processor</div>
+                        <div class="text-xs mt-1">Features</div>
+                    </div>
+                    <div id="pipeline-model-runner" class="text-center p-3 bg-purple-600 bg-opacity-30 rounded border border-purple-600">
+                        <div class="font-semibold text-sm">Model Runner</div>
+                        <div class="text-xs mt-1">Inference</div>
+                    </div>
+                    <div id="pipeline-evaluator" class="text-center p-3 bg-cyan-600 bg-opacity-30 rounded border border-cyan-600">
+                        <div class="font-semibold text-sm">Evaluator</div>
+                        <div class="text-xs mt-1">Metrics</div>
+                    </div>
+                    <div id="pipeline-selector" class="text-center p-3 bg-red-600 bg-opacity-30 rounded border border-red-600">
+                        <div class="font-semibold text-sm">Selector</div>
+                        <div class="text-xs mt-1">Decision</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task Processing -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🚀 Neural Task Processing</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Task Type</label>
+                        <select id="neural-task-type" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="inference">Product Search (Neural)</option>
+                            <option value="analysis">Sentiment Analysis</option>
+                            <option value="recommendation">Product Recommendation</option>
+                            <option value="prediction">Demand Prediction</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Processing Mode</label>
+                        <select id="processing-mode-select" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600">
+                            <option value="neural">Neural Only</option>
+                            <option value="hybrid">Hybrid (Neural + Classic)</option>
+                            <option value="auto">Auto (Best Choice)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="block text-sm font-medium mb-2">Task Input</label>
+                    <textarea id="neural-task-input" rows="3" class="w-full p-2 bg-purple-800 bg-opacity-50 rounded border border-purple-600" 
+                        placeholder="Enter neural task input...">tìm bu lông thép M8 cao cấp cho ô tô</textarea>
+                </div>
+                <div class="mt-4 flex space-x-4">
+                    <button id="submit-neural-task" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg font-semibold transition-colors">
+                        Process with Neural
+                    </button>
+                    <button id="train-neural" class="px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors">
+                        Train Networks
+                    </button>
+                    <button id="evolve-neural" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors">
+                        Evolve Models
+                    </button>
+                </div>
+                <div id="neural-task-result" class="mt-4 p-4 bg-green-600 bg-opacity-30 rounded-lg hidden">
+                    <h4 class="font-semibold mb-2">Neural Processing Result:</h4>
+                    <div id="neural-result-content" class="space-y-2">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Neural Metrics -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📊 Neural Performance Metrics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Processing Performance</h3>
+                    <canvas id="performance-chart"></canvas>
+                </div>
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Neural Confidence</h3>
+                    <canvas id="confidence-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Evolution -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">🧬 Model Evolution</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-blue-300">Evolution History</h3>
+                        <div id="evolution-history" class="space-y-2 max-h-64 overflow-y-auto">
+                            <!-- Evolution history will be populated here -->
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 text-green-300">Model Performance</h3>
+                        <div id="model-performance" class="space-y-2">
+                            <!-- Model performance will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Neural Log -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold mb-4">📋 Neural Activity Log</h2>
+            <div class="glass-effect p-6 rounded-lg">
+                <div id="neural-log" class="h-64 overflow-y-auto space-y-2 text-sm font-mono">
+                    <!-- Neural events will appear here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect p-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p>Neural Integration - Real AI with Brain OS © 2026 | AmazeBid Evolution</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { NeuralIntegration } from '../js/brain-os/neural/neural-integration.js';
+
+        // Global variables
+        let neuralIntegration;
+        let performanceChart;
+        let confidenceChart;
+        let metricsInterval;
+
+        // Initialize demo
+        async function initializeDemo() {
+            try {
+                // Initialize neural integration
+                neuralIntegration = new NeuralIntegration();
+                await neuralIntegration.initialize('neural_integration_demo');
+                
+                console.log('Neural Integration initialized successfully');
+                
+                // Setup UI
+                setupEventListeners();
+                initializeCharts();
+                startMetricsUpdates();
+                updateIntegrationStatus();
+                
+                // Setup brain region interactions
+                setupBrainRegionInteractions();
+                
+                addNeuralLog('🧠 Neural Integration initialized successfully', 'success');
+                
+            } catch (error) {
+                console.error('Failed to initialize Neural Integration:', error);
+                addNeuralLog('❌ Failed to initialize: ' + error.message, 'error');
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('submit-neural-task').addEventListener('click', submitNeuralTask);
+            document.getElementById('train-neural').addEventListener('click', trainNeuralNetworks);
+            document.getElementById('evolve-neural').addEventListener('click', evolveNeuralModels);
+            document.getElementById('processing-mode-select').addEventListener('change', updateProcessingMode);
+        }
+
+        // Setup brain region interactions
+        function setupBrainRegionInteractions() {
+            document.querySelectorAll('.brain-region').forEach(region => {
+                region.addEventListener('click', () => {
+                    const regionName = region.dataset.region;
+                    showRegionDetails(regionName);
+                });
+            });
+        }
+
+        // Show region details
+        function showRegionDetails(regionName) {
+            const regionNames = {
+                'broca_area': 'Broca\'s Area - Language Processing',
+                'visual_cortex': 'Visual Cortex - Feature Extraction',
+                'cerebellum': 'Cerebellum - Motor Control',
+                'hippocampus': 'Hippocampus - Memory Network',
+                'prefrontal_cortex': 'Prefrontal Cortex - Decision Making'
+            };
+            
+            addNeuralLog(`🧠 Selected region: ${regionNames[regionName]}`, 'info');
+        }
+
+        // Update integration status
+        function updateIntegrationStatus() {
+            const status = neuralIntegration.getIntegrationStatus();
+            
+            document.getElementById('integration-status').textContent = 
+                status.initialized ? 'Active' : 'Inactive';
+            document.getElementById('integration-status').className = 
+                status.initialized ? 'px-4 py-2 bg-green-500 rounded-full text-sm' : 
+                'px-4 py-2 bg-red-500 rounded-full text-sm';
+            
+            updateModelPerformance(status.neural_metrics);
+            updateEvolutionHistory(status.evolution_history);
+        }
+
+        // Submit neural task
+        async function submitNeuralTask() {
+            const taskType = document.getElementById('neural-task-type').value;
+            const processingMode = document.getElementById('processing-mode-select').value;
+            const input = document.getElementById('neural-task-input').value;
+
+            if (!input.trim()) {
+                addNeuralLog('⚠️ Please enter task input', 'warning');
+                return;
+            }
+
+            try {
+                addNeuralLog(`🚀 Processing ${taskType} task with neural networks...`, 'info');
+                
+                // Simulate neural processing
+                const result = await simulateNeuralProcessing(taskType, input, processingMode);
+                
+                // Display result
+                displayNeuralResult(result);
+                
+                addNeuralLog(`✅ Neural processing completed with confidence: ${result.confidence.toFixed(3)}`, 'success');
+                
+                // Update confidence display
+                document.getElementById('neural-confidence').textContent = `Confidence: ${(result.confidence * 100).toFixed(1)}%`;
+                
+            } catch (error) {
+                addNeuralLog('❌ Neural processing failed: ' + error.message, 'error');
+            }
+        }
+
+        // Simulate neural processing
+        async function simulateNeuralProcessing(taskType, input, processingMode) {
+            // Simulate pipeline processing
+            const pipelineStages = ['canonicalizer', 'planner', 'data_processor', 'model_runner', 'evaluator', 'selector'];
+            
+            for (const stage of pipelineStages) {
+                highlightPipelineStage(stage);
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            // Generate result
+            const confidence = 0.7 + Math.random() * 0.3;
+            const processingTime = 800 + Math.random() * 400;
+            
+            return {
+                task_type: taskType,
+                input: input,
+                processing_mode: processingMode,
+                confidence: confidence,
+                processing_time: processingTime,
+                neural_insights: [
+                    'High semantic similarity detected',
+                    'Pattern recognition successful',
+                    'Decision confidence above threshold'
+                ],
+                pipeline_stages: pipelineStages.map(stage => ({
+                    agent: stage,
+                    confidence: 0.8 + Math.random() * 0.2,
+                    processing_time: 100 + Math.random() * 200
+                })),
+                result: generateTaskResult(taskType, input)
+            };
+        }
+
+        // Generate task result based on type
+        function generateTaskResult(taskType, input) {
+            switch (taskType) {
+                case 'inference':
+                    return {
+                        products: [
+                            { id: 'M001-001', name: 'Bu lông thép M8 cao cấp', confidence: 0.92 },
+                            { id: 'M001-002', name: 'Bu lông thép M8 tiêu chuẩn', confidence: 0.87 }
+                        ],
+                        total_found: 2,
+                        search_time: '45ms'
+                    };
+                case 'analysis':
+                    return {
+                        sentiment: 'positive',
+                        confidence: 0.89,
+                        entities: ['bu lông thép', 'M8', 'cao cấp'],
+                        intent: 'product_search'
+                    };
+                case 'recommendation':
+                    return {
+                        recommendations: [
+                            { product: 'Bu lông thép M8', score: 0.94 },
+                            { product: 'Đai ốc M8', score: 0.87 }
+                        ],
+                        reasoning: 'Based on compatibility and usage patterns'
+                    };
+                case 'prediction':
+                    return {
+                        predicted_demand: 1250,
+                        confidence_interval: [1100, 1400],
+                        factors: ['seasonal_trend', 'market_growth']
+                    };
+                default:
+                    return { result: 'Processing completed' };
+            }
+        }
+
+        // Display neural result
+        function displayNeuralResult(result) {
+            const resultDiv = document.getElementById('neural-task-result');
+            const contentDiv = document.getElementById('neural-result-content');
+            
+            resultDiv.classList.remove('hidden');
+            
+            contentDiv.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h5 class="font-semibold mb-2">Processing Details</h5>
+                        <p><strong>Task Type:</strong> ${result.task_type}</p>
+                        <p><strong>Processing Mode:</strong> ${result.processing_mode}</p>
+                        <p><strong>Confidence:</strong> ${(result.confidence * 100).toFixed(1)}%</p>
+                        <p><strong>Processing Time:</strong> ${result.processing_time.toFixed(0)}ms</p>
+                    </div>
+                    <div>
+                        <h5 class="font-semibold mb-2">Neural Insights</h5>
+                        <ul class="list-disc list-inside text-sm">
+                            ${result.neural_insights.map(insight => `<li>${insight}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5 class="font-semibold mb-2">Pipeline Performance</h5>
+                    <div class="space-y-1">
+                        ${result.pipeline_stages.map(stage => `
+                            <div class="flex justify-between text-sm">
+                                <span>${stage.agent}</span>
+                                <span>Confidence: ${(stage.confidence * 100).toFixed(1)}% | Time: ${stage.processing_time.toFixed(0)}ms</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5 class="font-semibold mb-2">Result</h5>
+                    <pre class="text-sm bg-black bg-opacity-30 p-2 rounded">${JSON.stringify(result.result, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        // Highlight pipeline stage
+        function highlightPipelineStage(stageId) {
+            // Remove all highlights
+            document.querySelectorAll('[id^="pipeline-"]').forEach(el => {
+                el.classList.remove('ring-2', 'ring-white', 'neural-pulse');
+            });
+            
+            // Add highlight to current stage
+            const stageEl = document.getElementById(`pipeline-${stageId}`);
+            if (stageEl) {
+                stageEl.classList.add('ring-2', 'ring-white', 'neural-pulse');
+            }
+        }
+
+        // Train neural networks
+        async function trainNeuralNetworks() {
+            try {
+                addNeuralLog('🎓 Training neural networks...', 'info');
+                
+                // Simulate training
+                for (let epoch = 1; epoch <= 5; epoch++) {
+                    addNeuralLog(`📚 Training epoch ${epoch}/5...`, 'info');
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                
+                addNeuralLog('✅ Neural networks training completed', 'success');
+                updateIntegrationStatus();
+                
+            } catch (error) {
+                addNeuralLog('❌ Training failed: ' + error.message, 'error');
+            }
+        }
+
+        // Evolve neural models
+        async function evolveNeuralModels() {
+            try {
+                addNeuralLog('🧬 Evolving neural models...', 'info');
+                
+                // Simulate evolution
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Add to evolution history
+                const evolutionEntry = {
+                    timestamp: new Date(),
+                    type: 'weight_mutation',
+                    mutation_strength: 0.1,
+                    performance_improvement: 0.05
+                };
+                
+                addNeuralLog('✅ Neural models evolved successfully', 'success');
+                updateIntegrationStatus();
+                
+            } catch (error) {
+                addNeuralLog('❌ Evolution failed: ' + error.message, 'error');
+            }
+        }
+
+        // Update processing mode
+        function updateProcessingMode() {
+            const mode = document.getElementById('processing-mode-select').value;
+            document.getElementById('processing-mode').textContent = `Mode: ${mode}`;
+        }
+
+        // Update model performance
+        function updateModelPerformance(metrics) {
+            if (!metrics) return;
+            
+            const performanceDiv = document.getElementById('model-performance');
+            performanceDiv.innerHTML = '';
+            
+            for (const [agentId, agentMetrics] of Object.entries(metrics.agents || {})) {
+                const perfCard = document.createElement('div');
+                perfCard.className = 'bg-purple-800 bg-opacity-50 p-3 rounded border border-purple-600';
+                perfCard.innerHTML = `
+                    <div class="font-semibold">${agentId}</div>
+                    <div class="text-sm mt-1">
+                        <div>Processed: ${agentMetrics.processed_inputs || 0}</div>
+                        <div>Confidence: ${((agentMetrics.average_confidence || 0) * 100).toFixed(1)}%</div>
+                    </div>
+                `;
+                performanceDiv.appendChild(perfCard);
+            }
+        }
+
+        // Update evolution history
+        function updateEvolutionHistory(history) {
+            const historyDiv = document.getElementById('evolution-history');
+            historyDiv.innerHTML = '';
+            
+            history.slice(-5).reverse().forEach(entry => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'bg-purple-800 bg-opacity-50 p-2 rounded text-sm';
+                historyItem.innerHTML = `
+                    <div class="font-semibold">${entry.type || 'evolution'}</div>
+                    <div class="text-xs text-purple-300">${new Date(entry.timestamp).toLocaleString()}</div>
+                    ${entry.performance_improvement ? `<div class="text-xs text-green-400">Improvement: ${(entry.performance_improvement * 100).toFixed(1)}%</div>` : ''}
+                `;
+                historyDiv.appendChild(historyItem);
+            });
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Performance chart
+            const perfCtx = document.getElementById('performance-chart').getContext('2d');
+            performanceChart = new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Neural Processing',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.1
+                    }, {
+                        label: 'Classic Processing',
+                        data: [],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Processing Time (ms)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Confidence chart
+            const confCtx = document.getElementById('confidence-chart').getContext('2d');
+            confidenceChart = new Chart(confCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Canonicalizer', 'Planner', 'Data Processor', 'Model Runner', 'Evaluator', 'Selector'],
+                    datasets: [{
+                        label: 'Average Confidence',
+                        data: [0.85, 0.82, 0.88, 0.91, 0.87, 0.89],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(6, 182, 214, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1,
+                            title: {
+                                display: true,
+                                text: 'Confidence Score'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Start metrics updates
+        function startMetricsUpdates() {
+            metricsInterval = setInterval(() => {
+                updateMetrics();
+            }, 3000);
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            if (!neuralIntegration || !neuralIntegration.initialized) return;
+
+            const status = neuralIntegration.getIntegrationStatus();
+            
+            // Update performance chart
+            if (performanceChart) {
+                const chart = performanceChart;
+                chart.data.labels.push(new Date().toLocaleTimeString());
+                
+                // Simulate performance data
+                const neuralTime = 800 + Math.random() * 400;
+                const classicTime = 600 + Math.random() * 300;
+                
+                chart.data.datasets[0].data.push(neuralTime);
+                chart.data.datasets[1].data.push(classicTime);
+                
+                // Keep only last 20 points
+                if (chart.data.labels.length > 20) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                    chart.data.datasets[1].data.shift();
+                }
+                
+                chart.update('none');
+            }
+
+            // Update confidence chart
+            if (confidenceChart && status.neural_metrics) {
+                const chart = confidenceChart;
+                
+                // Simulate confidence changes
+                const currentData = chart.data.datasets[0].data;
+                for (let i = 0; i < currentData.length; i++) {
+                    currentData[i] = Math.max(0.7, Math.min(0.95, currentData[i] + (Math.random() - 0.5) * 0.05));
+                }
+                
+                chart.update('none');
+            }
+        }
+
+        // Add neural log entry
+        function addNeuralLog(message, type = 'info') {
+            const log = document.getElementById('neural-log');
+            const logDiv = document.createElement('div');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const typeColors = {
+                'info': 'text-blue-300',
+                'success': 'text-green-300',
+                'warning': 'text-yellow-300',
+                'error': 'text-red-300'
+            };
+
+            logDiv.className = typeColors[type] || 'text-gray-300';
+            logDiv.textContent = `[${timestamp}] ${message}`;
+            
+            log.appendChild(logDiv);
+            log.scrollTop = log.scrollHeight;
+
+            // Keep only last 50 messages
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeDemo);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
+            if (neuralIntegration) {
+                await neuralIntegration.shutdown();
+            }
+        });
+    </script>
+</body>
+</html>
