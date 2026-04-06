@@ -1,0 +1,187 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "generated_date": "2026-04-06T10:49:00Z",
+    "total_images": 1750,
+    "mapped_products": 327,
+    "image_formats": ["jpg", "png", "svg"],
+    "description": "Bản đồ ánh xạ hình ảnh sản phẩm với các file ảnh có sẵn trong thư mục assets/images"
+  },
+  "image_inventory": {
+    "available_images": {
+      "product_photos": [
+        "image001.png", "image002.png", "image003.png", "image004.png", "image005.png",
+        "image006.png", "image007.png", "image008.png", "image009.png", "image010.png",
+        "image011.png", "image012.png", "image013.png", "image014.png", "image015.png",
+        "image016.png", "image017.png", "image018.png", "image019.png", "image020.png"
+      ],
+      "technical_drawings": [
+        "image021.png", "image022.png", "image023.png", "image024.png", "image025.png",
+        "image026.png", "image027.png", "image028.png", "image029.png", "image030.png"
+      ],
+      "dimension_diagrams": [
+        "image031.png", "image032.png", "image033.png", "image034.png", "image035.png",
+        "image036.png", "image037.png", "image038.png", "image039.png", "image040.png"
+      ],
+      "application_photos": [
+        "image041.png", "image042.png", "image043.png", "image044.png", "image045.png",
+        "image046.png", "image047.png", "image048.png", "image049.png", "image050.png"
+      ],
+      "packaging_photos": [
+        "image051.png", "image052.png", "image053.png", "image054.png", "image055.png",
+        "image056.png", "image057.png", "image058.png", "image059.png", "image060.png"
+      ]
+    },
+    "special_images": {
+      "logo_images": ["image067.jpg", "image072.jpg", "image073.jpg", "image074.jpg"],
+      "quality_certificates": ["image119.jpg", "image1498.jpg", "image1499.jpg"],
+      "factory_photos": ["image1743.jpg", "image1744.jpg", "image1745.jpg", "image1746.jpg", "image1747.jpg", "image1748.jpg"],
+      "test_equipment": ["image1749.jpg", "image1750.jpg"]
+    }
+  },
+  "product_image_mapping": {
+    "M001-001": {
+      "primary": "image001.png",
+      "secondary": ["image002.png", "image003.png"],
+      "technical": ["image021.png", "image022.png"],
+      "dimensions": ["image031.png"],
+      "applications": ["image041.png", "image042.png"],
+      "packaging": ["image051.png"],
+      "quality": ["image119.jpg"]
+    },
+    "B001-001": {
+      "primary": "image010.png",
+      "secondary": ["image011.png", "image012.png"],
+      "technical": ["image023.png", "image024.png"],
+      "dimensions": ["image032.png"],
+      "applications": ["image043.png", "image044.png"],
+      "packaging": ["image052.png"],
+      "quality": ["image1498.jpg"]
+    },
+    "E001-001": {
+      "primary": "image020.png",
+      "secondary": ["image021.png", "image022.png"],
+      "technical": ["image025.png", "image026.png"],
+      "dimensions": ["image033.png"],
+      "applications": ["image045.png", "image046.png"],
+      "packaging": ["image053.png"],
+      "quality": ["image1499.jpg"]
+    },
+    "M001-002": {
+      "primary": "image004.png",
+      "secondary": ["image005.png", "image006.png"],
+      "technical": ["image027.png", "image028.png"],
+      "dimensions": ["image034.png"],
+      "applications": ["image047.png", "image048.png"],
+      "packaging": ["image054.png"]
+    },
+    "B001-002": {
+      "primary": "image013.png",
+      "secondary": ["image014.png", "image015.png"],
+      "technical": ["image029.png", "image030.png"],
+      "dimensions": ["image035.png"],
+      "applications": ["image049.png", "image050.png"],
+      "packaging": ["image055.png"]
+    }
+  },
+  "category_image_mapping": {
+    "cat_mechanical_fasteners": {
+      "category_image": "image100.png",
+      "banner_images": ["image101.png", "image102.png"],
+      "application_gallery": ["image200.png", "image201.png", "image202.png"]
+    },
+    "cat_mechanical_bearings": {
+      "category_image": "image110.png",
+      "banner_images": ["image111.png", "image112.png"],
+      "application_gallery": ["image210.png", "image211.png", "image212.png"]
+    },
+    "cat_electronic_passive": {
+      "category_image": "image120.png",
+      "banner_images": ["image121.png", "image122.png"],
+      "application_gallery": ["image220.png", "image221.png", "image222.png"]
+    },
+    "cat_electronic_active": {
+      "category_image": "image130.png",
+      "banner_images": ["image131.png", "image132.png"],
+      "application_gallery": ["image230.png", "image231.png", "image232.png"]
+    }
+  },
+  "manufacturer_image_mapping": {
+    "mfr_nitto_seiko": {
+      "logo": "image067.jpg",
+      "factory": ["image1743.jpg", "image1744.jpg"],
+      "certificates": ["image119.jpg"],
+      "products_showcase": ["image300.png", "image301.png", "image302.png"]
+    },
+    "mfr_nsk": {
+      "logo": "image072.jpg",
+      "factory": ["image1745.jpg", "image1746.jpg"],
+      "certificates": ["image1498.jpg"],
+      "products_showcase": ["image310.png", "image311.png", "image312.png"]
+    },
+    "mfr_murata": {
+      "logo": "image073.jpg",
+      "factory": ["image1747.jpg", "image1748.jpg"],
+      "certificates": ["image1499.jpg"],
+      "products_showcase": ["image320.png", "image321.png", "image322.png"]
+    }
+  },
+  "image_metadata": {
+    "image001.png": {
+      "file_size": "276458 bytes",
+      "dimensions": "800x600",
+      "format": "PNG",
+      "color_space": "RGB",
+      "dpi": 300,
+      "compression": "lossless",
+      "captured_date": "2021-05-10",
+      "photographer": "Product Photography Team",
+      "description": "Bu lông lục giác M6x20 trên nền trắng",
+      "keywords": ["bolt", "hex", "m6", "steel", "zinc_plated"]
+    },
+    "image010.png": {
+      "file_size": "198 bytes",
+      "dimensions": "800x600",
+      "format": "PNG",
+      "color_space": "RGB",
+      "dpi": 300,
+      "compression": "lossless",
+      "captured_date": "2021-05-10",
+      "photographer": "Product Photography Team",
+      "description": "Vòng bi bi tròn 6002-2RS trên nền trắng",
+      "keywords": ["bearing", "ball", "6002", "2rs", "nsk"]
+    },
+    "image020.png": {
+      "file_size": "166484 bytes",
+      "dimensions": "800x600",
+      "format": "PNG",
+      "color_space": "RGB",
+      "dpi": 300,
+      "compression": "lossless",
+      "captured_date": "2021-05-10",
+      "photographer": "Product Photography Team",
+      "description": "Điện trở carbon 1kΩ 1/4W trên nền trắng",
+      "keywords": ["resistor", "carbon", "1k", "1/4w", "murata"]
+    }
+  },
+  "image_optimization": {
+    "thumbnail_sizes": [
+      {"name": "small", "width": 150, "height": 150},
+      {"name": "medium", "width": 300, "height": 300},
+      {"name": "large", "width": 600, "height": 600}
+    ],
+    "web_formats": ["webp", "avif"],
+    "compression_settings": {
+      "jpg": {"quality": 85, "progressive": true},
+      "png": {"compression": 6, "interlaced": false},
+      "webp": {"quality": 80}
+    }
+  },
+  "cdn_configuration": {
+    "base_url": "https://cdn.crispy-broccoli.com/images",
+    "regions": ["asia", "europe", "america"],
+    "cache_ttl": 31536000,
+    "lazy_loading": true,
+    "responsive_images": true
+  }
+}
