@@ -1,0 +1,341 @@
+{
+  "crystal": {
+    "id": "XT001-001",
+    "sku": "XT001-001",
+    "name": "Crystal Crystal 16MHz HC-49S",
+    "name_en": "Crystal 16MHz HC-49S",
+    "name_ja": "Crystal 16MHz HC-49S",
+    "short_description": "Crystal Crystal tần số 16MHz, tải 12pF, bao bì HC-49S",
+    "short_description_en": "Crystal 16MHz crystal, 12pF load, HC-49S package",
+    "short_description_ja": "Crystal 16MHz水晶、12pF負荷、HC-49Sパッケージ",
+    "long_description": "Crystal Crystal tần số 16MHz với tải 12pF, bao bì HC-49S. Sản phẩm được sử dụng trong các mạch dao động, mạch xung clock, và ứng dụng timing. Có độ ổn định cao, độ chính xác tốt, phù hợp cho các ứng dụng yêu cầu timing chính xác cao.",
+    "long_description_en": "Crystal crystal with 16MHz frequency, 12pF load, HC-49S package. Used in oscillator circuits, clock circuits, and timing applications. High stability, good accuracy, suitable for high-precision timing applications.",
+    "long_description_ja": "Crystal水晶、16MHz周波数、12pF負荷、HC-49Sパッケージ。発振回路、クロック回路、タイミングアプリケーションで使用。高い安定性、良好な精度、高精度タイミングアプリケーションに適しています。",
+    "category_id": "cat_crystals",
+    "subcategory": "Crystal & Oscillators",
+    "subcategory_en": "Crystal & Oscillators",
+    "subcategory_ja": "水晶・発振器",
+    "manufacturer_id": "mfr_epson",
+    "brand": "Epson",
+    "part_number": "EP-XT-16MHz-Crystal-HC-49S",
+    "specifications": {
+      "basic": {
+        "crystal_type": "Crystal",
+        "frequency": "16MHz",
+        "load_capacitance": "12pF",
+        "package": "HC-49S",
+        "mounting": "Through Hole/SMD"
+      },
+      "electrical": {
+        "frequency_tolerance": "±20ppm",
+        "frequency_stability": "±50ppm",
+        "drive_level": "100µW max",
+        "esr": "40Ω",
+        "operating_temperature": "-40°C to 85°C"
+      },
+      "physical": {
+        "dimensions": "11.0 x 4.6 x 3.2mm",
+        "weight": 1.5,
+        "termination": "Solder Pads",
+        "housing_material": "Metal/Plastic"
+      }
+    },
+    "pricing": {
+      "base_price": 2000,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 2000,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 1900,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 1760,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 1640,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 37359,
+      "available_stock": 47675,
+      "reserved_stock": 1081,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/XT001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/XT001-001-thumb-1.jpg",
+        "https://example.com/images/products/XT001-001-thumb-2.jpg",
+        "https://example.com/images/products/XT001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/XT001-001-dimension.jpg",
+        "https://example.com/images/products/XT001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/XT001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/XT001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/XT001-001-install.pdf",
+      "safety_data": "https://example.com/docs/XT001-001-safety.pdf",
+      "certificate": "https://example.com/docs/XT001-001-cert.pdf"
+    },
+    "applications": [
+      "Mạch dao động crystal",
+      "Mạch xung clock",
+      "Mạch timing",
+      "Mạch truyền thông",
+      "Mạch xử lý tín hiệu"
+    ],
+    "compatibility": {
+      "compatible_circuits": [
+        "Oscillator",
+        "Clock",
+        "Timer",
+        "Microcontroller"
+      ],
+      "frequency_range": "16MHz ± 20ppm",
+      "mounting_types": [
+        "Through Hole",
+        "Surface Mount"
+      ],
+      "operating_conditions": "Industrial, Commercial"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "1.5g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "crystal-16MHz",
+      "crystal-crystal",
+      "16mhz",
+      "epson",
+      "electronic-component"
+    ]
+  },
+  "pressureSensor": {
+    "id": "PS001-001",
+    "sku": "PS001-001",
+    "name": "Cảm biến áp suất Gauge 0-10 bar",
+    "name_en": "Gauge Pressure Sensor 0-10 bar",
+    "name_ja": "Gauge圧力センサー 0-10 bar",
+    "short_description": "Cảm biến áp suất Gauge dải đo 0-10 bar, độ chính xác ±0.25%, đầu ra 4-20mA",
+    "short_description_en": "Gauge pressure sensor 0-10 bar range, ±0.25% accuracy, 4-20mA output",
+    "short_description_ja": "Gauge圧力センサー 0-10 bar範囲、±0.25%精度、4-20mA出力",
+    "long_description": "Cảm biến áp suất Gauge dải đo 0-10 bar, độ chính xác ±0.25%, đầu ra 4-20mA. Sản phẩm được sử dụng trong các hệ thống điều khiển áp suất, giám sát quy trình công nghiệp, và ứng dụng tự động hóa. Có độ tin cậy cao, phản hồi nhanh, phù hợp cho môi trường công nghiệp khắc nghiệt.",
+    "long_description_en": "Gauge pressure sensor with 0-10 bar range, ±0.25% accuracy, 4-20mA output. Used in pressure control systems, industrial process monitoring, and automation applications. High reliability, fast response, suitable for harsh industrial environments.",
+    "long_description_ja": "Gauge圧力センサー、0-10 bar範囲、±0.25%精度、4-20mA出力。圧力制御システム、産業プロセス監視、自動化アプリケーションで使用。高信頼性、高速応答、過酷な産業環境に適しています。",
+    "category_id": "cat_pressure_sensors",
+    "subcategory": "Pressure Sensors",
+    "subcategory_en": "Pressure Sensors",
+    "subcategory_ja": "圧力センサー",
+    "manufacturer_id": "mfr_honeywell",
+    "brand": "Honeywell",
+    "part_number": "HW-PS-Gauge-0-10 bar-4-20mA",
+    "specifications": {
+      "basic": {
+        "sensor_type": "Gauge",
+        "pressure_range": "0-10 bar",
+        "accuracy": "±0.25%",
+        "output_signal": "4-20mA",
+        "standard": "IEC 60751"
+      },
+      "electrical": {
+        "supply_voltage": "24V DC",
+        "current_consumption": "15mA max",
+        "response_time": "1ms",
+        "operating_temperature": "-40°C to 125°C",
+        "protection": "IP67"
+      },
+      "mechanical": {
+        "process_connection": "G1/4",
+        "material": "Stainless Steel 316",
+        "pressure_rating": "2x range",
+        "weight": "200g",
+        "dimensions": "Ø50mm x 100mm"
+      }
+    },
+    "pricing": {
+      "base_price": 180000,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 180000,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 171000,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 158400,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 147600,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 57637,
+      "available_stock": 24652,
+      "reserved_stock": 3823,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/PS001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/PS001-001-thumb-1.jpg",
+        "https://example.com/images/products/PS001-001-thumb-2.jpg",
+        "https://example.com/images/products/PS001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/PS001-001-dimension.jpg",
+        "https://example.com/images/products/PS001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/PS001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/PS001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/PS001-001-install.pdf",
+      "safety_data": "https://example.com/docs/PS001-001-safety.pdf",
+      "certificate": "https://example.com/docs/PS001-001-cert.pdf"
+    },
+    "applications": [
+      "Hệ thống điều khiển áp suất",
+      "Giám sát quy trình công nghiệp",
+      "Hệ thống thủy lực",
+      "Hệ thống khí nén",
+      "Thiết bị y tế"
+    ],
+    "compatibility": {
+      "compatible_controllers": [
+        "PLC",
+        "DCS",
+        "Temperature Controllers"
+      ],
+      "signal_processing": "Analog Input Module",
+      "display_options": [
+        "Digital Display",
+        "HMI",
+        "SCADA"
+      ],
+      "calibration_requirements": "Annual calibration recommended"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "200g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "pressure-sensor-gauge",
+      "pressure-0-10-bar",
+      "gauge",
+      "honeywell",
+      "industrial-sensor"
+    ]
+  }
+}

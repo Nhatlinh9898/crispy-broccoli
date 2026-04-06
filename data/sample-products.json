@@ -1,0 +1,838 @@
+{
+  "inductor": {
+    "id": "L001-001",
+    "sku": "L001-001",
+    "name": "Cuộn cảm 10µH 1A Wirewound",
+    "name_en": "Wirewound Inductor 10µH 1A",
+    "name_ja": "Wirewoundインダクタ 10µH 1A",
+    "short_description": "Cuộn cảm Wirewound giá trị 10µH, dòng 1A, dung sai ±5%",
+    "short_description_en": "Wirewound inductor 10µH, 1A current, ±5% tolerance",
+    "short_description_ja": "Wirewoundインダクタ 10µH、1A電流、±5%許容差",
+    "long_description": "Cuộn cảm Wirewound giá trị 10µH, dòng định mức 1A, dung sai ±5%. Sản phẩm được sử dụng trong các mạch lọc, mạch dao động, và ứng dụng xử lý tín hiệu. Có độ ổn định cao, Q-factor tốt, phù hợp cho mạch tần số cao và ứng dụng RF.",
+    "long_description_en": "Wirewound inductor with 10µH value, 1A rated current, ±5% tolerance. Used in filter circuits, oscillator circuits, and signal processing applications. High stability, good Q-factor, suitable for high frequency and RF applications.",
+    "long_description_ja": "Wirewoundインダクタ、10µH値、1A定格電流、±5%許容差。フィルター回路、発振回路、信号処理アプリケーションで使用。高い安定性、良好なQファクター、高周波およびRFアプリケーションに適しています。",
+    "category_id": "cat_inductors",
+    "subcategory": "Inductors",
+    "subcategory_en": "Inductors",
+    "subcategory_ja": "インダクタ",
+    "manufacturer_id": "mfr_texas_instruments",
+    "brand": "Texas Instruments",
+    "part_number": "TI-IND-10µH-1A-Wirewound",
+    "specifications": {
+      "basic": {
+        "inductance": "10µH",
+        "rated_current": "1A",
+        "tolerance": "±5%",
+        "type": "Wirewound",
+        "mounting": "Through Hole"
+      },
+      "electrical": {
+        "q_factor": "25-100",
+        "self_resonant_frequency": "10-100MHz",
+        "dc_resistance": "0.3Ω",
+        "operating_temperature": "-40°C to 125°C"
+      },
+      "physical": {
+        "body_length": "8mm",
+        "body_diameter": "4mm",
+        "lead_diameter": "0.6mm",
+        "lead_length": "25mm"
+      }
+    },
+    "pricing": {
+      "base_price": 2500,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 2500,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 2375,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 2200,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 2050,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 35451,
+      "available_stock": 29252,
+      "reserved_stock": 4173,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/L001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/L001-001-thumb-1.jpg",
+        "https://example.com/images/products/L001-001-thumb-2.jpg",
+        "https://example.com/images/products/L001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/L001-001-dimension.jpg",
+        "https://example.com/images/products/L001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/L001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/L001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/L001-001-install.pdf",
+      "safety_data": "https://example.com/docs/L001-001-safety.pdf",
+      "certificate": "https://example.com/docs/L001-001-cert.pdf"
+    },
+    "applications": [
+      "Mạch lọc tần số",
+      "Mạch dao động",
+      "Mạch xử lý tín hiệu",
+      "Mạch RF",
+      "Mạch nguồn công suất"
+    ],
+    "compatibility": {
+      "compatible_circuits": [
+        "Mạch lọc",
+        "Mạch dao động",
+        "Mạch RF"
+      ],
+      "frequency_range": "1kHz - 100MHz",
+      "mounting_types": [
+        "Through Hole",
+        "Surface Mount"
+      ],
+      "operating_conditions": "Industrial, Commercial"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "2.5g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "cuon-cam-10µH",
+      "inductor-10µH",
+      "wirewound",
+      "texas-instruments",
+      "electronic-component"
+    ]
+  },
+  "diode": {
+    "id": "D001-001",
+    "sku": "D001-001",
+    "name": "Diode Rectifier 400V 3A",
+    "name_en": "Rectifier Diode 400V 3A",
+    "name_ja": "Rectifierダイオード 400V 3A",
+    "short_description": "Diode Rectifier điện áp ngược 400V, dòng 3A, bao bì DO-41",
+    "short_description_en": "Rectifier diode 400V reverse voltage, 3A current, DO-41 package",
+    "short_description_ja": "Rectifierダイオード 400V逆電圧、3A電流、DO-41パッケージ",
+    "long_description": "Diode Rectifier điện áp ngược 400V, dòng định mức 3A, bao bì DO-41. Sản phẩm được sử dụng trong các mạch chỉnh lưu, mạch bảo vệ, và ứng dụng công nghiệp. Có hiệu suất cao, tổn thất thấp, phù hợp cho mạch công suất cao.",
+    "long_description_en": "Rectifier diode with 400V reverse voltage, 3A rated current, DO-41 package. Used in rectifier circuits, protection circuits, and industrial applications. High efficiency, low loss, suitable for high power circuits.",
+    "long_description_ja": "Rectifierダイオード、400V逆電圧、3A定格電流、DO-41パッケージ。整流回路、保護回路、産業用途で使用。高効率、低損失、高出力回路に適しています。",
+    "category_id": "cat_diodes",
+    "subcategory": "Diodes",
+    "subcategory_en": "Diodes",
+    "subcategory_ja": "ダイオード",
+    "manufacturer_id": "mfr_stmicroelectronics",
+    "brand": "STMicroelectronics",
+    "part_number": "ST-DIO-Rectifier-400V-3A-DO-41",
+    "specifications": {
+      "basic": {
+        "diode_type": "Rectifier",
+        "reverse_voltage": "400V",
+        "forward_current": "3A",
+        "package": "DO-41",
+        "mounting": "Through Hole"
+      },
+      "electrical": {
+        "forward_voltage": "0.7V",
+        "reverse_current": "10µA",
+        "reverse_recovery_time": "5µs",
+        "operating_temperature": "-65°C to 175°C"
+      },
+      "physical": {
+        "body_length": "5.2mm",
+        "body_diameter": "2.7mm",
+        "lead_diameter": "0.8mm",
+        "lead_length": "25mm"
+      }
+    },
+    "pricing": {
+      "base_price": 500,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 500,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 475,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 440,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 410,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 11675,
+      "available_stock": 46652,
+      "reserved_stock": 556,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/D001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/D001-001-thumb-1.jpg",
+        "https://example.com/images/products/D001-001-thumb-2.jpg",
+        "https://example.com/images/products/D001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/D001-001-dimension.jpg",
+        "https://example.com/images/products/D001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/D001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/D001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/D001-001-install.pdf",
+      "safety_data": "https://example.com/docs/D001-001-safety.pdf",
+      "certificate": "https://example.com/docs/D001-001-cert.pdf"
+    },
+    "applications": [
+      "Mạch chỉnh lưu",
+      "Mạch bảo vệ",
+      "Mạch công tắc",
+      "Mạch điều khiển công suất",
+      "Mạch nguồn"
+    ],
+    "compatibility": {
+      "compatible_circuits": [
+        "Mạch chỉnh lưu",
+        "Mạch bảo vệ",
+        "Mạch công tắc"
+      ],
+      "voltage_range": "0-1000V",
+      "mounting_types": [
+        "Through Hole",
+        "Surface Mount"
+      ],
+      "operating_conditions": "Industrial, Commercial"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "0.8g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "diode-rectifier",
+      "diode-400V",
+      "400v",
+      "stmicroelectronics",
+      "electronic-component"
+    ]
+  },
+  "transistor": {
+    "id": "T001-001",
+    "sku": "T001-001",
+    "name": "Transistor MOSFET N-Channel 60V 5A",
+    "name_en": "MOSFET N-Channel Transistor 60V 5A",
+    "name_ja": "MOSFET N-Channelトランジスタ 60V 5A",
+    "short_description": "Transistor MOSFET N-Channel điện áp 60V, dòng 5A, bao bì TO-220",
+    "short_description_en": "MOSFET N-Channel transistor 60V voltage, 5A current, TO-220 package",
+    "short_description_ja": "MOSFET N-Channelトランジスタ 60V電圧、5A電流、TO-220パッケージ",
+    "long_description": "Transistor MOSFET N-Channel điện áp 60V, dòng 5A, bao bì TO-220. Sản phẩm được sử dụng trong các mạch khuếch đại, mạch công tắc, và ứng dụng điều khiển công suất. Có hiệu suất cao, tuyến tính tốt, phù hợp cho mạch công suất cao.",
+    "long_description_en": "MOSFET N-Channel transistor with 60V voltage, 5A current, TO-220 package. Used in amplifier circuits, switching circuits, and power control applications. High efficiency, good linearity, suitable for high power circuits.",
+    "long_description_ja": "MOSFET N-Channelトランジスタ、60V電圧、5A電流、TO-220パッケージ。増幅回路、スイッチング回路、電力制御アプリケーションで使用。高効率、良好な直線性、高出力回路に適しています。",
+    "category_id": "cat_transistors",
+    "subcategory": "Transistors",
+    "subcategory_en": "Transistors",
+    "subcategory_ja": "トランジスタ",
+    "manufacturer_id": "mfr_stmicroelectronics",
+    "brand": "STMicroelectronics",
+    "part_number": "ST-TRN-MOSFET N-Channel-60V-5A-TO-220",
+    "specifications": {
+      "basic": {
+        "transistor_type": "MOSFET N-Channel",
+        "collector_voltage": "60V",
+        "collector_current": "5A",
+        "package": "TO-220",
+        "mounting": "Through Hole"
+      },
+      "electrical": {
+        "dc_current_gain": "10-1000",
+        "power_dissipation": "2W",
+        "switching_speed": "1GHz",
+        "operating_temperature": "-55°C to 150°C"
+      },
+      "physical": {
+        "body_length": "10mm",
+        "body_width": "8mm",
+        "lead_diameter": "0.8mm",
+        "lead_length": "25mm"
+      }
+    },
+    "pricing": {
+      "base_price": 2500,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 2500,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 2375,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 2200,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 2050,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 18533,
+      "available_stock": 25398,
+      "reserved_stock": 2748,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/T001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/T001-001-thumb-1.jpg",
+        "https://example.com/images/products/T001-001-thumb-2.jpg",
+        "https://example.com/images/products/T001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/T001-001-dimension.jpg",
+        "https://example.com/images/products/T001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/T001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/T001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/T001-001-install.pdf",
+      "safety_data": "https://example.com/docs/T001-001-safety.pdf",
+      "certificate": "https://example.com/docs/T001-001-cert.pdf"
+    },
+    "applications": [
+      "Mạch khuếch đại",
+      "Mạch công tắc",
+      "Mạch điều khiển công suất",
+      "Mạch điều khiển động cơ",
+      "Mạch nguồn"
+    ],
+    "compatibility": {
+      "compatible_circuits": [
+        "Mạch khuếch đại",
+        "Mạch công tắc",
+        "Mạch công suất"
+      ],
+      "voltage_range": "0-1000V",
+      "mounting_types": [
+        "Through Hole",
+        "Surface Mount"
+      ],
+      "operating_conditions": "Industrial, Commercial"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "1.2g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "transistor-mosfet-n-channel",
+      "transistor-60V",
+      "60v",
+      "stmicroelectronics",
+      "electronic-component"
+    ]
+  },
+  "ic": {
+    "id": "IC001-001",
+    "sku": "IC001-001",
+    "name": "Mạch tích hợp Op-Amp SOIC-8",
+    "name_en": "Op-Amp Integrated Circuit SOIC-8",
+    "name_ja": "Op-Amp集積回路 SOIC-8",
+    "short_description": "Mạch tích hợp Op-Amp bao bì SOIC-8, điện áp 5V, nhiệt độ Industrial",
+    "short_description_en": "Op-Amp integrated circuit SOIC-8 package, 5V voltage, Industrial temperature",
+    "short_description_ja": "Op-Amp集積回路 SOIC-8パッケージ、5V電圧、Industrial温度",
+    "long_description": "Mạch tích hợp Op-Amp bao bì SOIC-8, điện áp hoạt động 5V, dải nhiệt độ Industrial. Sản phẩm được sử dụng trong các mạch điều khiển, mạch xử lý tín hiệu, và ứng dụng công nghiệp. Có độ tin cậy cao, hiệu suất tốt.",
+    "long_description_en": "Op-Amp integrated circuit SOIC-8 package, 5V operating voltage, Industrial temperature range. Used in control circuits, signal processing circuits, and industrial applications. High reliability, good performance.",
+    "long_description_ja": "Op-Amp集積回路 SOIC-8パッケージ、5V動作電圧、Industrial温度範囲。制御回路、信号処理回路、産業用途で使用。高信頼性、良好な性能。",
+    "category_id": "cat_integrated_circuits",
+    "subcategory": "Integrated Circuits",
+    "subcategory_en": "Integrated Circuits",
+    "subcategory_ja": "集積回路",
+    "manufacturer_id": "mfr_texas_instruments",
+    "brand": "Texas Instruments",
+    "part_number": "TI-IC-Op-Amp-SOIC-8-5V",
+    "specifications": {
+      "basic": {
+        "ic_type": "Op-Amp",
+        "package": "SOIC-8",
+        "supply_voltage": "5V",
+        "temperature_range": "Industrial",
+        "mounting": "Through Hole"
+      },
+      "electrical": {
+        "supply_current": "1-10mA",
+        "gain_bandwidth": "1-10MHz",
+        "slew_rate": "0.5-20V/µs",
+        "operating_temperature": "-40°C to 85°C"
+      },
+      "physical": {
+        "body_length": "5mm",
+        "body_width": "4mm",
+        "height": "2mm",
+        "pin_count": "8"
+      }
+    },
+    "pricing": {
+      "base_price": 2500,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 2500,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 2375,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 2200,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 2050,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 24128,
+      "available_stock": 10680,
+      "reserved_stock": 2610,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/IC001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/IC001-001-thumb-1.jpg",
+        "https://example.com/images/products/IC001-001-thumb-2.jpg",
+        "https://example.com/images/products/IC001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/IC001-001-dimension.jpg",
+        "https://example.com/images/products/IC001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/IC001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/IC001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/IC001-001-install.pdf",
+      "safety_data": "https://example.com/docs/IC001-001-safety.pdf",
+      "certificate": "https://example.com/docs/IC001-001-cert.pdf"
+    },
+    "applications": [
+      "Mạch điều khiển",
+      "Mạch xử lý tín hiệu",
+      "Mạch khuếch đại",
+      "Mạch nguồn",
+      "Mạch giao tiếp"
+    ],
+    "compatibility": {
+      "compatible_circuits": [
+        "Mạch điều khiển",
+        "Mạch xử lý",
+        "Mạch khuếch đại"
+      ],
+      "voltage_range": "3.3V - ±15V",
+      "mounting_types": [
+        "Through Hole",
+        "Surface Mount"
+      ],
+      "operating_conditions": "Industrial, Commercial"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "1.5g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "ic-op-amp",
+      "ic-soic-8",
+      "op-amp",
+      "texas-instruments",
+      "electronic-component"
+    ]
+  },
+  "connector": {
+    "id": "CONN001-001",
+    "sku": "CONN001-001",
+    "name": "Kết nối Rectangular 8 chân",
+    "name_en": "Rectangular Connector 8 Pin",
+    "name_ja": "Rectangularコネクタ 8ピン",
+    "short_description": "Kết nối Rectangular 8 chân, khoảng cách 2.54mm, định mức 250V",
+    "short_description_en": "Rectangular connector 8 pins, 2.54mm pitch, 250V rating",
+    "short_description_ja": "Rectangularコネクタ 8ピン、2.54mmピッチ、250V定格",
+    "long_description": "Kết nối Rectangular 8 chân, khoảng cách 2.54mm, định mức 250V. Sản phẩm được sử dụng trong các mạch điện tử, hệ thống điều khiển, và ứng dụng công nghiệp. Có độ tin cậy cao, tiếp xúc tốt, phù hợp cho môi trường công nghiệp.",
+    "long_description_en": "Rectangular connector 8 pins, 2.54mm pitch, 250V rating. Used in electronic circuits, control systems, and industrial applications. High reliability, good contact, suitable for industrial environments.",
+    "long_description_ja": "Rectangularコネクタ 8ピン、2.54mmピッチ、250V定格。電子回路、制御システム、産業用途で使用。高信頼性、良好な接触、産業環境に適しています。",
+    "category_id": "cat_connectors",
+    "subcategory": "Connectors",
+    "subcategory_en": "Connectors",
+    "subcategory_ja": "コネクタ",
+    "manufacturer_id": "mfr_te_connectivity",
+    "brand": "TE Connectivity",
+    "part_number": "TE-CONN-Rectangular-8pin-2.54mm",
+    "specifications": {
+      "basic": {
+        "connector_type": "Rectangular",
+        "pin_count": "8",
+        "pitch": "2.54mm",
+        "voltage_rating": "250V",
+        "mounting": "Through Hole"
+      },
+      "electrical": {
+        "current_rating": "16A",
+        "contact_resistance": "10mΩ",
+        "insulation_resistance": "1000MΩ",
+        "dielectric_withstand": "1500V"
+      },
+      "physical": {
+        "body_length": "16mm",
+        "body_width": "15mm",
+        "height": "8mm",
+        "contact_material": "Brass"
+      }
+    },
+    "pricing": {
+      "base_price": 2400,
+      "currency": "VND",
+      "unit": "cái",
+      "tiers": [
+        {
+          "quantity": 50,
+          "price": 2400,
+          "discount": 0
+        },
+        {
+          "quantity": 250,
+          "price": 2280,
+          "discount": 5
+        },
+        {
+          "quantity": 1000,
+          "price": 2112,
+          "discount": 12
+        },
+        {
+          "quantity": 5000,
+          "price": 1968,
+          "discount": 18
+        }
+      ],
+      "moq": 50,
+      "lead_time": 14
+    },
+    "inventory": {
+      "total_stock": 12167,
+      "available_stock": 28283,
+      "reserved_stock": 478,
+      "warehouse_locations": [
+        "WH-A-01",
+        "WH-B-02",
+        "WH-C-03"
+      ],
+      "reorder_level": 1000,
+      "max_stock": 50000,
+      "last_updated": "2026-04-06T10:56:00Z"
+    },
+    "images": {
+      "main": "https://example.com/images/products/CONN001-001-main.jpg",
+      "thumbnails": [
+        "https://example.com/images/products/CONN001-001-thumb-1.jpg",
+        "https://example.com/images/products/CONN001-001-thumb-2.jpg",
+        "https://example.com/images/products/CONN001-001-thumb-3.jpg"
+      ],
+      "technical": [
+        "https://example.com/images/products/CONN001-001-dimension.jpg",
+        "https://example.com/images/products/CONN001-001-application.jpg"
+      ],
+      "alt_texts": {
+        "main": "Sản phẩm chi tiết",
+        "thumb1": "Chi tiết sản phẩm 1",
+        "thumb2": "Chi tiết sản phẩm 2",
+        "thumb3": "Chi tiết sản phẩm 3"
+      }
+    },
+    "documents": {
+      "datasheet": "https://example.com/docs/CONN001-001-datasheet.pdf",
+      "technical_spec": "https://example.com/docs/CONN001-001-spec.pdf",
+      "installation_guide": "https://example.com/docs/CONN001-001-install.pdf",
+      "safety_data": "https://example.com/docs/CONN001-001-safety.pdf",
+      "certificate": "https://example.com/docs/CONN001-001-cert.pdf"
+    },
+    "applications": [
+      "Kết nối mạch điện tử",
+      "Hệ thống điều khiển",
+      "Kết nối cảm biến",
+      "Kết nối nguồn",
+      "Giao tiếp dữ liệu"
+    ],
+    "compatibility": {
+      "compatible_circuits": [
+        "Mạch điện tử",
+        "Hệ thống điều khiển",
+        "Giao tiếp"
+      ],
+      "voltage_range": "0-1000V",
+      "mounting_types": [
+        "Through Hole",
+        "Surface Mount",
+        "Panel Mount"
+      ],
+      "operating_conditions": "Industrial, Commercial"
+    },
+    "quality": {
+      "certification": [
+        "ISO 9001:2015",
+        "IATF 16949"
+      ],
+      "inspection_level": "AQL 0.65",
+      "test_methods": [
+        "Dimensional inspection",
+        "Performance test",
+        "Quality control"
+      ],
+      "defect_rate": "0.1%",
+      "warranty_period": 24,
+      "quality_grade": "A+"
+    },
+    "logistics": {
+      "weight": "3.5g",
+      "package_type": "Carton box",
+      "package_quantity": 1000,
+      "dimensions": {
+        "length": "200mm",
+        "width": "150mm",
+        "height": "100mm"
+      },
+      "shipping_class": "Standard",
+      "hazardous": false,
+      "storage_conditions": "Dry, room temperature",
+      "shelf_life": "Unlimited"
+    },
+    "status": "active",
+    "created_date": "2026-04-06T10:56:00Z",
+    "updated_date": "2026-04-06T10:56:00Z",
+    "tags": [
+      "connector-rectangular",
+      "connector-8pin",
+      "8",
+      "te-connectivity",
+      "electronic-component"
+    ]
+  }
+}
