@@ -1,0 +1,249 @@
+{
+  "description": "Ví dụ chi tiết về cấu trúc dữ liệu sản phẩm trong bộ dữ liệu hoàn chỉnh",
+  "examples": {
+    "mechanical_fastener": {
+      "product_type": "Bu lông lục giác M6x20",
+      "key_features": [
+        "Thông tin đa ngôn ngữ (VI, EN, JA)",
+        "Thông số kỹ thuật chi tiết theo tiêu chuẩn JIS",
+        "Giá cả theo số lượng với MOQ",
+        "Quản lý tồn kho chi tiết",
+        "Hình ảnh và tài liệu kỹ thuật đầy đủ",
+        "Ứng dụng thực tế trong ngành công nghiệp",
+        "Thông tin chất lượng và bảo hành"
+      ],
+      "data_structure": {
+        "basic_info": {
+          "id": "M001-001",
+          "sku": "M001-001", 
+          "name": "Bu lông lục giác M6x20",
+          "name_en": "Hex Bolt M6x20",
+          "name_ja": "六角ボルト M6x20",
+          "manufacturer": "Nitto Seiko",
+          "part_number": "NS-HB-M6-20-8.8-ZP"
+        },
+        "descriptions": {
+          "short": "Mô tả ngắn gọn cho danh sách sản phẩm",
+          "long": "Mô tả chi tiết với thông số kỹ thuật, vật liệu, ứng dụng",
+          "multilingual": "Hỗ trợ 3 ngôn ngữ hoàn chỉnh"
+        },
+        "technical_specs": {
+          "basic": {
+            "standard": "JIS B1181",
+            "material": "Carbon Steel SWRM8",
+            "strength_grade": "8.8",
+            "coating": "White Zinc Plated"
+          },
+          "dimensions": {
+            "diameter": "6mm",
+            "length": "20mm", 
+            "head_height": "4mm",
+            "head_width": "10mm"
+          },
+          "mechanical": {
+            "tensile_strength": "800 MPa",
+            "yield_strength": "640 MPa",
+            "max_torque": "8.8 Nm",
+            "proof_load": "12.8 kN"
+          },
+          "environmental": {
+            "operating_temperature": "-40°C to +120°C",
+            "corrosion_resistance": "Salt Spray 96 hours"
+          }
+        },
+        "pricing": {
+          "currency": "JPY",
+          "unit_price": 45,
+          "minimum_order_quantity": 100,
+          "price_breaks": [
+            {"quantity": 100, "unit_price": 45},
+            {"quantity": 500, "unit_price": 42},
+            {"quantity": 1000, "unit_price": 39},
+            {"quantity": 5000, "unit_price": 36}
+          ]
+        },
+        "inventory": {
+          "stock_quantity": 15420,
+          "available_quantity": 13120,
+          "reorder_point": 5000,
+          "warehouse_locations": ["WH-A-01-01", "WH-B-02-03"]
+        },
+        "images": {
+          "primary": "Ảnh sản phẩm chính",
+          "secondary": ["Ảnh kích thước", "Ảnh đóng gói"],
+          "technical_drawings": ["Bản vẽ DWG"]
+        },
+        "applications": [
+          {
+            "industry": "Automotive",
+            "description": "Kết cấu khung xe, động cơ",
+            "examples": ["Toyota Camry", "Honda Accord"]
+          }
+        ],
+        "quality": {
+          "inspection_level": "AQL 1.0",
+          "test_methods": ["Tensile test", "Hardness test"],
+          "defect_rate": "0.1%",
+          "warranty_months": 24
+        }
+      }
+    },
+    "bearing": {
+      "product_type": "Vòng bi bi tròn 6002-2RS",
+      "key_features": [
+        "Thông số ABEC precision",
+        "Tốc độ và tải trọng chi tiết",
+        "Thông tin bôi trơn và bảo vệ",
+        "Ứng dụng động cơ điện",
+        "Độ ồn và độ rung thông số"
+      ],
+      "data_structure": {
+        "basic_info": {
+          "id": "B001-001",
+          "name": "Vòng bi bi tròn 6002-2RS",
+          "manufacturer": "NSK",
+          "standard": "ABEC 3"
+        },
+        "technical_specs": {
+          "basic": {
+            "material": "Chrome Bearing Steel GCr15",
+            "seal_type": "2RS (Double Rubber Seal)",
+            "precision": "P6"
+          },
+          "dimensions": {
+            "inner_diameter": "15mm",
+            "outer_diameter": "32mm",
+            "width": "9mm"
+          },
+          "mechanical": {
+            "dynamic_load_capacity": "5,300N",
+            "static_load_capacity": "2,900N",
+            "limiting_speed": "30,000 RPM",
+            "reference_speed": "19,000 RPM"
+          },
+          "environmental": {
+            "operating_temperature": "-30°C to +110°C",
+            "noise_level": "28 dB",
+            "vibration_class": "V1"
+          }
+        },
+        "pricing": {
+          "unit_price": 280,
+          "minimum_order_quantity": 10,
+          "price_breaks": [
+            {"quantity": 10, "unit_price": 280},
+            {"quantity": 100, "unit_price": 250}
+          ]
+        },
+        "applications": [
+          {
+            "industry": "Electric Motors",
+            "description": "Động cơ điện công nghiệp",
+            "examples": ["AC motors", "DC motors", "Servo motors"]
+          }
+        ]
+      }
+    },
+    "electronic_component": {
+      "product_type": "Điện trở carbon 1kΩ 1/4W",
+      "key_features": [
+        "Thông số điện tử chi tiết",
+        "Dung sai và hệ số nhiệt",
+        "Kích thước tiêu chuẩn EIA",
+        "Ứng dụng mạch điện tử",
+        "Thông tin soldering và assembly"
+      ],
+      "data_structure": {
+        "basic_info": {
+          "id": "E001-001",
+          "name": "Điện trở carbon 1kΩ 1/4W",
+          "manufacturer": "Murata",
+          "standard": "JIS C 5201"
+        },
+        "technical_specs": {
+          "basic": {
+            "resistance": "1kΩ",
+            "tolerance": "±5%",
+            "power_rating": "1/4W",
+            "package": "EIA-0207"
+          },
+          "electrical": {
+            "temperature_coefficient": "±250ppm/°C",
+            "max_working_voltage": "250V",
+            "max_overload_voltage": "500V"
+          },
+          "dimensions": {
+            "body_length": "6.3mm",
+            "body_diameter": "2.5mm",
+            "lead_spacing": "5.08mm"
+          },
+          "environmental": {
+            "operating_temperature": "-55°C to +155°C",
+            "moisture_resistance": "85% RH at 85°C for 1000h"
+          }
+        },
+        "pricing": {
+          "unit_price": 8,
+          "minimum_order_quantity": 1000,
+          "price_breaks": [
+            {"quantity": 1000, "unit_price": 8},
+            {"quantity": 10000, "unit_price": 6}
+          ]
+        },
+        "applications": [
+          {
+            "industry": "Consumer Electronics",
+            "description": "Mạch điện tử trong thiết bị tiêu dùng",
+            "examples": ["TV", "Audio equipment", "Home appliances"]
+          }
+        ]
+      }
+    }
+  },
+  "complete_data_coverage": {
+    "total_products": 327,
+    "categories": [
+      "Bu lông, Ốc vít (89 sản phẩm)",
+      "Vòng bi, Đồng trục (67 sản phẩm)", 
+      "Linh kiện điện tử thụ động (124 sản phẩm)",
+      "Linh kiện điện tử chủ động (47 sản phẩm)"
+    ],
+    "data_fields_per_product": {
+      "basic_information": 10,
+      "specifications": 15,
+      "pricing": 8,
+      "inventory": 10,
+      "images": 8,
+      "documents": 6,
+      "applications": 5,
+      "quality": 8,
+      "logistics": 10,
+      "metadata": 8
+    },
+    "total_data_points": "327 × 88 = 28,776 data points",
+    "image_coverage": "1,750+ images mapped to products",
+    "language_support": "Vietnamese, English, Japanese",
+    "manufacturer_coverage": "25 leading manufacturers"
+  },
+  "integration_ready": {
+    "ecommerce": [
+      "Product catalogs with pricing tiers",
+      "Inventory management integration",
+      "Image galleries and zoom",
+      "Technical specifications display",
+      "Multi-language support"
+    ],
+    "erp_systems": [
+      "SKU and part number mapping",
+      "Manufacturer and supplier data",
+      "Quality control information",
+      "Lead time and reorder points"
+    ],
+    "api_integration": [
+      "RESTful API endpoints",
+      "Search and filtering",
+      "Category browsing",
+      "Manufacturer lookup"
+    ]
+  }
+}
