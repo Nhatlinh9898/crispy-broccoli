@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Training Pipeline Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .metric-card {
+            transition: transform 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        .log-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #1a202c;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold flex items-center">
+                        <i class="fas fa-brain mr-3"></i>
+                        AI Training Pipeline
+                    </h1>
+                    <p class="text-blue-100 mt-2">Comprehensive AI Training System with Neural Networks</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="status-indicator" class="px-3 py-1 bg-green-500 rounded-full text-sm flex items-center">
+                        <i class="fas fa-circle text-xs mr-2 pulse"></i>
+                        Ready
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Control Panel -->
+        <section class="mb-8">
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-cogs mr-3 text-purple-600"></i>
+                    Training Control Panel
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Product Count
+                        </label>
+                        <input type="number" id="productCount" value="5000" min="100" max="10000" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Training Epochs
+                        </label>
+                        <input type="number" id="epochs" value="100" min="10" max="500" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Model Name
+                        </label>
+                        <input type="text" id="modelName" value="content-generator-v1" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button id="initializeBtn" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                        <i class="fas fa-play mr-2"></i>Initialize Pipeline
+                    </button>
+                    <button id="generateBtn" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
+                        <i class="fas fa-database mr-2"></i>Generate Products
+                    </button>
+                    <button id="trainBtn" class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition">
+                        <i class="fas fa-graduation-cap mr-2"></i>Start Training
+                    </button>
+                    <button id="exportBtn" class="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition">
+                        <i class="fas fa-download mr-2"></i>Export Model
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="mb-8">
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <h3 class="text-xl font-bold mb-4">Training Progress</h3>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-medium">Overall Progress</span>
+                        <span id="progressPercent" class="text-sm font-medium">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div id="progressBar" class="progress-bar bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-600" id="totalProducts">0</div>
+                        <div class="text-sm text-gray-600">Total Products</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-600" id="trainedModels">0</div>
+                        <div class="text-sm text-gray-600">Trained Models</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-purple-600" id="qualityScore">0%</div>
+                        <div class="text-sm text-gray-600">Quality Score</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-orange-600" id="trainingTime">0s</div>
+                        <div class="text-sm text-gray-600">Training Time</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics Dashboard -->
+        <section class="mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="metric-card bg-white rounded-lg card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Industrial Components</p>
+                            <p class="text-2xl font-bold text-gray-800" id="industrialCount">0</p>
+                        </div>
+                        <div class="text-blue-500 text-3xl">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card bg-white rounded-lg card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Consumer Electronics</p>
+                            <p class="text-2xl font-bold text-gray-800" id="electronicsCount">0</p>
+                        </div>
+                        <div class="text-green-500 text-3xl">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card bg-white rounded-lg card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Retail Products</p>
+                            <p class="text-2xl font-bold text-gray-800" id="retailCount">0</p>
+                        </div>
+                        <div class="text-purple-500 text-3xl">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card bg-white rounded-lg card-shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Digital Products</p>
+                            <p class="text-2xl font-bold text-gray-800" id="digitalCount">0</p>
+                        </div>
+                        <div class="text-orange-500 text-3xl">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Training Log -->
+        <section class="mb-8">
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold">Training Log</h3>
+                    <button id="clearLogBtn" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition text-sm">
+                        <i class="fas fa-trash mr-2"></i>Clear Log
+                    </button>
+                </div>
+                <div id="trainingLog" class="log-container p-4 rounded-md">
+                    <div class="text-green-400">[System] Training pipeline initialized and ready...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Performance -->
+        <section class="mb-8">
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <h3 class="text-xl font-bold mb-4">Model Performance</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-2">Accuracy by Category</h4>
+                        <div id="accuracyChart" class="space-y-2">
+                            <!-- Chart will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">Training Statistics</h4>
+                        <div id="trainingStats" class="space-y-2">
+                            <!-- Stats will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 AI Training Pipeline. Powered by Neural Networks & Brain OS</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import TrainingPipeline from '../js/training-pipeline.js';
+
+        class TrainingPipelineUI {
+            constructor() {
+                this.pipeline = new TrainingPipeline();
+                this.trainingStartTime = null;
+                this.isTraining = false;
+                this.initializeEventListeners();
+                this.loadTrainingPipeline();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('initializeBtn').addEventListener('click', () => this.initializePipeline());
+                document.getElementById('generateBtn').addEventListener('click', () => this.generateProducts());
+                document.getElementById('trainBtn').addEventListener('click', () => this.startTraining());
+                document.getElementById('exportBtn').addEventListener('click', () => this.exportModel());
+                document.getElementById('clearLogBtn').addEventListener('click', () => this.clearLog());
+            }
+
+            async loadTrainingPipeline() {
+                try {
+                    // Dynamically load the training pipeline
+                    const module = await import('../js/training-pipeline.js');
+                    this.pipeline = new module.default();
+                    this.log('Training pipeline loaded successfully', 'success');
+                } catch (error) {
+                    this.log(`Failed to load training pipeline: ${error.message}`, 'error');
+                }
+            }
+
+            async initializePipeline() {
+                this.updateStatus('Initializing...', 'yellow');
+                this.log('Initializing training pipeline...');
+
+                try {
+                    const success = await this.pipeline.initialize();
+                    if (success) {
+                        this.updateStatus('Ready', 'green');
+                        this.log('Training pipeline initialized successfully', 'success');
+                    } else {
+                        this.updateStatus('Error', 'red');
+                        this.log('Failed to initialize training pipeline', 'error');
+                    }
+                } catch (error) {
+                    this.updateStatus('Error', 'red');
+                    this.log(`Initialization error: ${error.message}`, 'error');
+                }
+            }
+
+            async generateProducts() {
+                const productCount = parseInt(document.getElementById('productCount').value);
+                this.updateStatus('Generating...', 'yellow');
+                this.log(`Generating ${productCount} training products...`);
+
+                try {
+                    const products = await this.pipeline.generateTrainingProducts(productCount);
+                    this.updateProductCounts(products);
+                    this.updateStatus('Ready', 'green');
+                    this.log(`Successfully generated ${productCount} products`, 'success');
+                } catch (error) {
+                    this.updateStatus('Error', 'red');
+                    this.log(`Product generation error: ${error.message}`, 'error');
+                }
+            }
+
+            async startTraining() {
+                if (this.isTraining) {
+                    this.log('Training already in progress...', 'warning');
+                    return;
+                }
+
+                this.isTraining = true;
+                this.trainingStartTime = Date.now();
+                this.updateStatus('Training...', 'yellow');
+                this.log('Starting neural network training...');
+
+                // Start progress simulation
+                this.simulateTrainingProgress();
+
+                try {
+                    const results = await this.pipeline.trainNeuralAgents();
+                    this.isTraining = false;
+                    this.updateStatus('Completed', 'green');
+                    this.log('Training completed successfully', 'success');
+                    this.updateTrainingResults(results);
+                } catch (error) {
+                    this.isTraining = false;
+                    this.updateStatus('Error', 'red');
+                    this.log(`Training error: ${error.message}`, 'error');
+                }
+            }
+
+            simulateTrainingProgress() {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    if (!this.isTraining || progress >= 100) {
+                        clearInterval(interval);
+                        return;
+                    }
+
+                    progress += Math.random() * 5;
+                    progress = Math.min(progress, 100);
+                    this.updateProgress(progress);
+                }, 1000);
+            }
+
+            updateProgress(percent) {
+                document.getElementById('progressBar').style.width = `${percent}%`;
+                document.getElementById('progressPercent').textContent = `${Math.round(percent)}%`;
+                
+                // Update training time
+                if (this.trainingStartTime) {
+                    const elapsed = Math.round((Date.now() - this.trainingStartTime) / 1000);
+                    document.getElementById('trainingTime').textContent = `${elapsed}s`;
+                }
+            }
+
+            updateProductCounts(products) {
+                document.getElementById('totalProducts').textContent = 
+                    Object.values(products).reduce((sum, category) => sum + category.length, 0);
+                
+                document.getElementById('industrialCount').textContent = 
+                    products.industrial_components?.length || 0;
+                document.getElementById('electronicsCount').textContent = 
+                    products.consumer_electronics?.length || 0;
+                document.getElementById('retailCount').textContent = 
+                    products.retail_products?.length || 0;
+                document.getElementById('digitalCount').textContent = 
+                    products.digital_products?.length || 0;
+            }
+
+            updateTrainingResults(results) {
+                let totalModels = 0;
+                let totalQuality = 0;
+
+                for (const [category, result] of Object.entries(results)) {
+                    totalModels++;
+                    totalQuality += result.validation.accuracy || 0;
+                }
+
+                document.getElementById('trainedModels').textContent = totalModels;
+                document.getElementById('qualityScore').textContent = 
+                    `${Math.round((totalQuality / totalModels) * 100)}%`;
+
+                this.updateAccuracyChart(results);
+                this.updateTrainingStats(results);
+            }
+
+            updateAccuracyChart(results) {
+                const chartContainer = document.getElementById('accuracyChart');
+                chartContainer.innerHTML = '';
+
+                for (const [category, result] of Object.entries(results)) {
+                    const accuracy = (result.validation.accuracy || 0) * 100;
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'flex items-center justify-between';
+                    categoryDiv.innerHTML = `
+                        <span class="text-sm capitalize">${category.replace('_', ' ')}</span>
+                        <div class="flex items-center">
+                            <div class="w-32 bg-gray-200 rounded-full h-2 mr-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: ${accuracy}%"></div>
+                            </div>
+                            <span class="text-sm font-medium">${Math.round(accuracy)}%</span>
+                        </div>
+                    `;
+                    chartContainer.appendChild(categoryDiv);
+                }
+            }
+
+            updateTrainingStats(results) {
+                const statsContainer = document.getElementById('trainingStats');
+                const totalProducts = Object.values(results)
+                    .reduce((sum, result) => sum + (result.sampleCount || 0), 0);
+                
+                statsContainer.innerHTML = `
+                    <div class="flex justify-between">
+                        <span class="text-sm">Total Training Samples:</span>
+                        <span class="text-sm font-medium">${totalProducts}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm">Categories Trained:</span>
+                        <span class="text-sm font-medium">${Object.keys(results).length}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm">Average Epochs:</span>
+                        <span class="text-sm font-medium">${document.getElementById('epochs').value}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-sm">Training Duration:</span>
+                        <span class="text-sm font-medium">${document.getElementById('trainingTime').textContent}</span>
+                    </div>
+                `;
+            }
+
+            async exportModel() {
+                const modelName = document.getElementById('modelName').value;
+                this.updateStatus('Exporting...', 'yellow');
+                this.log(`Exporting model: ${modelName}`);
+
+                try {
+                    const success = await this.pipeline.exportModel(modelName);
+                    if (success) {
+                        this.updateStatus('Ready', 'green');
+                        this.log(`Model exported successfully: ${modelName}`, 'success');
+                    } else {
+                        this.updateStatus('Error', 'red');
+                        this.log('Failed to export model', 'error');
+                    }
+                } catch (error) {
+                    this.updateStatus('Error', 'red');
+                    this.log(`Export error: ${error.message}`, 'error');
+                }
+            }
+
+            updateStatus(text, color) {
+                const indicator = document.getElementById('status-indicator');
+                indicator.className = `px-3 py-1 bg-${color}-500 rounded-full text-sm flex items-center`;
+                
+                const colorClasses = {
+                    green: 'bg-green-500',
+                    yellow: 'bg-yellow-500',
+                    red: 'bg-red-500'
+                };
+                
+                indicator.className = `px-3 py-1 ${colorClasses[color]} rounded-full text-sm flex items-center`;
+                indicator.innerHTML = `<i class="fas fa-circle text-xs mr-2 ${color === 'yellow' ? 'pulse' : ''}"></i>${text}`;
+            }
+
+            log(message, type = 'info') {
+                const logContainer = document.getElementById('trainingLog');
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                
+                const colors = {
+                    info: 'text-gray-300',
+                    success: 'text-green-400',
+                    error: 'text-red-400',
+                    warning: 'text-yellow-400'
+                };
+                
+                logEntry.className = colors[type] || colors.info;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                logContainer.appendChild(logEntry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            clearLog() {
+                const logContainer = document.getElementById('trainingLog');
+                logContainer.innerHTML = '<div class="text-green-400">[System] Log cleared...</div>';
+            }
+        }
+
+        // Initialize the UI when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new TrainingPipelineUI();
+        });
+    </script>
+</body>
+</html>
