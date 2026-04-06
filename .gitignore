@@ -17,8 +17,7 @@ build/
 .env.test.local
 .env.production.local
 
-# IDE files
-.vscode/
+# IDE files (keep .vscode for settings)
 .idea/
 *.swp
 *.swo
@@ -62,6 +61,9 @@ temp/
 
 # Excel/Office files that are too large
 assets/sheets/sheet003.htm
+
+# Excel/Office generated HTML files (ignore IDE warnings for MS-specific CSS)
+# Keep files but ignore IDE warnings - these are valid Excel exports
 
 # Cache
 .cache/
