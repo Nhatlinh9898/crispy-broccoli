@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Mạng Nơ-ron Mối quan hệ Sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.6/dist/vis-network.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 1400px;
+            padding: 30px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+        
+        .search-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .result-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .visualization-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        #networkVisualization {
+            height: 600px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .product-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+        
+        .confidence-badge {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .relationship-type {
+            background: #6c757d;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            margin-left: 5px;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .stats-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading-spinner.active {
+            display: block;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #667eea;
+            font-weight: 600;
+            border: 2px solid transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .system-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .search-input {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section">
+            <h1><i class="fas fa-brain"></i> Hệ thống Mạng Nơ-ron Mối quan hệ Sản phẩm</h1>
+            <p class="lead">Phân tích và nội suy mối quan hệ giữa các sản phẩm công nghiệp</p>
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalProducts">-</div>
+                        <div>Tổng Sản phẩm</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalCategories">-</div>
+                        <div>Danh mục</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalNodes">-</div>
+                        <div>Nodes Đồ thị</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="systemStatus">-</div>
+                        <div>Trạng thái</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="system-info">
+            <i class="fas fa-info-circle"></i> <strong>Hướng dẫn:</strong> 
+            Nhập ID sản phẩm để tìm components cần thiết hoặc tìm các sản phẩm có thể tạo ra từ component đó.
+            Hệ thống sử dụng mạng nơ-ron để phân tích mối quan hệ dựa trên category, specifications và applications.
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab">
+                    <i class="fas fa-search"></i> Tìm kiếm Mối quan hệ
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="visualization-tab" data-bs-toggle="tab" data-bs-target="#visualization" type="button" role="tab">
+                    <i class="fas fa-project-diagram"></i> Trực quan hóa Đồ thị
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
+                    <i class="fas fa-layer-group"></i> Batch Query
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i> Thống kê
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="mainTabContent">
+            <!-- Search Tab -->
+            <div class="tab-pane fade show active" id="search" role="tabpanel">
+                <div class="search-section">
+                    <h4><i class="fas fa-search"></i> Tìm kiếm Mối quan hệ Sản phẩm</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tìm Components cho Sản phẩm</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control search-input" id="productSearchInput" 
+                                       placeholder="Nhập ID sản phẩm (VD: M001-001)">
+                                <button class="btn btn-gradient" onclick="findComponents()">
+                                    <i class="fas fa-search"></i> Tìm Components
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tìm Sản phẩm từ Component</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control search-input" id="componentSearchInput" 
+                                       placeholder="Nhập ID component (VD: E001-001)">
+                                <button class="btn btn-gradient" onclick="findProducts()">
+                                    <i class="fas fa-search"></i> Tìm Sản phẩm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Tìm kiếm sản phẩm theo tên</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control search-input" id="nameSearchInput" 
+                                       placeholder="Nhập tên sản phẩm...">
+                                <button class="btn btn-gradient" onclick="searchProductsByName()">
+                                    <i class="fas fa-search"></i> Tìm theo tên
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary w-100" onclick="clearSearchResults()">
+                                    <i class="fas fa-eraser"></i> Xóa kết quả
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-cogs"></i> Components tìm thấy</h5>
+                            <div id="componentsResult" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                <p class="mt-3">Đang tìm components...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-box"></i> Sản phẩm tìm thấy</h5>
+                            <div id="productsResult" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                <p class="mt-3">Đang tìm sản phẩm...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Tab -->
+            <div class="tab-pane fade" id="visualization" role="tabpanel">
+                <div class="visualization-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4><i class="fas fa-project-diagram"></i> Trực quan hóa Đồ thị Mối quan hệ</h4>
+                        <div>
+                            <button class="btn btn-gradient me-2" onclick="loadGraph()">
+                                <i class="fas fa-sync"></i> Tải lại
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="exportGraph()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div id="networkVisualization"></div>
+                </div>
+            </div>
+
+            <!-- Batch Tab -->
+            <div class="tab-pane fade" id="batch" role="tabpanel">
+                <div class="search-section">
+                    <h4><i class="fas fa-layer-group"></i> Batch Query</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Batch Components Query</label>
+                            <textarea class="form-control search-input" id="batchProductIds" rows="4" 
+                                      placeholder="Nhập các ID sản phẩm, mỗi dòng một ID&#10;M001-001&#10;M001-002&#10;E001-001"></textarea>
+                            <button class="btn btn-gradient mt-2 w-100" onclick="batchGetComponents()">
+                                <i class="fas fa-search"></i> Batch Tìm Components
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Batch Products Query</label>
+                            <textarea class="form-control search-input" id="batchComponentIds" rows="4" 
+                                      placeholder="Nhập các ID component, mỗi dòng một ID&#10;E001-001&#10;E001-002&#10;R001-001"></textarea>
+                            <button class="btn btn-gradient mt-2 w-100" onclick="batchGetProducts()">
+                                <i class="fas fa-search"></i> Batch Tìm Sản phẩm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h5><i class="fas fa-list"></i> Kết quả Batch</h5>
+                    <div id="batchResult"></div>
+                </div>
+            </div>
+
+            <!-- Stats Tab -->
+            <div class="tab-pane fade" id="stats" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-chart-bar"></i> Thống kê Mối quan hệ</h5>
+                            <div id="relationshipStats"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-info-circle"></i> Thông tin Hệ thống</h5>
+                            <div id="systemInfo"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/product-relationship-neural-network.js"></script>
+    <script src="../js/product-relationship-api.js"></script>
+    
+    <script>
+        // Global variables
+        let neuralNetwork = null;
+        let api = null;
+        let network = null;
+        let isInitialized = false;
+
+        // Initialize system
+        async function initializeSystem() {
+            try {
+                showLoading(true);
+                
+                // Initialize neural network
+                neuralNetwork = new ProductRelationshipNeuralNetwork();
+                await neuralNetwork.initialize('../data/complete-product-database.json');
+                await neuralNetwork.train(50);
+                
+                // Initialize API
+                api = new ProductRelationshipAPI();
+                await api.initialize(neuralNetwork);
+                
+                isInitialized = true;
+                updateSystemInfo();
+                showLoading(false);
+                
+                console.log('✅ Hệ thống đã khởi tạo thành công');
+                
+            } catch (error) {
+                console.error('❌ Lỗi khởi tạo:', error);
+                showLoading(false);
+                alert('Lỗi khởi tạo hệ thống: ' + error.message);
+            }
+        }
+
+        // Update system info
+        async function updateSystemInfo() {
+            if (!isInitialized) return;
+            
+            try {
+                const systemInfo = await api.getSystemInfo();
+                const stats = systemInfo.data;
+                
+                document.getElementById('totalProducts').textContent = stats.totalProducts;
+                document.getElementById('totalCategories').textContent = stats.totalCategories;
+                document.getElementById('totalNodes').textContent = stats.relationshipNodes;
+                document.getElementById('systemStatus').textContent = stats.isTrained ? '✅ Sẵn sàng' : '⚠️ Training';
+                
+                // Update detailed system info
+                const systemInfoDiv = document.getElementById('systemInfo');
+                systemInfoDiv.innerHTML = `
+                    <div class="system-info">
+                        <h6><i class="fas fa-microchip"></i> Neural Network Info</h6>
+                        <ul class="mb-0">
+                            <li>Embedding Dimension: ${stats.embeddingDimension}</li>
+                            <li>Neural Network Layers: ${stats.neuralNetworkLayers}</li>
+                            <li>Is Trained: ${stats.isTrained ? 'Yes' : 'No'}</li>
+                            <li>Total Products: ${stats.totalProducts}</li>
+                            <li>Total Categories: ${stats.totalCategories}</li>
+                        </ul>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Lỗi cập nhật thông tin:', error);
+            }
+        }
+
+        // Find components for product
+        async function findComponents() {
+            const productId = document.getElementById('productSearchInput').value.trim();
+            if (!productId) {
+                alert('Vui lòng nhập ID sản phẩm');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                showComponentLoading(true);
+                
+                const result = await api.getComponentsForProduct(productId);
+                
+                if (result.success) {
+                    displayComponents(result.data);
+                } else {
+                    document.getElementById('componentsResult').innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> ${result.error.message}
+                        </div>
+                    `;
+                }
+                
+                showComponentLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi tìm components:', error);
+                document.getElementById('componentsResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Lỗi: ${error.message}
+                    </div>
+                `;
+                showComponentLoading(false);
+            }
+        }
+
+        // Find products from component
+        async function findProducts() {
+            const componentId = document.getElementById('componentSearchInput').value.trim();
+            if (!componentId) {
+                alert('Vui lòng nhập ID component');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                showProductLoading(true);
+                
+                const result = await api.getProductsFromComponent(componentId);
+                
+                if (result.success) {
+                    displayProducts(result.data);
+                } else {
+                    document.getElementById('productsResult').innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> ${result.error.message}
+                        </div>
+                    `;
+                }
+                
+                showProductLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi tìm sản phẩm:', error);
+                document.getElementById('productsResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Lỗi: ${error.message}
+                    </div>
+                `;
+                showProductLoading(false);
+            }
+        }
+
+        // Search products by name
+        async function searchProductsByName() {
+            const query = document.getElementById('nameSearchInput').value.trim();
+            if (!query) {
+                alert('Vui lòng nhập tên sản phẩm');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                showComponentLoading(true);
+                showProductLoading(true);
+                
+                const result = await api.searchProducts(query, 20);
+                
+                if (result.success) {
+                    displaySearchResults(result.data);
+                } else {
+                    alert('Lỗi tìm kiếm: ' + result.error.message);
+                }
+                
+                showComponentLoading(false);
+                showProductLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi tìm kiếm:', error);
+                alert('Lỗi tìm kiếm: ' + error.message);
+                showComponentLoading(false);
+                showProductLoading(false);
+            }
+        }
+
+        // Display components
+        function displayComponents(data) {
+            const container = document.getElementById('componentsResult');
+            
+            if (data.components.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy components cho sản phẩm này
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="mb-3">
+                    <h6>Sản phẩm: <strong>${data.product.name}</strong></h6>
+                    <small class="text-muted">ID: ${data.product.id} | Category: ${data.product.category_id}</small>
+                </div>
+            `;
+            
+            data.components.forEach((comp, index) => {
+                html += `
+                    <div class="product-card" onclick="selectProduct('${comp.component.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${comp.component.name}</h6>
+                                <small class="text-muted">${comp.component.id} | ${comp.component.category_id}</small>
+                                <div class="mt-2">
+                                    <span class="confidence-badge">${(comp.confidence * 100).toFixed(1)}%</span>
+                                    <span class="relationship-type">${comp.relationship}</span>
+                                    <span class="badge bg-secondary">Depth: ${comp.depth}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Display products
+        function displayProducts(data) {
+            const container = document.getElementById('productsResult');
+            
+            if (data.products.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy sản phẩm từ component này
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="mb-3">
+                    <h6>Component: <strong>${data.component.name}</strong></h6>
+                    <small class="text-muted">ID: ${data.component.id} | Category: ${data.component.category_id}</small>
+                </div>
+            `;
+            
+            data.products.forEach((product, index) => {
+                html += `
+                    <div class="product-card" onclick="selectProduct('${product.product.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${product.product.name}</h6>
+                                <small class="text-muted">${product.product.id} | ${product.product.category_id}</small>
+                                <div class="mt-2">
+                                    <span class="confidence-badge">${(product.confidence * 100).toFixed(1)}%</span>
+                                    <span class="relationship-type">${product.relationship}</span>
+                                    <span class="badge bg-secondary">Depth: ${product.depth}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Display search results
+        function displaySearchResults(data) {
+            const componentsContainer = document.getElementById('componentsResult');
+            const productsContainer = document.getElementById('productsResult');
+            
+            if (data.results.length === 0) {
+                componentsContainer.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy sản phẩm phù hợp
+                    </div>
+                `;
+                productsContainer.innerHTML = '';
+                return;
+            }
+            
+            // Display first half in components, second half in products
+            const midPoint = Math.ceil(data.results.length / 2);
+            const componentsResults = data.results.slice(0, midPoint);
+            const productsResults = data.results.slice(midPoint);
+            
+            // Components
+            let componentsHtml = `<h6>Kết quả tìm kiếm (${data.total} tìm thấy)</h6>`;
+            componentsResults.forEach(result => {
+                componentsHtml += `
+                    <div class="product-card" onclick="selectProduct('${result.product.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${result.product.name}</h6>
+                                <small class="text-muted">${result.product.id} | Score: ${result.score}</small>
+                                <div class="mt-2">
+                                    <span class="badge bg-info">${result.matches.join(', ')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            componentsContainer.innerHTML = componentsHtml;
+            
+            // Products
+            let productsHtml = '';
+            productsResults.forEach(result => {
+                productsHtml += `
+                    <div class="product-card" onclick="selectProduct('${result.product.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${result.product.name}</h6>
+                                <small class="text-muted">${result.product.id} | Score: ${result.score}</small>
+                                <div class="mt-2">
+                                    <span class="badge bg-info">${result.matches.join(', ')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            productsContainer.innerHTML = productsHtml;
+        }
+
+        // Select product (fill into search input)
+        function selectProduct(productId) {
+            document.getElementById('productSearchInput').value = productId;
+            findComponents();
+        }
+
+        // Batch operations
+        async function batchGetComponents() {
+            const ids = document.getElementById('batchProductIds').value.trim().split('\n').filter(id => id.trim());
+            if (ids.length === 0) {
+                alert('Vui lòng nhập ít nhất một ID sản phẩm');
+                return;
+            }
+            
+            try {
+                showBatchLoading(true);
+                
+                const result = await api.batchGetComponents(ids);
+                displayBatchResults(result);
+                
+                showBatchLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi batch query:', error);
+                alert('Lỗi batch query: ' + error.message);
+                showBatchLoading(false);
+            }
+        }
+
+        async function batchGetProducts() {
+            const ids = document.getElementById('batchComponentIds').value.trim().split('\n').filter(id => id.trim());
+            if (ids.length === 0) {
+                alert('Vui lòng nhập ít nhất một ID component');
+                return;
+            }
+            
+            try {
+                showBatchLoading(true);
+                
+                const result = await api.batchGetProducts(ids);
+                displayBatchResults(result);
+                
+                showBatchLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi batch query:', error);
+                alert('Lỗi batch query: ' + error.message);
+                showBatchLoading(false);
+            }
+        }
+
+        function displayBatchResults(result) {
+            const container = document.getElementById('batchResult');
+            
+            if (!result.success) {
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Lỗi: ${result.error.message}
+                    </div>
+                `;
+                return;
+            }
+            
+            const data = result.data;
+            let html = `
+                <div class="mb-3">
+                    <h6>Batch Query Results</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="badge bg-success">Thành công: ${data.summary.successful}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="badge bg-danger">Thất bại: ${data.summary.failed}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="badge bg-info">Tổng: ${data.summary.total}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Display successful results
+            Object.entries(data.results).forEach(([id, result]) => {
+                html += `
+                    <div class="product-card">
+                        <h6>${id}</h6>
+                        <small>Tìm thấy ${result.totalFound} kết quả</small>
+                    </div>
+                `;
+            });
+            
+            // Display errors
+            Object.entries(data.errors).forEach(([id, error]) => {
+                html += `
+                    <div class="product-card border-danger">
+                        <h6 class="text-danger">${id}</h6>
+                        <small class="text-danger">Lỗi: ${error}</small>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Load graph visualization
+        async function loadGraph() {
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                const graphData = await api.exportGraph();
+                
+                if (graphData.success) {
+                    visualizeGraph(graphData.data);
+                } else {
+                    alert('Lỗi tải đồ thị: ' + graphData.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi tải đồ thị:', error);
+                alert('Lỗi tải đồ thị: ' + error.message);
+            }
+        }
+
+        function visualizeGraph(graphData) {
+            const container = document.getElementById('networkVisualization');
+            
+            // Convert to vis-network format
+            const nodes = new vis.DataSet(graphData.nodes.map(node => ({
+                id: node.id,
+                label: node.name,
+                group: node.category,
+                title: `${node.name} (${node.id})`
+            })));
+            
+            const edges = new vis.DataSet(graphData.edges.map(edge => ({
+                from: edge.from,
+                to: edge.to,
+                label: edge.type,
+                width: edge.weight * 5,
+                color: {
+                    color: this.getColorByType(edge.type),
+                    highlight: '#667eea'
+                }
+            })));
+            
+            const data = { nodes, edges };
+            
+            const options = {
+                nodes: {
+                    shape: 'dot',
+                    size: 20,
+                    font: {
+                        size: 12,
+                        color: '#333'
+                    },
+                    borderWidth: 2
+                },
+                edges: {
+                    smooth: {
+                        type: 'continuous'
+                    },
+                    font: {
+                        size: 10,
+                        align: 'middle'
+                    }
+                },
+                physics: {
+                    forceAtlas2Based: {
+                        gravitationalConstant: -26,
+                        centralGravity: 0.005,
+                        springLength: 230,
+                        springConstant: 0.18
+                    },
+                    solver: 'forceAtlas2Based',
+                    timestep: 0.35
+                },
+                interaction: {
+                    tooltipDelay: 200,
+                    hideEdgesOnDrag: true
+                }
+            };
+            
+            network = new vis.Network(container, data, options);
+        }
+
+        function getColorByType(type) {
+            const colors = {
+                'category': '#667eea',
+                'application': '#28a745',
+                'specification': '#ffc107',
+                'manufacturer': '#dc3545'
+            };
+            return colors[type] || '#6c757d';
+        }
+
+        // Export graph
+        async function exportGraph() {
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                const result = await api.exportGraph();
+                
+                if (result.success) {
+                    const dataStr = JSON.stringify(result.data, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = `product-relationship-graph-${new Date().toISOString().slice(0,10)}.json`;
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                } else {
+                    alert('Lỗi export: ' + result.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi export:', error);
+                alert('Lỗi export: ' + error.message);
+            }
+        }
+
+        // Load relationship stats
+        async function loadRelationshipStats() {
+            if (!isInitialized) return;
+            
+            try {
+                const result = await api.getRelationshipStats();
+                
+                if (result.success) {
+                    displayRelationshipStats(result.data);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi tải thống kê:', error);
+            }
+        }
+
+        function displayRelationshipStats(stats) {
+            const container = document.getElementById('relationshipStats');
+            
+            let html = `
+                <div class="system-info">
+                    <h6><i class="fas fa-chart-bar"></i> Relationship Statistics</h6>
+                    <ul>
+                        <li>Total Nodes: ${stats.totalNodes}</li>
+                        <li>Average Connections: ${stats.averageConnections.toFixed(2)}</li>
+                        <li>Max Connections: ${stats.maxConnections}</li>
+                        <li>Min Connections: ${stats.minConnections === Infinity ? 0 : stats.minConnections}</li>
+                    </ul>
+                    
+                    <h6 class="mt-3">Relationship Types</h6>
+                    <ul>
+            `;
+            
+            Object.entries(stats.relationshipTypes).forEach(([type, count]) => {
+                html += `<li>${type}: ${count}</li>`;
+            });
+            
+            html += `
+                    </ul>
+                    
+                    <h6 class="mt-3">Category Distribution</h6>
+                    <ul>
+            `;
+            
+            Object.entries(stats.categoryDistribution).forEach(([category, count]) => {
+                html += `<li>${category}: ${count}</li>`;
+            });
+            
+            html += `
+                    </ul>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Clear search results
+        function clearSearchResults() {
+            document.getElementById('productSearchInput').value = '';
+            document.getElementById('componentSearchInput').value = '';
+            document.getElementById('nameSearchInput').value = '';
+            document.getElementById('componentsResult').innerHTML = '<p class="text-muted">Nhập ID sản phẩm để tìm components</p>';
+            document.getElementById('productsResult').innerHTML = '<p class="text-muted">Nhập ID component để tìm sản phẩm</p>';
+        }
+
+        // Loading states
+        function showLoading(show) {
+            const spinners = document.querySelectorAll('.loading-spinner');
+            spinners.forEach(spinner => {
+                if (show) {
+                    spinner.classList.add('active');
+                } else {
+                    spinner.classList.remove('active');
+                }
+            });
+        }
+
+        function showComponentLoading(show) {
+            const container = document.getElementById('componentsResult');
+            if (show) {
+                container.innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang tìm components...</p></div>';
+            }
+        }
+
+        function showProductLoading(show) {
+            const container = document.getElementById('productsResult');
+            if (show) {
+                container.innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang tìm sản phẩm...</p></div>';
+            }
+        }
+
+        function showBatchLoading(show) {
+            const container = document.getElementById('batchResult');
+            if (show) {
+                container.innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang xử lý batch query...</p></div>';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            
+            // Load stats when stats tab is shown
+            document.getElementById('stats-tab').addEventListener('shown.bs.tab', function() {
+                loadRelationshipStats();
+            });
+            
+            // Load graph when visualization tab is shown
+            document.getElementById('visualization-tab').addEventListener('shown.bs.tab', function() {
+                loadGraph();
+            });
+            
+            // Add enter key support for search inputs
+            document.getElementById('productSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') findComponents();
+            });
+            
+            document.getElementById('componentSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') findProducts();
+            });
+            
+            document.getElementById('nameSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchProductsByName();
+            });
+        });
+    </script>
+</body>
+</html>

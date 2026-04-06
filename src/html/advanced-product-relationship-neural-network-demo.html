@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Neural Network Product Relationship System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.6/dist/vis-network.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e57c2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            margin: 20px auto;
+            max-width: 1600px;
+            padding: 40px;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e57c2 100%);
+            border-radius: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .model-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .model-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .model-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .model-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .search-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .visualization-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        #networkVisualization {
+            height: 700px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+        
+        .product-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border-color: #2a5298;
+        }
+        
+        .confidence-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .confidence-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .confidence-basic { background: linear-gradient(45deg, #28a745, #20c997); }
+        .confidence-transformer { background: linear-gradient(45deg, #007bff, #6610f2); }
+        .confidence-gnn { background: linear-gradient(45deg, #fd7e14, #e83e8c); }
+        .confidence-ensemble { background: linear-gradient(45deg, #6f42c1, #20c997); }
+        
+        .model-performance {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #2a5298;
+            font-weight: 600;
+            border: 2px solid transparent;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-color: #2a5298;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+            color: white;
+        }
+        
+        .search-input {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+        }
+        
+        .model-comparison-chart {
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+        
+        .loading-spinner.active {
+            display: block;
+        }
+        
+        .advanced-features {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .feature-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            color: #ff6b35;
+        }
+        
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2a5298;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section">
+            <h1><i class="fas fa-brain"></i> Advanced Neural Network Product Relationship System</h1>
+            <p class="lead">Hệ thống Neural Networks Nâng cao với Transformer, GNN và Ensemble Learning</p>
+            
+            <div class="model-stats">
+                <div class="model-card">
+                    <div class="model-icon"><i class="fas fa-project-diagram"></i></div>
+                    <div class="model-number" id="transformerNodes">-</div>
+                    <div>Transformer Embeddings</div>
+                </div>
+                <div class="model-card">
+                    <div class="model-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="model-number" id="gnnNodes">-</div>
+                    <div>GNN Embeddings</div>
+                </div>
+                <div class="model-card">
+                    <div class="model-icon"><i class="fas fa-layer-group"></i></div>
+                    <div class="model-number" id="ensembleNodes">-</div>
+                    <div>Ensemble Predictions</div>
+                </div>
+                <div class="model-card">
+                    <div class="model-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <div class="model-number" id="avgProcessingTime">-</div>
+                    <div>Avg Processing Time</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="advanced-features">
+            <h5><i class="fas fa-star"></i> Advanced Features</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                        <div>
+                            <strong>Transformer Model</strong><br>
+                            <small>Multi-head attention cho sequence-based analysis</small>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-project-diagram"></i></div>
+                        <div>
+                            <strong>Graph Neural Network</strong><br>
+                            <small>Message passing cho structural relationships</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-users"></i></div>
+                        <div>
+                            <strong>Ensemble Learning</strong><br>
+                            <small>Meta-learner kết hợp multiple model predictions</small>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-search"></i></div>
+                        <div>
+                            <strong>Semantic Search</strong><br>
+                            <small>Vector similarity với Transformer embeddings</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="advanced-search-tab" data-bs-toggle="tab" data-bs-target="#advanced-search" type="button" role="tab">
+                    <i class="fas fa-search"></i> Advanced Search
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="semantic-search-tab" data-bs-toggle="tab" data-bs-target="#semantic-search" type="button" role="tab">
+                    <i class="fas fa-language"></i> Semantic Search
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="graph-recommendations-tab" data-bs-toggle="tab" data-bs-target="#graph-recommendations" type="button" role="tab">
+                    <i class="fas fa-project-diagram"></i> Graph Recommendations
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#performance" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i> Performance Analysis
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="visualization-tab" data-bs-toggle="tab" data-bs-target="#visualization" type="button" role="tab">
+                    <i class="fas fa-eye"></i> Advanced Visualization
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="mainTabContent">
+            <!-- Advanced Search Tab -->
+            <div class="tab-pane fade show active" id="advanced-search" role="tabpanel">
+                <div class="search-section">
+                    <h4><i class="fas fa-search"></i> Advanced Product Relationship Search</h4>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Tìm Components với Ensemble AI</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control search-input" id="advancedProductSearchInput" 
+                                       placeholder="Nhập ID sản phẩm (VD: M001-001)">
+                                <button class="btn btn-gradient" onclick="findComponentsAdvanced()">
+                                    <i class="fas fa-search"></i> Advanced Search
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Tìm Sản phẩm với Multi-Model</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control search-input" id="advancedComponentSearchInput" 
+                                       placeholder="Nhập ID component (VD: E001-001)">
+                                <button class="btn btn-gradient" onclick="findProductsAdvanced()">
+                                    <i class="fas fa-search"></i> Advanced Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="model-performance">
+                                <h6><i class="fas fa-info-circle"></i> Model Contributions</h6>
+                                <div id="modelContributions" class="performance-metrics">
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="basicContribution">-</div>
+                                        <div class="metric-label">Basic Model</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="transformerContribution">-</div>
+                                        <div class="metric-label">Transformer</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="gnnContribution">-</div>
+                                        <div class="metric-label">GNN</div>
+                                    </div>
+                                    <div class="metric-card">
+                                        <div class="metric-value" id="ensembleContribution">-</div>
+                                        <div class="metric-label">Ensemble</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-cogs"></i> Advanced Components Results</h5>
+                            <div id="advancedComponentsResult" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                <p class="mt-3">Đang phân tích với Advanced AI...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-box"></i> Advanced Products Results</h5>
+                            <div id="advancedProductsResult" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                                <p class="mt-3">Đang phân tích với Multi-Model...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semantic Search Tab -->
+            <div class="tab-pane fade" id="semantic-search" role="tabpanel">
+                <div class="search-section">
+                    <h4><i class="fas fa-language"></i> Semantic Search với Transformer Embeddings</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Semantic Query</label>
+                            <input type="text" class="form-control search-input" id="semanticQueryInput" 
+                                   placeholder="Nhập query ngữ nghĩa (VD: 'bu lông thép cao cấp')">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Filters</label>
+                            <select class="form-control search-input" id="semanticFilterSelect">
+                                <option value="">Tất cả categories</option>
+                                <option value="cat_mechanical_fasteners">Bu lông, Ốc vít</option>
+                                <option value="cat_electronic_passive">Linh kiện điện tử thụ động</option>
+                                <option value="cat_mechanical_bearings">Vòng bi, Đồng trục</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Results Limit</label>
+                            <input type="number" class="form-control search-input" id="semanticLimitInput" 
+                                   value="10" min="1" max="50">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">&nbsp;</label>
+                            <button class="btn btn-gradient w-100" onclick="semanticSearch()">
+                                <i class="fas fa-search"></i> Semantic Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h5><i class="fas fa-brain"></i> Semantic Search Results</h5>
+                    <div id="semanticSearchResult"></div>
+                </div>
+            </div>
+
+            <!-- Graph Recommendations Tab -->
+            <div class="tab-pane fade" id="graph-recommendations" role="tabpanel">
+                <div class="search-section">
+                    <h4><i class="fas fa-project-diagram"></i> Graph-based Recommendations với GNN</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Product ID</label>
+                            <input type="text" class="form-control search-input" id="graphProductIdInput" 
+                                   placeholder="Nhập ID sản phẩm">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Search Depth</label>
+                            <select class="form-control search-input" id="graphDepthSelect">
+                                <option value="1">1 level</option>
+                                <option value="2" selected>2 levels</option>
+                                <option value="3">3 levels</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Results Limit</label>
+                            <input type="number" class="form-control search-input" id="graphLimitInput" 
+                                   value="15" min="1" max="50">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-gradient w-100" onclick="getGraphRecommendations()">
+                        <i class="fas fa-project-diagram"></i> Get Graph Recommendations
+                    </button>
+                </div>
+
+                <div class="result-section">
+                    <h5><i class="fas fa-network-wired"></i> GNN-based Recommendations</h5>
+                    <div id="graphRecommendationsResult"></div>
+                </div>
+            </div>
+
+            <!-- Performance Analysis Tab -->
+            <div class="tab-pane fade" id="performance" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-tachometer-alt"></i> Model Performance Metrics</h5>
+                            <div id="performanceMetrics"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="result-section">
+                            <h5><i class="fas fa-chart-line"></i> Performance Comparison</h5>
+                            <canvas id="performanceChart" class="model-comparison-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-section">
+                    <h5><i class="fas fa-lightbulb"></i> Optimization Recommendations</h5>
+                    <div id="optimizationRecommendations"></div>
+                </div>
+            </div>
+
+            <!-- Advanced Visualization Tab -->
+            <div class="tab-pane fade" id="visualization" role="tabpanel">
+                <div class="visualization-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4><i class="fas fa-eye"></i> Advanced Graph Visualization</h4>
+                        <div>
+                            <button class="btn btn-gradient me-2" onclick="loadAdvancedGraph()">
+                                <i class="fas fa-sync"></i> Tải lại
+                            </button>
+                            <button class="btn btn-outline-secondary me-2" onclick="exportAdvancedGraph()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn btn-outline-info" onclick="toggleEmbeddingView()">
+                                <i class="fas fa-eye"></i> Embeddings
+                            </button>
+                        </div>
+                    </div>
+                    <div id="advancedNetworkVisualization"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/product-relationship-neural-network.js"></script>
+    <script src="../js/advanced-product-relationship-neural-network.js"></script>
+    <script src="../js/product-relationship-api.js"></script>
+    <script src="../js/advanced-product-relationship-api.js"></script>
+    
+    <script>
+        // Global variables
+        let advancedNeuralNetwork = null;
+        let advancedAPI = null;
+        let performanceChart = null;
+        let advancedNetwork = null;
+        let isInitialized = false;
+
+        // Initialize advanced system
+        async function initializeAdvancedSystem() {
+            try {
+                showLoading(true);
+                
+                // Initialize advanced neural network
+                advancedNeuralNetwork = new AdvancedProductRelationshipNeuralNetwork();
+                await advancedNeuralNetwork.initializeAdvanced('../data/complete-product-database.json');
+                await advancedNeuralNetwork.trainAdvanced(30);
+                
+                // Initialize advanced API
+                advancedAPI = new AdvancedProductRelationshipAPI();
+                await advancedAPI.initializeAdvanced(advancedNeuralNetwork);
+                
+                isInitialized = true;
+                updateAdvancedSystemInfo();
+                showLoading(false);
+                
+                console.log('✅ Advanced Neural Network System đã khởi tạo thành công');
+                
+            } catch (error) {
+                console.error('❌ Lỗi khởi tạo advanced system:', error);
+                showLoading(false);
+                alert('Lỗi khởi tạo hệ thống nâng cao: ' + error.message);
+            }
+        }
+
+        // Update advanced system info
+        async function updateAdvancedSystemInfo() {
+            if (!isInitialized) return;
+            
+            try {
+                const systemInfo = await advancedAPI.getAdvancedSystemInfo();
+                const stats = systemInfo.data;
+                
+                // Update header stats
+                document.getElementById('transformerNodes').textContent = stats.advanced.embeddings.transformer;
+                document.getElementById('gnnNodes').textContent = stats.advanced.embeddings.graph;
+                document.getElementById('ensembleNodes').textContent = stats.advanced.embeddings.ensemble;
+                document.getElementById('avgProcessingTime').textContent = '-';
+                
+                // Update model contributions
+                updateModelContributions();
+                
+            } catch (error) {
+                console.error('Lỗi cập nhật advanced thông tin:', error);
+            }
+        }
+
+        // Update model contributions
+        function updateModelContributions() {
+            // Placeholder values - will be updated with actual results
+            document.getElementById('basicContribution').textContent = '0.30';
+            document.getElementById('transformerContribution').textContent = '0.40';
+            document.getElementById('gnnContribution').textContent = '0.30';
+            document.getElementById('ensembleContribution').textContent = '0.85';
+        }
+
+        // Advanced components search
+        async function findComponentsAdvanced() {
+            const productId = document.getElementById('advancedProductSearchInput').value.trim();
+            if (!productId) {
+                alert('Vui lòng nhập ID sản phẩm');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                showAdvancedComponentLoading(true);
+                
+                const result = await advancedAPI.getComponentsAdvanced(productId);
+                
+                if (result.success) {
+                    displayAdvancedComponents(result.data);
+                    updateModelContributionsWithData(result.performance.modelContributions);
+                } else {
+                    document.getElementById('advancedComponentsResult').innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> ${result.error.message}
+                        </div>
+                    `;
+                }
+                
+                showAdvancedComponentLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi tìm advanced components:', error);
+                document.getElementById('advancedComponentsResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Lỗi: ${error.message}
+                    </div>
+                `;
+                showAdvancedComponentLoading(false);
+            }
+        }
+
+        // Advanced products search
+        async function findProductsAdvanced() {
+            const componentId = document.getElementById('advancedComponentSearchInput').value.trim();
+            if (!componentId) {
+                alert('Vui lòng nhập ID component');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                showAdvancedProductLoading(true);
+                
+                const result = await advancedAPI.getProductsAdvanced(componentId);
+                
+                if (result.success) {
+                    displayAdvancedProducts(result.data);
+                    updateModelContributionsWithData(result.performance.modelContributions);
+                } else {
+                    document.getElementById('advancedProductsResult').innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> ${result.error.message}
+                        </div>
+                    `;
+                }
+                
+                showAdvancedProductLoading(false);
+                
+            } catch (error) {
+                console.error('Lỗi tìm advanced products:', error);
+                document.getElementById('advancedProductsResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Lỗi: ${error.message}
+                    </div>
+                `;
+                showAdvancedProductLoading(false);
+            }
+        }
+
+        // Update model contributions with real data
+        function updateModelContributionsWithData(contributions) {
+            if (contributions) {
+                document.getElementById('basicContribution').textContent = (contributions.basic * 100).toFixed(1) + '%';
+                document.getElementById('transformerContribution').textContent = (contributions.transformer * 100).toFixed(1) + '%';
+                document.getElementById('gnnContribution').textContent = (contributions.gnn * 100).toFixed(1) + '%';
+                document.getElementById('ensembleContribution').textContent = (contributions.ensemble * 100).toFixed(1) + '%';
+            }
+        }
+
+        // Display advanced components
+        function displayAdvancedComponents(data) {
+            const container = document.getElementById('advancedComponentsResult');
+            
+            if (data.components.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy components cho sản phẩm này
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="mb-4">
+                    <h6>Sản phẩm: <strong>${data.product.name}</strong></h6>
+                    <small class="text-muted">ID: ${data.product.id} | Category: ${data.product.category_id}</small>
+                    <div class="mt-2">
+                        <span class="badge bg-primary">Total: ${data.totalFound}</span>
+                        <span class="badge bg-success">Avg Confidence: ${(data.performance.averageConfidence * 100).toFixed(1)}%</span>
+                        <span class="badge bg-info">Processing: ${data.performance.processingTime.toFixed(2)}ms</span>
+                    </div>
+                </div>
+            `;
+            
+            data.components.forEach((comp, index) => {
+                html += `
+                    <div class="product-card" onclick="selectAdvancedProduct('${comp.component.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${comp.component.name}</h6>
+                                <small class="text-muted">${comp.component.id} | ${comp.component.category_id}</small>
+                                <div class="confidence-badges mt-2">
+                                    <span class="confidence-badge confidence-basic">Basic: ${(comp.confidence * 100).toFixed(1)}%</span>
+                                    <span class="confidence-badge confidence-transformer">Transformer: ${(comp.transformerConfidence * 100).toFixed(1)}%</span>
+                                    <span class="confidence-badge confidence-gnn">GNN: ${(comp.gnnConfidence * 100).toFixed(1)}%</span>
+                                    <span class="confidence-badge confidence-ensemble">Ensemble: ${(comp.ensembleConfidence * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge bg-secondary">${comp.relationship}</span>
+                                    <span class="badge bg-info">Depth: ${comp.depth}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Display advanced products
+        function displayAdvancedProducts(data) {
+            const container = document.getElementById('advancedProductsResult');
+            
+            if (data.products.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy sản phẩm từ component này
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="mb-4">
+                    <h6>Component: <strong>${data.component.name}</strong></h6>
+                    <small class="text-muted">ID: ${data.component.id} | Category: ${data.component.category_id}</small>
+                    <div class="mt-2">
+                        <span class="badge bg-primary">Total: ${data.totalFound}</span>
+                        <span class="badge bg-success">Avg Confidence: ${(data.performance.averageConfidence * 100).toFixed(1)}%</span>
+                        <span class="badge bg-info">Processing: ${data.performance.processingTime.toFixed(2)}ms</span>
+                    </div>
+                </div>
+            `;
+            
+            data.products.forEach((product, index) => {
+                html += `
+                    <div class="product-card" onclick="selectAdvancedProduct('${product.product.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${product.product.name}</h6>
+                                <small class="text-muted">${product.product.id} | ${product.product.category_id}</small>
+                                <div class="confidence-badges mt-2">
+                                    <span class="confidence-badge confidence-basic">Basic: ${(product.confidence * 100).toFixed(1)}%</span>
+                                    <span class="confidence-badge confidence-transformer">Transformer: ${(product.transformerConfidence * 100).toFixed(1)}%</span>
+                                    <span class="confidence-badge confidence-gnn">GNN: ${(product.gnnConfidence * 100).toFixed(1)}%</span>
+                                    <span class="confidence-badge confidence-ensemble">Ensemble: ${(product.ensembleConfidence * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge bg-secondary">${product.relationship}</span>
+                                    <span class="badge bg-info">Depth: ${product.depth}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Semantic search
+        async function semanticSearch() {
+            const query = document.getElementById('semanticQueryInput').value.trim();
+            const limit = parseInt(document.getElementById('semanticLimitInput').value) || 10;
+            const category = document.getElementById('semanticFilterSelect').value;
+            
+            if (!query) {
+                alert('Vui lòng nhập semantic query');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                document.getElementById('semanticSearchResult').innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang thực hiện semantic search...</p></div>';
+                
+                const filters = category ? { category: category } : {};
+                const result = await advancedAPI.semanticSearch(query, limit, filters);
+                
+                if (result.success) {
+                    displaySemanticResults(result.data);
+                } else {
+                    alert('Lỗi semantic search: ' + result.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi semantic search:', error);
+                alert('Lỗi semantic search: ' + error.message);
+            }
+        }
+
+        // Display semantic results
+        function displaySemanticResults(data) {
+            const container = document.getElementById('semanticSearchResult');
+            
+            if (data.results.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy kết quả semantic
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="mb-4">
+                    <h6>Semantic Query: <strong>"${data.query}"</strong></h6>
+                    <div class="mt-2">
+                        <span class="badge bg-primary">Results: ${data.total}</span>
+                        <span class="badge bg-success">Avg Similarity: ${(data.performance.averageSimilarity * 100).toFixed(1)}%</span>
+                        <span class="badge bg-info">Processing: ${data.performance.processingTime.toFixed(2)}ms</span>
+                    </div>
+                </div>
+            `;
+            
+            data.results.forEach(result => {
+                html += `
+                    <div class="product-card" onclick="selectAdvancedProduct('${result.product.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${result.product.name}</h6>
+                                <small class="text-muted">${result.product.id} | ${result.product.category_id}</small>
+                                <div class="mt-2">
+                                    <span class="badge bg-primary">Similarity: ${(result.similarity * 100).toFixed(1)}%</span>
+                                    <span class="badge bg-info">Matches: ${result.matches.join(', ')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Graph recommendations
+        async function getGraphRecommendations() {
+            const productId = document.getElementById('graphProductIdInput').value.trim();
+            const depth = parseInt(document.getElementById('graphDepthSelect').value) || 2;
+            const limit = parseInt(document.getElementById('graphLimitInput').value) || 15;
+            
+            if (!productId) {
+                alert('Vui lòng nhập ID sản phẩm');
+                return;
+            }
+            
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                document.getElementById('graphRecommendationsResult').innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang phân tích graph với GNN...</p></div>';
+                
+                const result = await advancedAPI.getGraphRecommendations(productId, depth, limit);
+                
+                if (result.success) {
+                    displayGraphRecommendations(result.data);
+                } else {
+                    alert('Lỗi graph recommendations: ' + result.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi graph recommendations:', error);
+                alert('Lỗi graph recommendations: ' + error.message);
+            }
+        }
+
+        // Display graph recommendations
+        function displayGraphRecommendations(data) {
+            const container = document.getElementById('graphRecommendationsResult');
+            
+            if (data.recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Không tìm thấy graph recommendations
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="mb-4">
+                    <h6>Graph Recommendations for: <strong>${data.productId}</strong></h6>
+                    <div class="mt-2">
+                        <span class="badge bg-primary">Found: ${data.totalFound}</span>
+                        <span class="badge bg-success">Avg GNN Confidence: ${(data.performance.averageGNNConfidence * 100).toFixed(1)}%</span>
+                        <span class="badge bg-info">Depth: ${data.depth}</span>
+                        <span class="badge bg-warning">Processing: ${data.performance.processingTime.toFixed(2)}ms</span>
+                    </div>
+                </div>
+            `;
+            
+            data.recommendations.forEach(rec => {
+                html += `
+                    <div class="product-card" onclick="selectAdvancedProduct('${rec.product.id}')">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6>${rec.product.name}</h6>
+                                <small class="text-muted">${rec.product.id} | ${rec.product.category_id}</small>
+                                <div class="mt-2">
+                                    <span class="badge bg-success">GNN Confidence: ${(rec.gnnConfidence * 100).toFixed(1)}%</span>
+                                    <span class="badge bg-secondary">${rec.relationship}</span>
+                                    <span class="badge bg-info">Depth: ${rec.depth}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Performance analysis
+        async function loadPerformanceAnalysis() {
+            if (!isInitialized) return;
+            
+            try {
+                const result = await advancedAPI.getModelPerformance();
+                
+                if (result.success) {
+                    displayPerformanceMetrics(result.data.performance);
+                    createPerformanceChart(result.data.comparison);
+                    displayOptimizationRecommendations(result.data.recommendations);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi tải performance analysis:', error);
+            }
+        }
+
+        // Display performance metrics
+        function displayPerformanceMetrics(performance) {
+            const container = document.getElementById('performanceMetrics');
+            
+            let html = '';
+            Object.entries(performance).forEach(([model, metrics]) => {
+                html += `
+                    <div class="model-performance">
+                        <h6><i class="fas fa-chart-bar"></i> ${model.toUpperCase()} Model Performance</h6>
+                        <div class="performance-metrics">
+                            <div class="metric-card">
+                                <div class="metric-value">${metrics.totalQueries}</div>
+                                <div class="metric-label">Total Queries</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">${metrics.averageProcessingTime.toFixed(1)}ms</div>
+                                <div class="metric-label">Avg Processing</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">${(metrics.averageConfidence * 100).toFixed(1)}%</div>
+                                <div class="metric-label">Avg Confidence</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">${(metrics.errorRate * 100).toFixed(1)}%</div>
+                                <div class="metric-label">Error Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Create performance chart
+        function createPerformanceChart(comparison) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            if (performanceChart) {
+                performanceChart.destroy();
+            }
+            
+            performanceChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Speed', 'Accuracy', 'Reliability'],
+                    datasets: Object.entries(comparison).map(([model, metrics]) => ({
+                        label: model.toUpperCase(),
+                        data: [
+                            100 - (metrics.speed * 10), // Invert speed (lower is better)
+                            metrics.accuracy * 100,
+                            metrics.reliability * 100
+                        ],
+                        backgroundColor: this.getModelColor(model, 0.2),
+                        borderColor: this.getModelColor(model, 1),
+                        borderWidth: 2
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Get model color
+        function getModelColor(model, alpha) {
+            const colors = {
+                basic: `rgba(40, 167, 69, ${alpha})`,
+                transformer: `rgba(0, 123, 255, ${alpha})`,
+                gnn: `rgba(253, 126, 20, ${alpha})`,
+                ensemble: `rgba(111, 66, 193, ${alpha})`
+            };
+            return colors[model] || `rgba(108, 117, 125, ${alpha})`;
+        }
+
+        // Display optimization recommendations
+        function displayOptimizationRecommendations(recommendations) {
+            const container = document.getElementById('optimizationRecommendations');
+            
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> All models are performing optimally!
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            recommendations.forEach(rec => {
+                const icon = rec.type === 'speed' ? 'fa-tachometer-alt' : 'fa-bullseye';
+                const color = rec.type === 'speed' ? 'warning' : 'info';
+                
+                html += `
+                    <div class="alert alert-${color}">
+                        <i class="fas ${icon}"></i> <strong>${rec.model.toUpperCase()} Optimization:</strong> ${rec.suggestion}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Load advanced graph
+        async function loadAdvancedGraph() {
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                const graphData = await advancedAPI.exportAdvancedGraph();
+                
+                if (graphData.success) {
+                    visualizeAdvancedGraph(graphData.data);
+                } else {
+                    alert('Lỗi tải advanced graph: ' + graphData.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi tải advanced graph:', error);
+                alert('Lỗi tải advanced graph: ' + error.message);
+            }
+        }
+
+        // Visualize advanced graph
+        function visualizeAdvancedGraph(graphData) {
+            const container = document.getElementById('advancedNetworkVisualization');
+            
+            // Convert to vis-network format with enhanced features
+            const nodes = new vis.DataSet(graphData.nodes.map(node => ({
+                id: node.id,
+                label: node.name,
+                group: node.category,
+                title: `${node.name} (${node.id})`,
+                font: { size: 12, color: '#333' },
+                borderWidth: 2,
+                size: 25
+            })));
+            
+            const edges = new vis.DataSet(graphData.edges.map(edge => ({
+                from: edge.from,
+                to: edge.to,
+                label: `${edge.type}: ${(edge.weight * 100).toFixed(0)}%`,
+                width: Math.max(2, edge.weight * 8),
+                color: {
+                    color: this.getAdvancedEdgeColor(edge.type),
+                    highlight: '#1e3c72'
+                },
+                font: { size: 10, align: 'middle' }
+            })));
+            
+            const data = { nodes, edges };
+            
+            const options = {
+                nodes: {
+                    shape: 'dot',
+                    font: {
+                        size: 14,
+                        color: '#333'
+                    },
+                    borderWidth: 3,
+                    shadow: true
+                },
+                edges: {
+                    smooth: {
+                        type: 'continuous',
+                        roundness: 0.5
+                    },
+                    font: {
+                        size: 11,
+                        align: 'middle',
+                        background: 'white'
+                    },
+                    shadow: true
+                },
+                physics: {
+                    forceAtlas2Based: {
+                        gravitationalConstant: -50,
+                        centralGravity: 0.01,
+                        springLength: 200,
+                        springConstant: 0.08,
+                        damping: 0.4
+                    },
+                    solver: 'forceAtlas2Based',
+                    timestep: 0.35,
+                    stabilization: {
+                        enabled: true,
+                        iterations: 100,
+                        updateInterval: 25
+                    }
+                },
+                interaction: {
+                    tooltipDelay: 200,
+                    hideEdgesOnDrag: true,
+                    navigationButtons: true,
+                    keyboard: true
+                },
+                layout: {
+                    improvedLayout: true
+                }
+            };
+            
+            advancedNetwork = new vis.Network(container, data, options);
+        }
+
+        // Get advanced edge color
+        function getAdvancedEdgeColor(type) {
+            const colors = {
+                'category': '#1e3c72',
+                'application': '#28a745',
+                'specification': '#ffc107',
+                'manufacturer': '#dc3545',
+                'transformer': '#007bff',
+                'gnn': '#6f42c1',
+                'ensemble': '#20c997'
+            };
+            return colors[type] || '#6c757d';
+        }
+
+        // Export advanced graph
+        async function exportAdvancedGraph() {
+            if (!isInitialized) {
+                alert('Hệ thống chưa được khởi tạo');
+                return;
+            }
+            
+            try {
+                const result = await advancedAPI.exportAdvancedGraph();
+                
+                if (result.success) {
+                    const dataStr = JSON.stringify(result.data, null, 2);
+                    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                    
+                    const exportFileDefaultName = `advanced-product-relationship-graph-${new Date().toISOString().slice(0,10)}.json`;
+                    
+                    const linkElement = document.createElement('a');
+                    linkElement.setAttribute('href', dataUri);
+                    linkElement.setAttribute('download', exportFileDefaultName);
+                    linkElement.click();
+                } else {
+                    alert('Lỗi export: ' + result.error.message);
+                }
+                
+            } catch (error) {
+                console.error('Lỗi export:', error);
+                alert('Lỗi export: ' + error.message);
+            }
+        }
+
+        // Toggle embedding view
+        function toggleEmbeddingView() {
+            if (advancedNetwork) {
+                const currentOptions = advancedNetwork.options;
+                currentOptions.nodes.font.size = currentOptions.nodes.font.size === 12 ? 8 : 12;
+                advancedNetwork.setOptions(currentOptions);
+            }
+        }
+
+        // Select advanced product
+        function selectAdvancedProduct(productId) {
+            document.getElementById('advancedProductSearchInput').value = productId;
+            findComponentsAdvanced();
+        }
+
+        // Loading states
+        function showLoading(show) {
+            const spinners = document.querySelectorAll('.loading-spinner');
+            spinners.forEach(spinner => {
+                if (show) {
+                    spinner.classList.add('active');
+                } else {
+                    spinner.classList.remove('active');
+                }
+            });
+        }
+
+        function showAdvancedComponentLoading(show) {
+            const container = document.getElementById('advancedComponentsResult');
+            if (show) {
+                container.innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang phân tích với Advanced AI...</p></div>';
+            }
+        }
+
+        function showAdvancedProductLoading(show) {
+            const container = document.getElementById('advancedProductsResult');
+            if (show) {
+                container.innerHTML = '<div class="loading-spinner active"><i class="fas fa-spinner fa-spin fa-3x"></i><p class="mt-3">Đang phân tích với Multi-Model...</p></div>';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdvancedSystem();
+            
+            // Load performance when performance tab is shown
+            document.getElementById('performance-tab').addEventListener('shown.bs.tab', function() {
+                loadPerformanceAnalysis();
+            });
+            
+            // Load advanced graph when visualization tab is shown
+            document.getElementById('visualization-tab').addEventListener('shown.bs.tab', function() {
+                loadAdvancedGraph();
+            });
+            
+            // Add enter key support
+            document.getElementById('advancedProductSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') findComponentsAdvanced();
+            });
+            
+            document.getElementById('advancedComponentSearchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') findProductsAdvanced();
+            });
+            
+            document.getElementById('semanticQueryInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') semanticSearch();
+            });
+            
+            document.getElementById('graphProductIdInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') getGraphRecommendations();
+            });
+        });
+    </script>
+</body>
+</html>
